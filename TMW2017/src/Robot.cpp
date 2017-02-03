@@ -75,12 +75,19 @@ void Robot::TeleopInit() {
 	// teleop starts running. If you want the autonomous to
 	// continue until interrupted by another command, remove
 	// these lines or comment it out.
-	if (autonomousCommand.get() != nullptr)
+	if (autonomousCommand.get() != nullptr) {
 		autonomousCommand->Cancel();
+	}
 }
 
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
+
+	driveBase->Crab(
+			oi->GetJoystickTwist(),
+			-oi->GetJoystickY(),
+			oi->GetJoystickX(),
+			true);
 }
 
 void Robot::TestPeriodic() {
