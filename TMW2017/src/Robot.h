@@ -51,5 +51,7 @@ public:
 	virtual void TeleopInit();
 	virtual void TeleopPeriodic();
 	virtual void TestPeriodic();
+
+	void RunManagers();
 };
 #endif

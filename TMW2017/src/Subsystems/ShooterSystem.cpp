@@ -10,7 +10,7 @@
 
 
 #include "CANTalon.h"
-
+#include "Manager.h"
 
 #include "ShooterSystem.h"
 #include "../RobotMap.h"
@@ -44,3 +44,25 @@ void ShooterSystem::InitDefaultCommand() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
+void ShooterSystem::Run() {
+	if (ballPickupEnabled) {
+		std::cout << "Run ballPickup.\n";
+	}
+}
+
+void ShooterSystem::SetBallPickupEnabled(bool enabled) {
+	 ballPickupEnabled = enabled;
+}
+
+ void ShooterSystem::ToggleBallPickup() {
+	 ballPickupEnabled = !ballPickupEnabled;
+ }
+
+void ShooterSystem::Shoot() {
+	std::cout << "Shoot now!\n";
+}
+
+void ShooterSystem::SetHopperSpeed(double speed) {
+	std::cout << "hopper speed is" << speed;
+	hopper->Set(speed);
+}
