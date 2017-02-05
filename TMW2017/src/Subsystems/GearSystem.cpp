@@ -39,7 +39,8 @@ void GearSystem::InitDefaultCommand() {
 }
 
 void GearSystem::SetGearBarSpeed(double speed) {
-	std::cout << "speed is " << speed;
+	frc::SmartDashboard::PutNumber("GearPickup Volts", gearPickUp->GetOutputVoltage());
+	frc::SmartDashboard::PutNumber("GearPickup Amps", gearPickUp->GetOutputCurrent());
 	gearPickUp->Set(speed);
 }
 
