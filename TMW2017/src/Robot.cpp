@@ -117,10 +117,10 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
 
-	if (oi->GPX->Pressed()) {
+	if (oi->GPX->RisingEdge()) {
 		ballPickupSystem->ToggleBallPickup();
 	}
-	if (oi->GPB->Pressed()) {
+	if (oi->GPB->RisingEdge()) {
 		ballPickupSystem->ReverseBallPickup();
 	}
 
@@ -148,7 +148,7 @@ void Robot::TestPeriodic() {
 }
 
 void Robot::RunManagers() {
-	std::vector<std::shared_ptr<Manager>> managers {shooterSystem, ballPickupSystem};
+	std::vector<std::shared_ptr<Manager>> managers {climberSystem, shooterSystem, ballPickupSystem};
 	std::for_each(managers.begin(), managers.end(),
 			[](std::shared_ptr<Manager> &manager) {
 				manager->Run();

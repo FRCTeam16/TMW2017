@@ -10,6 +10,7 @@
 
 class Manager {
 public:
+	virtual ~Manager() {};
 	virtual void Run() = 0;
 };
 
