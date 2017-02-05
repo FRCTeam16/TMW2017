@@ -45,24 +45,14 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
-	if (ballPickupEnabled) {
-		std::cout << "Run ballPickup.\n";
-	}
-}
 
-void ShooterSystem::SetBallPickupEnabled(bool enabled) {
-	 ballPickupEnabled = enabled;
 }
-
- void ShooterSystem::ToggleBallPickup() {
-	 ballPickupEnabled = !ballPickupEnabled;
- }
 
 void ShooterSystem::Shoot() {
-	std::cout << "Shoot now!\n";
+	std::cout << "ShooterSystem::Shoot() => Shoot now!\n";
 }
 
 void ShooterSystem::SetHopperSpeed(double speed) {
-	std::cout << "hopper speed is" << speed;
+	std::cout << "ShooterSystem::SetHopperSpeed => hopper speed is" << speed;
 	hopper->Set(speed);
 }

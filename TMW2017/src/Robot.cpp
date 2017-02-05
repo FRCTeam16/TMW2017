@@ -118,12 +118,17 @@ void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
 
 	if (oi->GPX->Pressed()) {
-		shooterSystem->ToggleBallPickup();
+		ballPickupSystem->ToggleBallPickup();
 	}
+	if (oi->GPB->Pressed()) {
+		ballPickupSystem->ReverseBallPickup();
+	}
+
 
 	if (oi->DR1->Pressed()) {
 		shooterSystem->Shoot();
 	}
+
 
 	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 
@@ -134,6 +139,7 @@ void Robot::TeleopPeriodic() {
 			-oi->GetJoystickY(),
 			oi->GetJoystickX(),
 			true);
+
 	RunManagers();
 }
 
@@ -142,7 +148,7 @@ void Robot::TestPeriodic() {
 }
 
 void Robot::RunManagers() {
-	std::vector<std::shared_ptr<Manager>> managers {shooterSystem};
+	std::vector<std::shared_ptr<Manager>> managers {shooterSystem, ballPickupSystem};
 	std::for_each(managers.begin(), managers.end(),
 			[](std::shared_ptr<Manager> &manager) {
 				manager->Run();

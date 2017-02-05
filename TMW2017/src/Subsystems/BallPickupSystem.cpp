@@ -41,3 +41,22 @@ void BallPickupSystem::InitDefaultCommand() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
+void BallPickupSystem::Run() {
+	if (ballPickupEnabled) {
+		ballPickup->Set(ballPickupDirection);
+	}
+}
+
+void BallPickupSystem::SetBallPickupEnabled(bool enabled) {
+	 ballPickupEnabled = enabled;
+}
+
+ void BallPickupSystem::ToggleBallPickup() {
+	 ballPickupEnabled = !ballPickupEnabled;
+ }
+
+
+ void BallPickupSystem::ReverseBallPickup() {
+	 ballPickupDirection *= -1;
+	 std::cout << "BallPickupSystem => Switched ball pickup direction to " << ballPickupDirection << "\n";
+ }
