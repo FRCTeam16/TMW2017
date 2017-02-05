@@ -12,6 +12,7 @@ class Manager {
 public:
 	virtual ~Manager() {};
 	virtual void Run() = 0;
+	virtual void SMDB() {}
 };
 
 

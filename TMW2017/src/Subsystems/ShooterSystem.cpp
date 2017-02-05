@@ -50,7 +50,6 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
-
 }
 
 void ShooterSystem::Shoot() {

@@ -420,6 +420,16 @@ Children:
           value: '0'
       Base: Compressor
       Name: GearCompressor
+    - Children: []
+      Properties:
+        Input Channel (Analog): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id003
+          default: '0'
+          name: Input Channel (Analog)
+          validators: *id004
+          value: '4'
+      Base: Analog Input
+      Name: PressureGauge
     Properties:
       Default command parameters: !!robotbuilder.data.properties.ParametersProperty
         default: []

@@ -42,10 +42,10 @@ OI::OI() {
     GPY.reset(new BSButton(gamepad, 4));
     GPB.reset(new BSButton(gamepad, 2));
     GPA.reset(new BSButton(gamepad, 1));
-    GPLT.reset(new BSButton(gamepad, 7));
-    GPRT.reset(new BSButton(gamepad, 8));
-    GPBack.reset(new BSButton(gamepad, 9));
-    GPStart.reset(new BSButton(gamepad, 10));
+    GPLT.reset(new BSButton(gamepad, 5));
+    GPRT.reset(new BSButton(gamepad, 6));
+    GPBack.reset(new BSButton(gamepad, 7));
+    GPStart.reset(new BSButton(gamepad, 8));
     DL1.reset(new BSButton(driverLeft, 1));
     DL2.reset(new BSButton(driverLeft, 2));
     DL3.reset(new BSButton(driverLeft, 3));

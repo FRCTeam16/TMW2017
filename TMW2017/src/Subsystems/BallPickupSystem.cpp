@@ -48,7 +48,12 @@ void BallPickupSystem::Run() {
 	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
 
-		ballPickup->Set(ballPickupDirection*ballPickupEnabled);
+	ballPickup->Set(ballPickupDirection*ballPickupEnabled);
+}
+
+void BallPickupSystem::SMDB() {
+	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
+	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
 }
 
 void BallPickupSystem::SetBallPickupEnabled(bool enabled) {
