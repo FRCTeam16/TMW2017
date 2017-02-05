@@ -31,8 +31,6 @@ OI::OI() {
     driverLeft.reset(new Joystick(0));
     
 
-
-
     // SmartDashboard Buttons
     SmartDashboard::PutData("SetWheelOffsets", new SetWheelOffsets());
     SmartDashboard::PutData("ZeroGyro", new ZeroGyro());

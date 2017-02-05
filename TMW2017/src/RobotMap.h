@@ -47,6 +47,12 @@ public:
 	static std::shared_ptr<CANTalon> driveBaseRearRightDrive;
 	static std::shared_ptr<PowerDistributionPanel> driveBasePDP;
 	static std::shared_ptr<CANTalon> gearSystemGearPickUp;
+	static std::shared_ptr<Solenoid> gearSystemLift;
+	static std::shared_ptr<Solenoid> gearSystemRotate;
+	static std::shared_ptr<Solenoid> gearSystemExtend;
+	static std::shared_ptr<DoubleSolenoid> gearSystemSqueeze;
+	static std::shared_ptr<Compressor> gearSystemGearCompressor;
+	static std::shared_ptr<AnalogInput> gearSystemPressureGauge;
 	static std::shared_ptr<CANTalon> climberSystemClimber;
 	static std::shared_ptr<CANTalon> shooterSystemElevator;
 	static std::shared_ptr<CANTalon> shooterSystemHopper;
