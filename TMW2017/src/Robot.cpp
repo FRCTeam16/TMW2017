@@ -144,6 +144,12 @@ void Robot::TeleopPeriodic() {
 	}
 
 
+	if (oi->GPLT->Pressed()) {
+		climberSystem->SetClimberEnabled(true);
+	} else {
+		climberSystem->SetClimberEnabled(false);
+	}
+
 	if (oi->DR1->Pressed()) {
 		shooterSystem->Shoot();
 	}

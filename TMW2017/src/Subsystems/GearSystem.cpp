@@ -48,7 +48,16 @@ void GearSystem::InitDefaultCommand() {
 }
 
 void GearSystem::SetGearBarSpeed(double speed) {
-	gearPickUp->Set(speed);
+	if (!gearPickupVoltageTripped && (gearPickUp->GetOutputVoltage() < gearPickupVoltageThreshold)) {
+		gearPickUp->Set(speed);
+	} else {
+		gearPickUp->Set(0);
+		gearPickupVoltageTripped = true;
+	}
+
+	if (fabs(speed) <= resetRange) {
+		gearPickupVoltageTripped = false;
+	}
 }
 
 
@@ -60,23 +69,40 @@ void GearSystem::Run() {
 }
 
 void GearSystem::ToggleLift() {
-	lift->Set(!lift->Get());
+	liftEnabled = !liftEnabled;
+	lift->Set(liftEnabled);
 }
+void GearSystem::SetLiftEnabled(bool enabled) {
+	liftEnabled = enabled;
+	lift->Set(liftEnabled);
+}
+
 void GearSystem::ToggleRotate() {
-	rotate->Set(!rotate->Get());
+	rotateEnabled = !rotateEnabled;
+	rotate->Set(rotateEnabled);
 }
+void GearSystem::SetRotateEnabled(bool enabled) {
+	rotateEnabled = enabled;
+	rotate->Set(rotateEnabled);
+}
+
 void GearSystem::ToggleExtend() {
-	extend->Set(!extend->Get());
+	extendEnabled = !extendEnabled;
+	extend->Set(extendEnabled);
+}
+void GearSystem::SetExtendEnabled(bool enabled) {
+	extendEnabled = enabled;
+	extend->Set(extendEnabled);
 }
 void GearSystem::ToggleSqueeze() {
-	DoubleSolenoid::Value currentValue = squeeze->Get();
-	if (DoubleSolenoid::kOff == currentValue  || DoubleSolenoid::kReverse == currentValue) {
+	squeezeEnabled = !squeezeEnabled;
+	if (squeezeEnabled) {
 		squeeze->Set(DoubleSolenoid::kForward);
 	} else {
 		squeeze->Set(DoubleSolenoid::kReverse);
 	}
-}
 
+}
 void GearSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("GearPickup Volts", gearPickUp->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("GearPickup Amps", gearPickUp->GetOutputCurrent());
