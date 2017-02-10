@@ -50,6 +50,8 @@ void Robot::RobotInit() {
 	managers.push_back(shooterSystem);
 	managers.push_back(ballPickupSystem);
 
+	world.reset(new World());
+
 
 	// driveBase Twist control
 	// TODO: Think about better place than this
@@ -102,10 +104,13 @@ void Robot::AutonomousInit() {
 	if (autonomousCommand.get() != nullptr) {
 		autonomousCommand->Start();
 	}
+	autoManager.reset(new AutoManager());
+	autoManager->Init(world);
 }
 
 void Robot::AutonomousPeriodic() {
 	Scheduler::GetInstance()->Run();
+	autoManager->Periodic(world);
 	RunManagers();
 }
 
@@ -118,6 +123,7 @@ void Robot::TeleopInit() {
 		autonomousCommand->Cancel();
 	}
 	driveBase->InitTeleop();
+	driveBase->UseOpenLoopDrive();
 }
 
 void Robot::TeleopPeriodic() {

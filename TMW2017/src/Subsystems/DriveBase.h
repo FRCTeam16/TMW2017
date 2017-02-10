@@ -64,7 +64,7 @@ private:
 	Wheelbase wheelbase;
 	std::unique_ptr<PIDController> driveControlTwist;
 	std::unique_ptr<CrabSpeed> crabSpeedTwist;
-	std::unique_ptr<PIDSource> driveControlSpeedSource;
+	std::unique_ptr<PIDSource> driveControlEncoderSource;
 	std::unique_ptr<PIDController> driveControlSpeedController;
 	std::unique_ptr<CrabSpeed> driveControlDistanceSpeed;
 
@@ -72,7 +72,6 @@ private:
 	bool driveFront = true;
 
 	void InitializeOffsets();
-	void UseOpenLoopDrive();
 	void EnableSteerPIDControllers(const bool enable);
 
 	void SetSteering(DriveInfo<double> setpoint);
@@ -96,11 +95,22 @@ public:
 	void SetPositionOffsets(DriveInfo<double> &info);
 	DriveInfo<double> GetPositionOffsets() const;
 	void ZeroTurnInfo();
+	void ZeroDriveEncoders();
 
 	void InitTeleop();
 
 	void Crab(double twist, double y, double x, bool useGyro);
 
-};
+	void SetTargetAngle(double angle);
+	double GetTwistControlOutput();
 
+	void SetTargetDriveDistance(double pulses);
+	void UseClosedLoopDrive();
+	void UseOpenLoopDrive();
+
+	double GetDriveControlEncoderPosition();
+	double GetDriveControlOutput();
+
+	std::shared_ptr<CANTalon> GetFrontLeftDrive();
+};
 #endif

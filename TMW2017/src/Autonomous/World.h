@@ -8,10 +8,15 @@
 #ifndef SRC_AUTONOMOUS_WORLD_H_
 #define SRC_AUTONOMOUS_WORLD_H_
 
+#include "WPILib.h"
+
 class World {
 public:
 	World();
 	virtual ~World();
+	double GetClock() const;					// time elapsed since Init() in seconds
+private:
+	std::unique_ptr<Timer> timer;			// tracks time in autonomous world
 };
 
 #endif /* SRC_AUTONOMOUS_WORLD_H_ */

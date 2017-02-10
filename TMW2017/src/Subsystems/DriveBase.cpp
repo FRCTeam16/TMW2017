@@ -105,11 +105,11 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	});
 
 	// Drive PID Control
-	driveControlSpeedSource.reset(new DriveEncoderPIDSource(frontLeftDrive));
+	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive));
 	driveControlDistanceSpeed.reset(new CrabSpeed());
 	driveControlSpeedController.reset(
 			new PIDController(2, 0.001, 0,
-					driveControlSpeedSource.get(),
+					driveControlEncoderSource.get(),
 					driveControlDistanceSpeed.get()));
 	std::cout << "DriveBase::DriveBase() Finished\n";
 }
@@ -162,6 +162,14 @@ void DriveBase::ZeroTurnInfo() {
 	turns.RR = 0;
 }
 
+void DriveBase::ZeroDriveEncoders() {
+	const std::vector<std::shared_ptr<CANTalon>> drives {frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive};
+	std::for_each(drives.begin(), drives.end(),
+			[](std::shared_ptr<CANTalon> motor) {
+		motor->SetEncPosition(0);
+	});
+}
+
 void DriveBase::InitTeleop() {
 	this->EnableSteerPIDControllers(true);
 	this->UseOpenLoopDrive();
@@ -192,6 +200,15 @@ void DriveBase::UseOpenLoopDrive() {
 	std::for_each(drives.begin(), drives.end(),
 			[](std::shared_ptr<CANTalon> motor) {
 				motor->SetControlMode(CANSpeedController::ControlMode::kPercentVbus);
+			});
+}
+
+void DriveBase::UseClosedLoopDrive() {
+	const std::vector<std::shared_ptr<CANTalon>> drives { frontLeftDrive,
+				frontRightDrive, rearLeftDrive, rearRightDrive };
+	std::for_each(drives.begin(), drives.end(),
+			[](std::shared_ptr<CANTalon> motor) {
+				motor->SetControlMode(CANSpeedController::ControlMode::kSpeed);
 			});
 }
 
@@ -414,7 +431,9 @@ void DriveBase::SetDriveSpeed(DriveInfo<double> speed) {
 	}
 
 	// Check one of our drives to see if the mode is open or closed loop
-	const float SCALE_FACTOR = (CANSpeedController::ControlMode::kPercentVbus ==  frontLeftDrive->GetControlMode()) ? 1 : 13000;
+	const float SCALE_FACTOR =
+			(CANSpeedController::ControlMode::kPercentVbus == frontLeftDrive->GetControlMode()) ?
+					1 : 13000;
 	if(driveFront) {
 		frontLeftDrive-> Set(speed.FL * inv.FL * SCALE_FACTOR);
 		frontRightDrive->Set(speed.FR * inv.FR * SCALE_FACTOR);
@@ -428,3 +447,29 @@ void DriveBase::SetDriveSpeed(DriveInfo<double> speed) {
 		rearRightDrive-> Set(speed.FL * inv.RR * SCALE_FACTOR);
 	}
 }
+
+void DriveBase::SetTargetAngle(double angle) {
+	driveControlTwist->SetSetpoint(angle);
+}
+
+double DriveBase::GetTwistControlOutput() {
+	return driveControlTwist->Get();
+}
+
+void DriveBase::SetTargetDriveDistance(double pulses) {
+	driveControlSpeedController->SetSetpoint(pulses);
+}
+
+double DriveBase::GetDriveControlEncoderPosition() {
+	return driveControlEncoderSource->PIDGet();
+}
+
+double DriveBase::GetDriveControlOutput() {
+	return driveControlDistanceSpeed->Get();
+}
+
+std::shared_ptr<CANTalon> DriveBase::GetFrontLeftDrive() {
+	return frontLeftDrive;
+}
+
+

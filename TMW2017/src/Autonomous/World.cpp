@@ -7,12 +7,16 @@
 
 #include <Autonomous/World.h>
 
-World::World() {
-	// TODO Auto-generated constructor stub
 
+World::World() {
+	timer.reset(new Timer());
 }
 
 World::~World() {
 	// TODO Auto-generated destructor stub
+}
+
+double World::GetClock() const {
+	return timer->Get();
 }
 

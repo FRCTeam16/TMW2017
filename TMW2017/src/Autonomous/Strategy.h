@@ -29,8 +29,8 @@ public:
 	virtual void Init(std::shared_ptr<World> world);
 	virtual bool Run(std::shared_ptr<World> world);
 protected:
-	int currentStep = -1;
-	std::vector<Step> steps;
+	unsigned int currentStep = 0;
+	std::vector<Step*> steps;
 };
 
 #endif /* SRC_AUTONOMOUS_STRATEGY_H_ */

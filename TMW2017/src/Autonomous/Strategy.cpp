@@ -31,11 +31,13 @@ void StepStrategy::Init(std::shared_ptr<World> world) {
 }
 
 bool StepStrategy::Run(std::shared_ptr<World> world) {
+	std::cout << "StepStrategy::Run\n";
+	std::cout << "currentStep = " << currentStep << "\n";
 	if (currentStep >= steps.size()) {
 		// TODO: Run Crab->Stop
 		return true;
 	}
-	const bool stepComplete = steps[currentStep].Run(world);
+	const bool stepComplete = steps[currentStep]->Run(world);
 	if (stepComplete) {
 		currentStep++;
 	}
