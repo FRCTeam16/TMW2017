@@ -49,9 +49,9 @@ void GearSystem::InitDefaultCommand() {
 
 void GearSystem::SetGearBarSpeed(double speed) {
 	if (!gearPickupVoltageTripped && (gearPickUp->GetOutputVoltage() < gearPickupVoltageThreshold)) {
-		gearPickUp->Set(speed);
+		gearPickUpSpeed = speed;
 	} else {
-		gearPickUp->Set(0);
+		gearPickUpSpeed = 0.0;
 		gearPickupVoltageTripped = true;
 	}
 
@@ -65,7 +65,14 @@ void GearSystem::SetGearBarSpeed(double speed) {
 // here. Call these from Commands.
 
 void GearSystem::Run() {
+	gearPickUp->Set(gearPickUpSpeed);
+}
 
+void GearSystem::InitManager() {
+	SetLiftEnabled(false);
+	SetRotateEnabled(false);
+	extendEnabled = false;
+	squeezeEnabled = false;
 }
 
 void GearSystem::ToggleLift() {

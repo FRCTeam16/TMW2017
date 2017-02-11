@@ -7,35 +7,43 @@
 
 #include <Autonomous/AutoManager.h>
 #include "DebugAutoStrategy.h"
+#include "../RobotMap.h"
+
+enum AutoStrategy {
+	kDebug = 0
+};
 
 AutoManager::AutoManager() {
-	std::shared_ptr<Strategy> debugStrategy { new DebugAutoStrategy() };
-
-	strategyLookup.insert(std::make_pair(1, debugStrategy));
+	strategyLookup.insert(std::make_pair(AutoStrategy::kDebug, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 
 	strategies.reset(new frc::SendableChooser<void*>());
-	strategies->AddDefault("Testing", (void *) 1);
+	strategies->AddDefault("Debug Auto Strategy", (void *) AutoStrategy::kDebug);
 	SmartDashboard::PutData("Autonomous Strategy", strategies.get());
 }
 
 AutoManager::~AutoManager() {
-	// TODO Auto-generated destructor stub
 }
 
 void AutoManager::Init(std::shared_ptr<World> world) {
 	std::cout << "AutoMan Init\n";
-}
-
-void AutoManager::Periodic(std::shared_ptr<World> world) {
-	std::cout << "AutoMan Periodic\n";
-	int selectedKey = (int) strategies->GetSelected();
+	const AutoStrategy selectedKey =
+				static_cast<AutoStrategy>((int) strategies->GetSelected());
 	std::cout << "Selected Strategy: " << selectedKey << "\n";
 	auto iterator = strategyLookup.find(selectedKey);
 	if (iterator != strategyLookup.end()) {
-		 iterator->second->Run(world);
+		currentStrategy = iterator->second;
 	} else {
 		std::cout << "NO STRATEGY FOUND\n";
 	}
 
+	RobotMap::ahrs->ZeroYaw();
+	std::cout << "AutoManager::Init COMPLETE\n";
 }
 
+void AutoManager::Periodic(std::shared_ptr<World> world) {
+	std::cout << "AutoMan Periodic\n";
+	if (currentStrategy) {
+		currentStrategy->Run(world);
+	}
+
+}

@@ -157,13 +157,15 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR1->Pressed()) {
-		shooterSystem->Shoot();
+		shooterSystem->SetShooterEnabled(true);
+	} else {
+		shooterSystem->SetShooterEnabled(false);
 	}
 
 
 	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 
-	shooterSystem->SetHopperSpeed(oi->GetGamepadRightStick());
+	shooterSystem->EnableHopper(oi->GetGamepadRightStick());
 
 	driveBase->Crab(
 			oi->GetJoystickTwist(),
@@ -176,6 +178,14 @@ void Robot::TeleopPeriodic() {
 
 void Robot::TestPeriodic() {
 	lw->Run();
+}
+
+
+void Robot::InitManagers() {
+	std::for_each(managers.begin(), managers.end(),
+			[](std::shared_ptr<Manager> &manager) {
+				manager->InitManager();
+			});
 }
 
 void Robot::RunManagers() {

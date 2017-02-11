@@ -13,7 +13,6 @@
 #include "Strategy.h"
 #include <map>
 
-// TODO: enums for map/strategies
 class AutoManager {
 public:
 	AutoManager();
@@ -23,6 +22,8 @@ public:
 private:
 	std::shared_ptr<frc::SendableChooser<void*>> strategies;
 	std::map<int, std::shared_ptr<Strategy>> strategyLookup;
+	std::shared_ptr<Strategy> currentStrategy;
+
 };
 
 #endif /* SRC_AUTONOMOUS_AUTOMANAGER_H_ */

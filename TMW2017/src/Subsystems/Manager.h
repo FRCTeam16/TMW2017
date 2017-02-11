@@ -13,6 +13,7 @@ public:
 	virtual ~Manager() {};
 	virtual void Run() = 0;
 	virtual void SMDB() {}
+	virtual void InitManager() = 0;
 };
 
 

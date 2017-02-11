@@ -51,6 +51,10 @@ void ClimberSystem::Run() {
 	}
 }
 
+void ClimberSystem::InitManager() {
+	SetClimberEnabled(false);
+}
+
 void ClimberSystem::SetClimberEnabled(bool enabled) {
 	climberEnabled = enabled;
 }

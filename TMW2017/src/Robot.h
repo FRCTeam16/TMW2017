@@ -59,6 +59,7 @@ public:
 	virtual void TeleopPeriodic();
 	virtual void TestPeriodic();
 
+	void InitManagers();
 	void RunManagers();
 	void RunManagerSMDBs();
 };

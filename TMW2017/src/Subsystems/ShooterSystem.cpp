@@ -34,6 +34,16 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     shooter1->ConfigNeutralMode(CANSpeedController::kNeutralMode_Coast);
     shooter2->ConfigNeutralMode(CANSpeedController::kNeutralMode_Coast);
 
+    Preferences *prefs = Preferences::GetInstance();
+    const double P = prefs->GetFloat("ShootP", 2);
+    const double I = prefs->GetFloat("ShootI", 0);
+    const double D = prefs->GetFloat("ShootD", 0);
+
+    shooter1->SetControlMode(CANSpeedController::kSpeed);
+    shooter1->SetFeedbackDevice(CANTalon::FeedbackDevice::CtreMagEncoder_Relative);
+    shooter1->SetPID(P, I, D);
+    shooter1->ConfigPeakOutputVoltage(12.0, 0.0);
+    // We assume shooter2 is configured to be slaved to shooter1 via CANTalon configuration
 }
 
 void ShooterSystem::InitDefaultCommand() {
@@ -50,13 +60,41 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
+	hopper->Set(hopperSpeed);
+	elevator->Set(elevatorSpeed);
+
+	if (shooterEnabled) {
+		const double shooterSpeedRpm = Preferences::GetInstance()->GetDouble("ShootRPM", 13000);
+		std::cout << "ShooterSystem::Shoot() => " << shooterSpeedRpm << " RPM ... Shoot now!\n";
+		shooter1->SetSetpoint(shooterSpeedRpm);
+	} else {
+		shooter1->SetSetpoint(0);
+	}
 }
 
-void ShooterSystem::Shoot() {
-	std::cout << "ShooterSystem::Shoot() => Shoot now!\n";
+void ShooterSystem::InitManager() {
+	DisableElevator();
+	DisableHopper();
+	SetShooterEnabled(false);
 }
 
-void ShooterSystem::SetHopperSpeed(double speed) {
-//	std::cout << "ShooterSystem::SetHopperSpeed => hopper speed is" << speed;
-	hopper->Set(speed);
+
+void ShooterSystem::SetShooterEnabled(bool enabled) {
+	shooterEnabled = enabled;
+}
+
+void ShooterSystem::EnableHopper(double speed) {
+	hopperSpeed = speed;
+}
+
+void ShooterSystem::DisableHopper() {
+	hopperSpeed = 0.0;
+}
+
+void ShooterSystem::EnableElevator(double speed) {
+	elevatorSpeed = speed;
+}
+
+void ShooterSystem::DisableElevator() {
+	elevatorSpeed = 0.0;
 }
