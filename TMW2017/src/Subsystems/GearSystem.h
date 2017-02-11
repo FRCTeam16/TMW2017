@@ -14,12 +14,10 @@
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
 #include "Manager.h"
+#include <map>
 
-/**
- *
- *
- * @author ExampleAuthor
- */
+
+class GearPickupProcess;
 class GearSystem: public Subsystem, public Manager {
 private:
 	// It's desirable that everything possible is private except
@@ -44,6 +42,8 @@ private:
 	bool extendEnabled = false;
 	bool squeezeEnabled = false;
 
+	std::unique_ptr<GearPickupProcess> gearPickupProcess;
+
 public:
 	GearSystem();
 	void InitDefaultCommand();
@@ -63,6 +63,36 @@ public:
 	void SetExtendEnabled(bool enabled);
 	void ToggleSqueeze();
 	void SetSqueezeEnabled(bool enabled);
+
+	void PickUpGear();
+
+};
+
+class GearPickupProcess {
+
+
+private:
+	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+
+	struct StateInfo {
+			double waitTime;
+			ProcessState nextState;
+		};
+
+	std::map<ProcessState, StateInfo> stateMapping;
+
+	std::shared_ptr<GearSystem> gearSystem;
+	std::unique_ptr<Timer> timer;
+	ProcessState currentState = kStopped;
+	double stateStartedTime = 0.0;
+	bool firstStateRun = false;
+public:
+	GearPickupProcess(GearSystem *gearSystem);
+	~GearPickupProcess() {}
+	bool IsStopped();
+	bool Start();
+	void Run();
+
 
 };
 
