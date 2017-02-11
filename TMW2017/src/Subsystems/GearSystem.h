@@ -84,7 +84,6 @@ private:
 	std::shared_ptr<GearSystem> gearSystem;
 	std::unique_ptr<Timer> timer;
 	ProcessState currentState = kStopped;
-	double stateStartedTime = 0.0;
 	bool firstStateRun = false;
 public:
 	GearPickupProcess(GearSystem *gearSystem);

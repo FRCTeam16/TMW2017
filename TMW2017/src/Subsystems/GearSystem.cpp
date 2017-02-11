@@ -135,21 +135,21 @@ void GearSystem::SMDB() {
 // ***************************************************************************/
 
 
-GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) {
+GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	gearSystem.reset(gearSystem_);
 	stateMapping.insert(std::make_pair(kInit, StateInfo {100, kLift}));
 	stateMapping.insert(std::make_pair(kLift, StateInfo {1000, kRotate}));
 	stateMapping.insert(std::make_pair(kRotate, StateInfo {1000, kExtend}));
 	stateMapping.insert(std::make_pair(kExtend, StateInfo {1000, kSqueeze}));
 	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {1000, kComplete}));
+	stateMapping.insert(std::make_pair(kComplete, StateInfo {10, kStopped}));
 }
 
 
 bool GearPickupProcess::Start() {
 	if (IsStopped()) {
-		timer.reset(new Timer());
+		timer->Reset();
 		currentState = kInit;
-		stateStartedTime = 0.0;
 		firstStateRun = true;
 		return true;
 	} else {
@@ -163,10 +163,8 @@ void GearPickupProcess::Run() {
 		return;
 	}
 
-	const double elapsed = timer->Get() - stateStartedTime;
-	if (elapsed >= stateMapping[currentState].waitTime) {
-		// switch to next state
-		stateStartedTime = timer->Get();
+	if (timer->HasPeriodPassed(stateMapping[currentState].waitTime)) {
+		timer->Reset();
 		currentState = stateMapping[currentState].nextState;
 		firstStateRun = true;
 	} else {
