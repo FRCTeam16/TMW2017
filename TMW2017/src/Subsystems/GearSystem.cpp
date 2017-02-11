@@ -161,39 +161,38 @@ bool GearPickupProcess::Start() {
 void GearPickupProcess::Run() {
 	if (IsStopped()) {
 		return;
-	}
-
-	if (timer->HasPeriodPassed(stateMapping[currentState].waitTime)) {
+	} else if (timer->HasPeriodPassed(stateMapping[currentState].waitTime)) {
+		// Handle state transition
 		timer->Reset();
 		currentState = stateMapping[currentState].nextState;
 		firstStateRun = true;
-	} else {
-		switch (currentState) {
-		case ProcessState::kInit:
-			gearSystem->SetGearBarSpeed(0.5);
-			break;
-		case ProcessState::kLift:
-			gearSystem->SetGearBarSpeed(0.0);
-			gearSystem->SetLiftEnabled(true);
-			break;
-		case ProcessState::kRotate:
-			gearSystem->SetRotateEnabled(true);
-			break;
-		case ProcessState::kExtend:
-			gearSystem->SetExtendEnabled(true);
-			break;
-		case ProcessState::kSqueeze:
-			gearSystem->SetSqueezeEnabled(true);
-			break;
-		case ProcessState::kComplete:
-			currentState = kStopped;
-			break;
-		case ProcessState::kStopped:
-			std::cout << "ERROR: should not handle kStopped in state machine\n";
-			break;
-		}
-		firstStateRun = false;
 	}
+
+	switch (currentState) {
+	case ProcessState::kInit:
+		gearSystem->SetGearBarSpeed(0.5);
+		break;
+	case ProcessState::kLift:
+		gearSystem->SetGearBarSpeed(0.0);
+		gearSystem->SetLiftEnabled(true);
+		break;
+	case ProcessState::kRotate:
+		gearSystem->SetRotateEnabled(true);
+		break;
+	case ProcessState::kExtend:
+		gearSystem->SetExtendEnabled(true);
+		break;
+	case ProcessState::kSqueeze:
+		gearSystem->SetSqueezeEnabled(true);
+		break;
+	case ProcessState::kComplete:
+		currentState = kStopped;
+		break;
+	case ProcessState::kStopped:
+		std::cout << "ERROR: should not handle kStopped in state machine\n";
+		break;
+	}
+	firstStateRun = false;
 }
 
 bool GearPickupProcess::IsStopped() {
