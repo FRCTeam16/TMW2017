@@ -48,6 +48,9 @@ private:
 	std::unique_ptr<GearEjectProcess> gearEjectProcess;
 	std::unique_ptr<GearResetProcess> gearResetProcess;
 
+	void SetGearBarSpeedWithCheck(double speed);
+
+
 public:
 	GearSystem();
 	void InitDefaultCommand();
@@ -58,6 +61,7 @@ public:
 	void InitManager();
 	void SMDB();
 	void SetGearBarSpeed(double speed);
+	void SetGearBarSpeedByProcess(double speed);
 
 	void ToggleLift();
 	void SetLiftEnabled(bool enabled);
@@ -78,7 +82,7 @@ class GearPickupProcess {
 
 
 private:
-	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+	enum ProcessState { kStopped, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
 
 	struct StateInfo {
 			double waitTime;
@@ -105,7 +109,7 @@ class GearEjectProcess {
 
 
 private:
-	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+	enum ProcessState { kStopped, kExtend, kSqueeze, kRetract, kComplete };
 
 	struct StateInfo {
 			double waitTime;
@@ -133,7 +137,7 @@ class GearResetProcess {
 
 
 private:
-	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+	enum ProcessState { kStopped, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
 
 	struct StateInfo {
 			double waitTime;

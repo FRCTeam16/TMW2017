@@ -103,7 +103,7 @@ double OI::GetJoystickX() {
 	if (fabs(driverRight->GetX()) < threshold) {
 		return 0;
 	} else {
-		return driverRight->GetX() / 2;
+		return driverRight->GetX();
 	}
 }
 
@@ -112,7 +112,7 @@ double OI::GetJoystickY() {
 	if (fabs(driverRight->GetY()) < threshold) {
 		return 0;
 	} else {
-		return driverRight->GetY() / 2;
+		return driverRight->GetY();
 	}
 }
 
