@@ -123,6 +123,18 @@ void GearSystem::PickUpGear() {
 	}
 }
 
+void GearSystem::EjectGear() {
+	if (!gearEjectProcess->Start()) {
+		// Error on SMDB?
+	}
+}
+
+void GearSystem::ResetGear() {
+	if (!gearResetProcess->Start()) {
+		// Error on SMDB?
+	}
+}
+
 void GearSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("GearPickup Volts", gearPickUp->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("GearPickup Amps", gearPickUp->GetOutputCurrent());
@@ -133,16 +145,16 @@ void GearSystem::SMDB() {
 
 
 // ***************************************************************************/
-
+//1-pickup - GearPickupProcess
+//2-eject - GearEjectProcess
+//3-reset - GearResetProcess
 
 GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kInit, StateInfo {100, kLift}));
-	stateMapping.insert(std::make_pair(kLift, StateInfo {1000, kRotate}));
-	stateMapping.insert(std::make_pair(kRotate, StateInfo {1000, kExtend}));
+	stateMapping.insert(std::make_pair(kInit, StateInfo {100, kExtend}));
 	stateMapping.insert(std::make_pair(kExtend, StateInfo {1000, kSqueeze}));
-	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {1000, kComplete}));
-	stateMapping.insert(std::make_pair(kComplete, StateInfo {10, kStopped}));
+	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {1000, kLift}));
+	stateMapping.insert(std::make_pair(kLift, StateInfo {1000, kComplete}));
 }
 
 
@@ -172,18 +184,16 @@ void GearPickupProcess::Run() {
 	case ProcessState::kInit:
 		gearSystem->SetGearBarSpeed(0.5);
 		break;
-	case ProcessState::kLift:
-		gearSystem->SetGearBarSpeed(0.0);
-		gearSystem->SetLiftEnabled(true);
-		break;
-	case ProcessState::kRotate:
-		gearSystem->SetRotateEnabled(true);
-		break;
 	case ProcessState::kExtend:
-		gearSystem->SetExtendEnabled(true);
+		gearSystem->SetExtendEnabled(false);
 		break;
 	case ProcessState::kSqueeze:
-		gearSystem->SetSqueezeEnabled(true);
+		gearSystem->SetSqueezeEnabled(false);
+		gearSystem->SetGearBarSpeed(0.0);
+		break;
+	case ProcessState::kLift:
+		gearSystem->SetLiftEnabled(false);
+		gearSystem->SetRotateEnabled(false);
 		break;
 	case ProcessState::kComplete:
 		currentState = kStopped;
@@ -199,3 +209,107 @@ bool GearPickupProcess::IsStopped() {
 	return ProcessState::kStopped == currentState;
 }
 
+//*************2
+
+GearEjectProcess::GearEjectProcess(GearSystem *gearSystem_) : timer(new Timer()) {
+	gearSystem.reset(gearSystem_);
+	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {1000, kExtend}));
+	stateMapping.insert(std::make_pair(kExtend, StateInfo {1000, kComplete}));
+}
+
+
+bool GearEjectProcess::Start() {
+	if (IsStopped()) {
+		timer->Reset();
+		currentState = kSqueeze;
+		firstStateRun = true;
+		return true;
+	} else {
+		std::cout << "ERROR: Unable to start gear eject process, already in progress\n;";
+		return false;
+	}
+}
+
+void GearEjectProcess::Run() {
+	if (IsStopped()) {
+		return;
+	} else if (timer->HasPeriodPassed(stateMapping[currentState].waitTime)) {
+		// Handle state transition
+		timer->Reset();
+		currentState = stateMapping[currentState].nextState;
+		firstStateRun = true;
+	}
+
+	switch (currentState) {
+	case ProcessState::kSqueeze:
+		gearSystem->SetSqueezeEnabled(true);
+		break;
+	case ProcessState::kExtend:
+		gearSystem->SetExtendEnabled(true);
+		break;
+	case ProcessState::kComplete:
+		currentState = kStopped;
+		break;
+	case ProcessState::kStopped:
+		std::cout << "ERROR: should not handle kStopped in state machine\n";
+		break;
+	}
+	firstStateRun = false;
+}
+
+bool GearEjectProcess::IsStopped() {
+	return ProcessState::kStopped == currentState;
+}
+
+//*************3
+
+GearResetProcess::GearResetProcess(GearSystem *gearSystem_) : timer(new Timer()) {
+	gearSystem.reset(gearSystem_);
+	stateMapping.insert(std::make_pair(kInit, StateInfo {1000, kComplete}));
+
+}
+
+
+bool GearResetProcess::Start() {
+	if (IsStopped()) {
+		timer->Reset();
+		currentState = kInit;
+		firstStateRun = true;
+		return true;
+	} else {
+		std::cout << "ERROR: Unable to start gear reset process, already in progress\n;";
+		return false;
+	}
+}
+
+void GearResetProcess::Run() {
+	if (IsStopped()) {
+		return;
+	} else if (timer->HasPeriodPassed(stateMapping[currentState].waitTime)) {
+		// Handle state transition
+		timer->Reset();
+		currentState = stateMapping[currentState].nextState;
+		firstStateRun = true;
+	}
+
+	switch (currentState) {
+	case ProcessState::kInit:
+		gearSystem->SetSqueezeEnabled(true);
+		gearSystem->SetExtendEnabled(true);
+		gearSystem->SetLiftEnabled(true);
+		gearSystem->SetRotateEnabled(true);
+		gearSystem->SetGearBarSpeed(0.5);
+		break;
+	case ProcessState::kComplete:
+		currentState = kStopped;
+		break;
+	case ProcessState::kStopped:
+		std::cout << "ERROR: should not handle kStopped in state machine\n";
+		break;
+	}
+	firstStateRun = false;
+}
+
+bool GearResetProcess::IsStopped() {
+	return ProcessState::kStopped == currentState;
+}

@@ -18,6 +18,8 @@
 
 
 class GearPickupProcess;
+class GearEjectProcess;
+class GearResetProcess;
 class GearSystem: public Subsystem, public Manager {
 private:
 	// It's desirable that everything possible is private except
@@ -43,6 +45,8 @@ private:
 	bool squeezeEnabled = false;
 
 	std::unique_ptr<GearPickupProcess> gearPickupProcess;
+	std::unique_ptr<GearEjectProcess> gearEjectProcess;
+	std::unique_ptr<GearResetProcess> gearResetProcess;
 
 public:
 	GearSystem();
@@ -65,6 +69,8 @@ public:
 	void SetSqueezeEnabled(bool enabled);
 
 	void PickUpGear();
+	void EjectGear();
+	void ResetGear();
 
 };
 
@@ -88,6 +94,61 @@ private:
 public:
 	GearPickupProcess(GearSystem *gearSystem);
 	~GearPickupProcess() {}
+	bool IsStopped();
+	bool Start();
+	void Run();
+
+
+};
+
+class GearEjectProcess {
+
+
+private:
+	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+
+	struct StateInfo {
+			double waitTime;
+			ProcessState nextState;
+		};
+
+	std::map<ProcessState, StateInfo> stateMapping;
+
+	std::shared_ptr<GearSystem> gearSystem;
+	std::unique_ptr<Timer> timer;
+	ProcessState currentState = kStopped;
+	bool firstStateRun = false;
+public:
+	GearEjectProcess(GearSystem *gearSystem);
+	~GearEjectProcess() {}
+	bool IsStopped();
+	bool Start();
+	void Run();
+
+
+};
+
+
+class GearResetProcess {
+
+
+private:
+	enum ProcessState { kStopped = -1, kInit, kLift, kRotate, kExtend, kSqueeze, kComplete };
+
+	struct StateInfo {
+			double waitTime;
+			ProcessState nextState;
+		};
+
+	std::map<ProcessState, StateInfo> stateMapping;
+
+	std::shared_ptr<GearSystem> gearSystem;
+	std::unique_ptr<Timer> timer;
+	ProcessState currentState = kStopped;
+	bool firstStateRun = false;
+public:
+	GearResetProcess(GearSystem *gearSystem);
+	~GearResetProcess() {}
 	bool IsStopped();
 	bool Start();
 	void Run();

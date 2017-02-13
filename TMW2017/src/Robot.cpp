@@ -136,18 +136,16 @@ void Robot::TeleopPeriodic() {
 		ballPickupSystem->ReverseBallPickup();
 	}
 
-	if (oi->GPX->RisingEdge()) {
-		gearSystem->ToggleLift();
-	}
 	if (oi->GPY->RisingEdge()) {
-		gearSystem->ToggleRotate();
+		gearSystem->ResetGear();
 	}
 	if (oi->GPB->RisingEdge()) {
-		gearSystem->ToggleExtend();
+		gearSystem->EjectGear();
 	}
 	if (oi->GPA->RisingEdge()) {
-		gearSystem->ToggleSqueeze();
+		gearSystem->PickUpGear();
 	}
+
 
 
 	if (oi->GPLT->Pressed()) {
