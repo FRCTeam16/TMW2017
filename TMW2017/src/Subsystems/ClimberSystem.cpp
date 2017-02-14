@@ -45,7 +45,7 @@ void ClimberSystem::InitDefaultCommand() {
 
 void ClimberSystem::Run() {
 	if (climberEnabled) {
-		climber->Set(1.0);
+		climber->Set(-1.0);
 	} else {
 		climber->Set(0);
 	}

@@ -152,7 +152,7 @@ void Robot::TeleopPeriodic() {
 
 
 
-	if (oi->GPLT->Pressed()) {
+	if (oi->GPLB->Pressed()) {
 		climberSystem->SetClimberEnabled(true);
 	} else {
 		climberSystem->SetClimberEnabled(false);

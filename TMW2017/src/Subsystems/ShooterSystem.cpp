@@ -35,15 +35,38 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     shooter2->ConfigNeutralMode(CANSpeedController::kNeutralMode_Coast);
 
     Preferences *prefs = Preferences::GetInstance();
-    const double P = prefs->GetFloat("ShootP", 2);
-    const double I = prefs->GetFloat("ShootI", 0);
-    const double D = prefs->GetFloat("ShootD", 0);
-    const double F = prefs->GetFloat("ShootF", 0);
+    const double P = prefs->GetDouble("ShootP", 0);
+    const double I = prefs->GetDouble("ShootI", 0);
+    const double D = prefs->GetDouble("ShootD", 0);
+    const double F = prefs->GetDouble("ShootF", 0.035);
+    shooterRPM = prefs->GetDouble("ShootRPM");
+    const double shootRampRate = prefs->GetDouble("ShootVoltRampRate", 6.0);
+
+    if (!prefs->ContainsKey("ShootP")) {
+    	prefs->PutDouble("ShootP", P);
+    }
+    if (!prefs->ContainsKey("ShootI")) {
+		prefs->PutDouble("ShootI", I);
+	}
+    if (!prefs->ContainsKey("ShootD")) {
+		prefs->PutDouble("ShootD", D);
+	}
+    if (!prefs->ContainsKey("ShootF")) {
+		prefs->PutDouble("ShootF", F);
+	}
+    if (!prefs->ContainsKey("ShootRPM")) {
+		prefs->PutDouble("ShootRPM", shooterRPM);
+	}
+    if (!prefs->ContainsKey("ShootVoltRampRate")) {
+    	prefs->PutDouble("ShootVoltRampRate", shootRampRate);
+    }
+
 
     shooter1->SetControlMode(CANSpeedController::kSpeed);
     shooter1->SetFeedbackDevice(CANTalon::FeedbackDevice::CtreMagEncoder_Relative);
     shooter1->SetPID(P, I, D, F);
-    shooter1->ConfigPeakOutputVoltage(12.0, 0.0);
+    shooter1->ConfigPeakOutputVoltage(0.0, -12.0);
+    shooter1->SetVoltageRampRate(shootRampRate);
     // We assume shooter2 is configured to be slaved to shooter1 via CANTalon configuration
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
@@ -66,16 +89,22 @@ void ShooterSystem::InitDefaultCommand() {
 void ShooterSystem::Run() {
 // TODO: ask if elevator+hopper are running, then if true run
 	if (shooterMotorsEnabled) {
-		const double shooterSpeedRpm = Preferences::GetInstance()->GetDouble("ShootRPM", 13000);
+		Preferences *prefs = Preferences::GetInstance();
+		const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
+	    const double P = prefs->GetDouble("ShootP", 0);
+	    const double I = prefs->GetDouble("ShootI", 0);
+	    const double D = prefs->GetDouble("ShootD", 0);
+	    const double F = prefs->GetDouble("ShootF", 0.035);
+	    shooter1->SetPID(P, I, D, F);
 		std::cout << "ShooterSystem::Shoot() => " << shooterSpeedRpm << " RPM ... Shoot now!\n";
-		shooter1->SetSetpoint(shooterSpeedRpm);
+		shooter1->SetSetpoint(shooterSpeedRpm * -1);
 	} else {
 		shooter1->SetSetpoint(0);
 	}
 
 	if (fireEnabled) {
 		hopper->Set(0.5);
-		elevator->Set(1.0);
+		elevator->Set(-1.0);
 	}
 	else {
 		// Use user inputs
@@ -84,6 +113,11 @@ void ShooterSystem::Run() {
 		elevator->Set(0);
 	}
 }
+
+void ShooterSystem::SMDB() {
+	frc::SmartDashboard::PutNumber("ShootRPM", shooter1->Get());
+}
+
 
 void ShooterSystem::InitManager() {
 	//DisableElevator();

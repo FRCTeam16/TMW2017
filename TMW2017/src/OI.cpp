@@ -42,8 +42,8 @@ OI::OI() {
     GPY.reset(new BSButton(gamepad, 4));
     GPB.reset(new BSButton(gamepad, 2));
     GPA.reset(new BSButton(gamepad, 1));
-    GPLT.reset(new BSButton(gamepad, 5));//actually LB, LT is RawAxis2
-    GPRT.reset(new BSButton(gamepad, 6));//actually RB, RT is RawAxis3
+    GPLB.reset(new BSButton(gamepad, 5));//actually LB, LT is RawAxis2
+    GPRB.reset(new BSButton(gamepad, 6));//actually RB, RT is RawAxis3
     GPBack.reset(new BSButton(gamepad, 7));
     GPStart.reset(new BSButton(gamepad, 8));
     DL1.reset(new BSButton(driverLeft, 1));
@@ -127,9 +127,27 @@ double OI::GetGamepadLeftStick() {
 
 double OI::GetGamepadRightStick() {
 	const double threshold = 0.1;
+	if ((fabs(gamepad->GetRawAxis(5))) < threshold) {
+		return 0;
+	} else {
+		return gamepad->GetRawAxis(5);
+	}
+}
+
+double OI::GetGamepadRT() {
+	const double threshold = 0.1;
 	if ((fabs(gamepad->GetRawAxis(3))) < threshold) {
 		return 0;
 	} else {
 		return gamepad->GetRawAxis(3);
+	}
+}
+
+double OI::GetGamepadLT() {
+	const double threshold = 0.1;
+	if ((fabs(gamepad->GetRawAxis(2))) < threshold) {
+		return 0;
+	} else {
+		return gamepad->GetRawAxis(2);
 	}
 }

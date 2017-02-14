@@ -37,8 +37,8 @@ public:
 	std::shared_ptr<BSButton> GPY;
 	std::shared_ptr<BSButton> GPB;
 	std::shared_ptr<BSButton> GPA;
-	std::shared_ptr<BSButton> GPLT;
-	std::shared_ptr<BSButton> GPRT;
+	std::shared_ptr<BSButton> GPLB;
+	std::shared_ptr<BSButton> GPRB;
 	std::shared_ptr<BSButton> GPBack;
 	std::shared_ptr<BSButton> GPStart;
 	std::shared_ptr<BSButton> DL1;
@@ -71,6 +71,8 @@ public:
 	double GetJoystickY();
 	double GetGamepadLeftStick();
 	double GetGamepadRightStick();
+	double GetGamepadLT();
+	double GetGamepadRT();
 };
 
 #endif
