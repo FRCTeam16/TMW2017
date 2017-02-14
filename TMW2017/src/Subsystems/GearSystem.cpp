@@ -57,32 +57,29 @@ void GearSystem::SetGearBarSpeed(double speed) {
 	const bool processRunning = !gearPickupProcess->IsStopped() ||
 								!gearEjectProcess->IsStopped() ||
 								!gearResetProcess->IsStopped();
-
 	if (!processRunning) {
 		gearPickUpSpeed = speed;
 	}
-	//TODO : Test voltage tripping
-//	if (!gearPickupVoltageTripped && (gearPickUp->GetOutputVoltage() < gearPickupVoltageThreshold)) {
-//		gearPickUpSpeed = speed;
-//	} else {
-//
-//		gearPickUpSpeed = 0.0;
-//		gearPickupVoltageTripped = true;
-//	}
-//
-//	if (fabs(speed) <= resetRange) {
-//		gearPickupVoltageTripped = false;
-//	}
 }
 
 void GearSystem::SetGearBarSpeedByProcess(double speed) {
-	// TODO: Restrict visibility
 	std::cout << "GearSystem::SetGearBarSpeedByProcess\n";
 	gearPickUpSpeed = speed;
 }
 
-void GearSystem::SetGearBarSpeedWithCheck(double speed) {
-	// TODO: can we handle both joystick + process checks here?
+bool GearSystem::CheckGearBar() {
+	std::cout << "\tgearPickUp->GetOutputVoltage() = " << gearPickUp->GetOutputVoltage() << "\n";
+	std::cout << "\tgearPickUp->GetOutputCurrent() = " << gearPickUp->GetOutputCurrent() << "\n";
+	const bool tripped = (gearPickUp->GetOutputCurrent() > gearPickupAmperageThreshold);
+	if (tripped) {
+		gearCheckScanCount++;
+		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << "\n";
+		if (gearCheckScanCount > gearCheckScanCountThreshold) {
+			gearPickupVoltageTripped = true;
+		}
+	}
+
+	return gearPickupVoltageTripped;
 }
 
 
@@ -90,7 +87,16 @@ void GearSystem::SetGearBarSpeedWithCheck(double speed) {
 // here. Call these from Commands.
 
 void GearSystem::Run() {
-	gearPickUp->Set(gearPickUpSpeed);
+	if (!gearPickupVoltageTripped && !CheckGearBar()) {
+		gearPickUp->Set(gearPickUpSpeed);
+	} else {
+		gearPickUp->Set(0.0);
+	}
+	if (fabs(gearPickUpSpeed) <= resetRange) {
+		gearPickupVoltageTripped = false;
+		gearCheckScanCount = 0;
+	}
+
 	gearPickupProcess->Run();
 	gearEjectProcess->Run();
 	gearResetProcess->Run();
@@ -180,9 +186,9 @@ void GearSystem::SMDB() {
 
 GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kInit, StateInfo {0.5, kExtend}));
-	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.5, kSqueeze}));
-	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.5, kLift}));
+	stateMapping.insert(std::make_pair(kInit, StateInfo {0.25, kExtend}));
+	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.25 ,kSqueeze}));
+	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.25, kLift}));
 	stateMapping.insert(std::make_pair(kLift, StateInfo {0.5, kComplete}));
 	timer->Start();
 	std::cout << "GearPickupProcess::GearPickupProcess\n";
@@ -257,9 +263,10 @@ bool GearPickupProcess::IsStopped() {
 GearEjectProcess::GearEjectProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	std::cout << "GearEjectProcess::GearEjectProcess\n";
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.1, kExtend}));
-	stateMapping.insert(std::make_pair(kExtend, StateInfo {1, kRetract}));
-	stateMapping.insert(std::make_pair(kRetract, StateInfo {0.1, kComplete}));
+	stateMapping.insert(std::make_pair(kRelease, StateInfo {0.1, kExtend}));
+	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.1, kRetract}));
+	stateMapping.insert(std::make_pair(kRetract, StateInfo {0.25, kMotorOff}));
+	stateMapping.insert(std::make_pair(kMotorOff, StateInfo {0.1, kComplete}));
 	timer->Start();
 }
 
@@ -268,7 +275,7 @@ bool GearEjectProcess::Start() {
 	std::cout << "GearEjectProcess::Start\n";
 	if (IsStopped()) {
 		timer->Reset();
-		currentState = kSqueeze;
+		currentState = kRelease;
 		firstStateRun = true;
 		return true;
 	} else {
@@ -295,17 +302,21 @@ void GearEjectProcess::Run() {
 
 
 	switch (currentState) {
-	case ProcessState::kSqueeze:
+	case ProcessState::kRelease:
 		gearSystem->SetSqueezeEnabled(false);
 		break;
 	case ProcessState::kExtend:
 		gearSystem->SetExtendEnabled(true);
+		gearSystem->SetGearBarSpeedByProcess(-0.5);
 		break;
 	case ProcessState::kRetract:
 		gearSystem->SetExtendEnabled(false);
 		break;
 	case ProcessState::kComplete:
 		currentState = kStopped;
+		break;
+	case ProcessState::kMotorOff:
+		gearSystem->SetGearBarSpeedByProcess(0.0);
 		break;
 	case ProcessState::kStopped:
 		std::cout << "ERROR: should not handle kStopped in state machine\n";

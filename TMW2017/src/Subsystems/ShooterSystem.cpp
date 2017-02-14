@@ -38,12 +38,16 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     const double P = prefs->GetFloat("ShootP", 2);
     const double I = prefs->GetFloat("ShootI", 0);
     const double D = prefs->GetFloat("ShootD", 0);
+    const double F = prefs->GetFloat("ShootF", 0);
 
     shooter1->SetControlMode(CANSpeedController::kSpeed);
     shooter1->SetFeedbackDevice(CANTalon::FeedbackDevice::CtreMagEncoder_Relative);
-    shooter1->SetPID(P, I, D);
+    shooter1->SetPID(P, I, D, F);
     shooter1->ConfigPeakOutputVoltage(12.0, 0.0);
     // We assume shooter2 is configured to be slaved to shooter1 via CANTalon configuration
+
+    shooter2->SetControlMode(CANSpeedController::kFollower);
+    shooter2->Set(11);
 }
 
 void ShooterSystem::InitDefaultCommand() {
@@ -60,41 +64,43 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
-	hopper->Set(hopperSpeed);
-	elevator->Set(elevatorSpeed);
-
-	if (shooterEnabled) {
+// TODO: ask if elevator+hopper are running, then if true run
+	if (shooterMotorsEnabled) {
 		const double shooterSpeedRpm = Preferences::GetInstance()->GetDouble("ShootRPM", 13000);
 		std::cout << "ShooterSystem::Shoot() => " << shooterSpeedRpm << " RPM ... Shoot now!\n";
 		shooter1->SetSetpoint(shooterSpeedRpm);
 	} else {
 		shooter1->SetSetpoint(0);
 	}
+
+	if (fireEnabled) {
+		hopper->Set(0.5);
+		elevator->Set(1.0);
+	}
+	else {
+		// Use user inputs
+		// If/when these are not on the sticks, set to 0
+		hopper->Set(hopperSpeed);
+		elevator->Set(0);
+	}
 }
 
 void ShooterSystem::InitManager() {
-	DisableElevator();
-	DisableHopper();
-	SetShooterEnabled(false);
+	//DisableElevator();
+	SetHopperSpeed(0.0);
+	SetFireEnabled(false);
 }
 
 
-void ShooterSystem::SetShooterEnabled(bool enabled) {
-	shooterEnabled = enabled;
+void ShooterSystem::SetFireEnabled(bool enabled) {
+	fireEnabled = enabled;
 }
 
-void ShooterSystem::EnableHopper(double speed) {
+void ShooterSystem::ToggleShooter() {
+	shooterMotorsEnabled = !shooterMotorsEnabled;
+}
+
+void ShooterSystem::SetHopperSpeed(double speed) {
 	hopperSpeed = speed;
 }
 
-void ShooterSystem::DisableHopper() {
-	hopperSpeed = 0.0;
-}
-
-void ShooterSystem::EnableElevator(double speed) {
-	elevatorSpeed = speed;
-}
-
-void ShooterSystem::DisableElevator() {
-	elevatorSpeed = 0.0;
-}

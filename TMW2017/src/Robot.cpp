@@ -136,6 +136,10 @@ void Robot::TeleopPeriodic() {
 		ballPickupSystem->ReverseBallPickup();
 	}
 
+	if (oi->GPX->RisingEdge()) {
+		shooterSystem->ToggleShooter();
+	}
+
 	if (oi->GPY->RisingEdge()) {
 		gearSystem->ResetGear();
 	}
@@ -155,15 +159,15 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR1->Pressed()) {
-		shooterSystem->SetShooterEnabled(true);
+		shooterSystem->SetFireEnabled(true);
 	} else {
-		shooterSystem->SetShooterEnabled(false);
+		shooterSystem->SetFireEnabled(false);
 	}
 
 
 	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 
-	shooterSystem->EnableHopper(oi->GetGamepadRightStick());
+	shooterSystem->SetHopperSpeed(oi->GetGamepadRightStick());
 
 	driveBase->Crab(
 			oi->GetJoystickTwist(),
