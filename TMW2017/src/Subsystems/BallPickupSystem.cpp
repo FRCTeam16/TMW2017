@@ -48,7 +48,28 @@ void BallPickupSystem::Run() {
 	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
 
-	ballPickup->Set(ballPickupDirection*ballPickupEnabled);
+	const bool tripped = (ballPickup->GetOutputCurrent() > ballPickupAmperageThreshold);
+	if (tripped) {
+		ballCheckScanCount++;
+		std::cout << "Tripped Ball Pickup " << ballCheckScanCount << "\n";
+		if ((ballCheckScanCount > ballCheckScanCountThreshold) &&
+				!ballPickupAmperageTripped) {
+			// first time we trip
+			ballPickupAmperageTripped = true;
+			reverseCountdownTimer = 5;
+		}
+	}
+
+	if (ballPickupAmperageTripped && (reverseCountdownTimer-- == 0)) {
+		ballPickupAmperageTripped = false;
+	}
+
+	if (ballPickupAmperageTripped) {
+		ballPickup->Set(ballPickupDirection*-1*ballPickupEnabled);
+	}
+	else {
+		ballPickup->Set(ballPickupDirection*ballPickupEnabled);
+	}
 }
 
 void BallPickupSystem::InitManager() {
