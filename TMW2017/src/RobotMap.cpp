@@ -43,6 +43,7 @@ std::shared_ptr<DoubleSolenoid> RobotMap::gearSystemSqueeze;
 std::shared_ptr<Compressor> RobotMap::gearSystemGearCompressor;
 std::shared_ptr<AnalogInput> RobotMap::gearSystemPressureGauge;
 std::shared_ptr<CANTalon> RobotMap::climberSystemClimber;
+std::shared_ptr<Solenoid> RobotMap::climberSystemProd;
 std::shared_ptr<CANTalon> RobotMap::shooterSystemElevator;
 std::shared_ptr<CANTalon> RobotMap::shooterSystemHopper;
 std::shared_ptr<CANTalon> RobotMap::shooterSystemShooter1;
@@ -135,6 +136,9 @@ void RobotMap::init() {
     
     climberSystemClimber.reset(new CANTalon(10));
     lw->AddActuator("ClimberSystem", "Climber", climberSystemClimber);
+    
+    climberSystemProd.reset(new Solenoid(0, 5));
+    lw->AddActuator("ClimberSystem", "Prod", climberSystemProd);
     
     shooterSystemElevator.reset(new CANTalon(13));
     lw->AddActuator("ShooterSystem", "Elevator", shooterSystemElevator);
