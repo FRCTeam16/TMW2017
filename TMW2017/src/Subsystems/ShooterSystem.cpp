@@ -67,10 +67,9 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     shooter1->SetPID(P, I, D, F);
     shooter1->ConfigPeakOutputVoltage(0.0, -12.0);
     shooter1->SetVoltageRampRate(shootRampRate);
-    // We assume shooter2 is configured to be slaved to shooter1 via CANTalon configuration
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
-    shooter2->Set(11);
+    shooter2->Set(shooter1->GetDeviceID());
 }
 
 void ShooterSystem::InitDefaultCommand() {
@@ -87,7 +86,6 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
-// TODO: ask if elevator+hopper are running, then if true run
 	if (shooterMotorsEnabled) {
 		Preferences *prefs = Preferences::GetInstance();
 		const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
@@ -120,7 +118,6 @@ void ShooterSystem::SMDB() {
 
 
 void ShooterSystem::InitManager() {
-	//DisableElevator();
 	SetHopperSpeed(0.0);
 	SetFireEnabled(false);
 }
