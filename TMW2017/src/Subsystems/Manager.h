@@ -10,10 +10,13 @@
 
 class Manager {
 public:
+	enum RunMode { kAuto, kTele };
+
 	virtual ~Manager() {};
 	virtual void Run() = 0;
 	virtual void SMDB() {}
-	virtual void InitManager() = 0;
+	virtual void InitManager(const RunMode runMode) = 0;
+
 };
 
 

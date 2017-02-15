@@ -106,6 +106,7 @@ void Robot::AutonomousInit() {
 	}
 	autoManager.reset(new AutoManager());
 	autoManager->Init(world);
+	InitManagers();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -124,6 +125,7 @@ void Robot::TeleopInit() {
 	}
 	driveBase->InitTeleop();
 	driveBase->UseOpenLoopDrive();
+	InitManagers();
 }
 
 void Robot::TeleopPeriodic() {
@@ -184,9 +186,10 @@ void Robot::TestPeriodic() {
 
 
 void Robot::InitManagers() {
+	const Manager::RunMode runMode = (IsAutonomous() ? Manager::RunMode::kAuto : Manager::RunMode::kTele);
 	std::for_each(managers.begin(), managers.end(),
-			[](std::shared_ptr<Manager> &manager) {
-				manager->InitManager();
+			[=](std::shared_ptr<Manager> &manager) {
+				manager->InitManager(runMode);
 			});
 }
 

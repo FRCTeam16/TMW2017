@@ -139,7 +139,7 @@ bool ShooterSystem::ShouldAutoReverseHopper() {
 
 
 
-void ShooterSystem::InitManager() {
+void ShooterSystem::InitManager(Manager::RunMode runMode) {
 	SetHopperSpeed(0.0);
 	SetFireEnabled(false);
 }

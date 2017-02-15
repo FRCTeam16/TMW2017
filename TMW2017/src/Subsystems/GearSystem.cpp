@@ -110,11 +110,20 @@ bool GearSystem::AnyProcessesRunning() {
 		   !gearResetProcess->IsStopped();
 }
 
-void GearSystem::InitManager() {
+void GearSystem::InitManager(Manager::RunMode runMode) {
 	SetLiftEnabled(false);
 	SetRotateEnabled(false);
-	SetExtendEnabled(EXTEND_DISABLED);
-	SetSqueezeEnabled(false);
+
+	switch (runMode) {
+	case Manager::RunMode::kAuto:
+		SetSqueezeEnabled(true);
+		SetExtendEnabled(EXTEND_ENABLED);
+		break;
+	case Manager::RunMode::kTele:
+		SetSqueezeEnabled(false);
+		SetExtendEnabled(EXTEND_DISABLED);
+		break;
+	}
 }
 
 void GearSystem::ToggleLift() {
@@ -236,7 +245,6 @@ void GearPickupProcess::Run() {
 	switch (currentState) {
 	case ProcessState::kInit:
 		std::cout << "handling kInit\n";
-		gearSystem->SetGearBarSpeedByProcess(0.5);
 		break;
 	case ProcessState::kExtend:
 		std::cout << "handling kExtend\n";
@@ -336,7 +344,8 @@ bool GearEjectProcess::IsStopped() {
 GearResetProcess::GearResetProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	std::cout << "GearResetProcess::GearResetProcess\n";
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kInit, StateInfo {0.5, kComplete}));
+	stateMapping.insert(std::make_pair(kInit, StateInfo {0.1, kRotate}));
+	stateMapping.insert(std::make_pair(kRotate, StateInfo {0.5, kComplete}));
 	timer->Start();
 }
 
@@ -366,8 +375,10 @@ void GearResetProcess::Run() {
 
 	switch (currentState) {
 	case ProcessState::kInit:
-		gearSystem->SetSqueezeEnabled(false);
 		gearSystem->SetExtendEnabled(EXTEND_DISABLED);
+		break;
+	case ProcessState::kRotate:
+		gearSystem->SetSqueezeEnabled(false);
 		gearSystem->SetLiftEnabled(true);
 		gearSystem->SetRotateEnabled(true);
 		gearSystem->SetGearBarSpeedByProcess(0.5);

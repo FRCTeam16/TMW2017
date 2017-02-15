@@ -73,7 +73,7 @@ void BallPickupSystem::Run() {
 	}
 }
 
-void BallPickupSystem::InitManager() {
+void BallPickupSystem::InitManager(Manager::RunMode runMode) {
 	SetBallPickupEnabled(false);
 }
 

@@ -49,7 +49,7 @@ void ClimberSystem::Run() {
 	prod->Set(prodEnabled);
 }
 
-void ClimberSystem::InitManager() {
+void ClimberSystem::InitManager(Manager::RunMode runMode) {
 }
 
 void ClimberSystem::SetProdEnabled(bool enabled) {

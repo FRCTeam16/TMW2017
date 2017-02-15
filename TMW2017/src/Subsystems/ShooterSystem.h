@@ -48,7 +48,7 @@ public:
 	void InitDefaultCommand();
 
 	void Run();
-	void InitManager();
+	void InitManager(Manager::RunMode runMode);
 	void SMDB();
 
 	void SetFireEnabled(bool enabled);
