@@ -35,6 +35,14 @@ private:
 	double shooterRPM = 3000;
 	bool shooterMotorsEnabled = false;
 	bool fireEnabled = false;
+	bool hopperAmperageTripped = false;
+	float hopperAmperageThreshold = 6;
+	int hopperCheckScanCount = 0;
+	int hopperCheckScanCountThreshold = 5;
+	const int firingHopperSpeed = 0.5;
+	int reverseCountdownTimer = 0;
+
+	bool ShouldAutoReverseHopper();
 public:
 	ShooterSystem();
 	void InitDefaultCommand();

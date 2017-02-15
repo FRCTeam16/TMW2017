@@ -99,9 +99,13 @@ void ShooterSystem::Run() {
 	} else {
 		shooter1->SetSetpoint(0);
 	}
-
+	const bool autoReverseHopper = ShouldAutoReverseHopper();
 	if (fireEnabled) {
-		hopper->Set(0.5);
+		if (autoReverseHopper) {
+			hopper->Set(-1 * firingHopperSpeed);
+		} else {
+			hopper->Set(firingHopperSpeed);
+		}
 		elevator->Set(-1.0);
 	}
 	else {
@@ -115,6 +119,24 @@ void ShooterSystem::Run() {
 void ShooterSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("ShootRPM", shooter1->Get());
 }
+
+bool ShooterSystem::ShouldAutoReverseHopper() {
+	const bool tripped = (hopper->GetOutputCurrent() > hopperAmperageThreshold);
+	if (tripped) {
+		hopperCheckScanCount++;
+		std::cout << "Tripped Hopper " << hopperCheckScanCount << "\n";
+		if (hopperCheckScanCount > hopperCheckScanCountThreshold) {
+			hopperAmperageTripped = true;
+			reverseCountdownTimer = 5;
+		}
+	}
+	if (hopperAmperageTripped && (reverseCountdownTimer-- == 0)) {
+		hopperAmperageTripped = false;
+		hopperCheckScanCount = 0.0;
+	}
+	return reverseCountdownTimer > 0;
+}
+
 
 
 void ShooterSystem::InitManager() {

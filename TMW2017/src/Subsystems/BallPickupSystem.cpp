@@ -62,6 +62,7 @@ void BallPickupSystem::Run() {
 
 	if (ballPickupAmperageTripped && (reverseCountdownTimer-- == 0)) {
 		ballPickupAmperageTripped = false;
+		ballCheckScanCount = 0.0;
 	}
 
 	if (ballPickupAmperageTripped) {
