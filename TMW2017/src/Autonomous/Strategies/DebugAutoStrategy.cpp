@@ -5,9 +5,9 @@
  *      Author: User
  */
 
-#include <Autonomous/DebugAutoStrategy.h>
-#include "PIDDrive.h"
-#include "NoOp.h"
+#include "DebugAutoStrategy.h"
+#include "../Steps/PIDDrive.h"
+#include "../Steps/NoOp.h"
 
 DebugAutoStrategy::DebugAutoStrategy() {
 	steps.push_back(new ZeroDriveEncoders());

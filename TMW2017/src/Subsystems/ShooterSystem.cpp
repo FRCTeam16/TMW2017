@@ -94,7 +94,6 @@ void ShooterSystem::Run() {
 	    const double D = prefs->GetDouble("ShootD", 0);
 	    const double F = prefs->GetDouble("ShootF", 0.035);
 	    shooter1->SetPID(P, I, D, F);
-		std::cout << "ShooterSystem::Shoot() => " << shooterSpeedRpm << " RPM ... Shoot now!\n";
 		shooter1->SetSetpoint(shooterSpeedRpm * -1);
 	} else {
 		shooter1->SetSetpoint(0);
@@ -102,8 +101,10 @@ void ShooterSystem::Run() {
 	const bool autoReverseHopper = ShouldAutoReverseHopper();
 	if (fireEnabled) {
 		if (autoReverseHopper) {
+			std::cout << "autoReverseHopper TRUE, reversing direction\n";
 			hopper->Set(-1 * firingHopperSpeed);
 		} else {
+			std::cout << "autoReverseHopper FALSE,, normal direction\n";
 			hopper->Set(firingHopperSpeed);
 		}
 		elevator->Set(-1.0);
@@ -118,19 +119,36 @@ void ShooterSystem::Run() {
 
 void ShooterSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("ShootRPM", shooter1->Get());
+	frc::SmartDashboard::PutNumber("Hopper Amps", hopper->GetOutputCurrent());
+
+	// FIXME: Set default in .h
+	hopperAmperageThreshold = frc::SmartDashboard::GetNumber("Hopper Amp Threshold", 6);
+	frc::SmartDashboard::PutNumber("Hopper Amp Threshold", hopperAmperageThreshold);
+	hopperCheckScanCountThreshold = frc::SmartDashboard::GetNumber("Hopper Scan Threshold", 15);
+	frc::SmartDashboard::PutNumber("Hopper Scan Threshold", hopperAmperageThreshold);
+	reverseCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 50);
+	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseCountDownTimerStartValue);
 }
 
 bool ShooterSystem::ShouldAutoReverseHopper() {
 	const bool tripped = (hopper->GetOutputCurrent() > hopperAmperageThreshold);
 	if (tripped) {
 		hopperCheckScanCount++;
-		std::cout << "Tripped Hopper " << hopperCheckScanCount << "\n";
-		if (hopperCheckScanCount > hopperCheckScanCountThreshold) {
+		std::cout << "Checking for Tripped Hopper " << hopperCheckScanCount << "\n";
+		if ((hopperCheckScanCount > hopperCheckScanCountThreshold) &&
+				reverseCountdownTimer == 0) {
+			std::cout << "Tripped Hopper, Reversing!\n";
 			hopperAmperageTripped = true;
-			reverseCountdownTimer = 5;
+			reverseCountdownTimer = reverseCountDownTimerStartValue;
 		}
 	}
-	if (hopperAmperageTripped && (reverseCountdownTimer-- == 0)) {
+
+	if (hopperAmperageTripped) {
+		std::cout << "Hopper Reverse Countdown Timer: " << reverseCountdownTimer << "\n";
+	}
+
+	if (hopperAmperageTripped && (--reverseCountdownTimer == 0)) {
+		std::cout << "Resetting Hopper Tripped Status\n";
 		hopperAmperageTripped = false;
 		hopperCheckScanCount = 0.0;
 	}
@@ -142,6 +160,7 @@ bool ShooterSystem::ShouldAutoReverseHopper() {
 void ShooterSystem::InitManager(Manager::RunMode runMode) {
 	SetHopperSpeed(0.0);
 	SetFireEnabled(false);
+	shooterMotorsEnabled = false;
 }
 
 

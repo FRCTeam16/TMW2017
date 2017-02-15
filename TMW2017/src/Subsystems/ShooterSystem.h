@@ -38,9 +38,10 @@ private:
 	bool hopperAmperageTripped = false;
 	float hopperAmperageThreshold = 6;
 	int hopperCheckScanCount = 0;
-	int hopperCheckScanCountThreshold = 5;
-	const int firingHopperSpeed = 0.5;
+	int hopperCheckScanCountThreshold = 15;
+	const double firingHopperSpeed = 0.5;
 	int reverseCountdownTimer = 0;
+	int reverseCountDownTimerStartValue = 50;
 
 	bool ShouldAutoReverseHopper();
 public:

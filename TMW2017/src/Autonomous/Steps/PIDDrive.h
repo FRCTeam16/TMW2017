@@ -5,7 +5,7 @@
 #ifndef SRC_AUTONOMOUS_PIDDRIVE_H_
 #define SRC_AUTONOMOUS_PIDDRIVE_H_
 
-#include "Step.h"
+#include "../Step.h"
 
 
 class ZeroDriveEncoders : public Step {
@@ -18,6 +18,9 @@ private:
 	int lastEncoderPosition;
 };
 
+/**
+ * Uses encoder counting to drive to a specified target distance
+ */
 class PIDDrive : public Step {
 public:
 	PIDDrive(float _angle, float _yspeed, float _xspeed, int _targetDistance) :
@@ -33,6 +36,9 @@ private:
 };
 
 
+/**
+ * Sets target distance as PID setpoint to drive towards
+ */
 class PIDControlledDrive : public Step {
 public:
 	PIDControlledDrive(float _angle, float _targetDistance, int _threshold) :

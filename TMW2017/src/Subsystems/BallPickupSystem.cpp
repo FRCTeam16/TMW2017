@@ -80,6 +80,12 @@ void BallPickupSystem::InitManager(Manager::RunMode runMode) {
 void BallPickupSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
+
+	// FIXME: Put defaults in .h
+	ballPickupAmperageThreshold = frc::SmartDashboard::GetNumber("BallPU Amp Threshold", 6);
+	frc::SmartDashboard::PutNumber("BallPU Amp Threshold", ballPickupAmperageThreshold);
+	ballCheckScanCountThreshold = frc::SmartDashboard::GetNumber("BallPU Trip Scans", 6);
+	frc::SmartDashboard::PutNumber("BallPU Trip Scans", ballPickupAmperageThreshold);
 }
 
 void BallPickupSystem::SetBallPickupEnabled(bool enabled) {

@@ -71,10 +71,12 @@ bool GearSystem::CheckGearBar() {
 		gearCheckScanCount++;
 		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << "\n";
 		if (gearCheckScanCount > gearCheckScanCountThreshold) {
+			std::cout << "Exceeded scan count threshold\n";
 			gearPickupAmperageTripped = true;
+//			std::cout << "\t rotate = " << rotateEnabled << "  extend = " << extendEnabled << "\n";
 			if (!AnyProcessesRunning()
 					&& rotateEnabled == true
-					&& extendEnabled == false) {
+					&& extendEnabled == EXTEND_DISABLED) {
 				std::cout << "Autostarting gear pickup process\n";
 				gearPickupProcess->Start();
 			}
@@ -208,9 +210,9 @@ void GearSystem::SMDB() {
 
 GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kInit, StateInfo {0.25, kExtend}));
-	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.25 ,kSqueeze}));
-	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.25, kLift}));
+	stateMapping.insert(std::make_pair(kInit, StateInfo {0.0, kExtend}));
+	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.1 ,kSqueeze}));
+	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.1, kLift}));
 	stateMapping.insert(std::make_pair(kLift, StateInfo {0.5, kComplete}));
 	timer->Start();
 	std::cout << "GearPickupProcess::GearPickupProcess\n";
@@ -245,6 +247,7 @@ void GearPickupProcess::Run() {
 	switch (currentState) {
 	case ProcessState::kInit:
 		std::cout << "handling kInit\n";
+		gearSystem->SetGearBarSpeed(1.0);
 		break;
 	case ProcessState::kExtend:
 		std::cout << "handling kExtend\n";
@@ -272,6 +275,7 @@ void GearPickupProcess::Run() {
 }
 
 bool GearPickupProcess::IsStopped() {
+//	std::cout << "Pickup stopped? " << (ProcessState::kStopped == currentState) << "\n";
 	return ProcessState::kStopped == currentState;
 }
 
@@ -336,6 +340,7 @@ void GearEjectProcess::Run() {
 }
 
 bool GearEjectProcess::IsStopped() {
+//	std::cout << "Eject stopped? " << (ProcessState::kStopped == currentState) << "\n";
 	return ProcessState::kStopped == currentState;
 }
 
@@ -394,5 +399,6 @@ void GearResetProcess::Run() {
 }
 
 bool GearResetProcess::IsStopped() {
+//	std::cout << "Reset stopped? " << (ProcessState::kStopped == currentState) << "\n";
 	return ProcessState::kStopped == currentState;
 }

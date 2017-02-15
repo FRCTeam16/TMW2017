@@ -8,7 +8,7 @@
 #ifndef SRC_AUTONOMOUS_DEBUGAUTOSTRATEGY_H_
 #define SRC_AUTONOMOUS_DEBUGAUTOSTRATEGY_H_
 
-#include "Strategy.h"
+#include "../Strategy.h"
 
 class DebugAutoStrategy : public StepStrategy {
 public:
