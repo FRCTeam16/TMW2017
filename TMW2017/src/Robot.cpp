@@ -151,12 +151,12 @@ void Robot::TeleopPeriodic() {
 	}
 
 
+	climberSystem->SetClimberSpeed(oi->GetGamepadLT());
 
-	if (oi->GPLB->Pressed()) {
-		climberSystem->SetClimberEnabled(true);
-	} else {
-		climberSystem->SetClimberEnabled(false);
+	if (oi->GPLB->RisingEdge()) {
+		climberSystem->ToggleProd();
 	}
+
 
 	if (oi->DR1->Pressed()) {
 		shooterSystem->SetFireEnabled(true);
