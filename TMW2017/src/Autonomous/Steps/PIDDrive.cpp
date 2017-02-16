@@ -54,13 +54,12 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 	cout << "PIDControlledDrive target distance" << targetDistance << '\n';
 
 	// Initialize
-	if (firstRun) {
-		firstRun = false;
+	if (startTime < 0) {
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
 		Robot::driveBase->SetTargetDriveDistance(targetDistance);
 		// Allow robot drive to use % vbus to manage speed
-		//Robot::driveBase->UseClosedLoopDrive();
+		Robot::driveBase->UseClosedLoopDrive();		// TODO: is this required?
 	}
 
 	const double elapsedTimeMillis = world->GetClock() - startTime;
@@ -71,11 +70,11 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 
 	const double currentEncoderPosition = Robot::driveBase->GetDriveControlEncoderPosition();
 
-	if (abs(targetDistance - currentEncoderPosition) <= threshold) {
+	if (abs(targetDistance - currentEncoderPosition) <= distanceThreshold) {
 		cout << "Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTimeMillis > 20) {
+	} else if (elapsedTimeMillis > 5000) {
 		cout << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;

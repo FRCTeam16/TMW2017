@@ -41,15 +41,16 @@ private:
  */
 class PIDControlledDrive : public Step {
 public:
-	PIDControlledDrive(float _angle, float _targetDistance, int _threshold) :
-		angle(_angle), targetDistance(_targetDistance), threshold(_threshold) {}
+	enum Units { kPulses, kInches };
+	PIDControlledDrive(double _angle, double _targetDistance, int _threshold, Units _units) :
+		angle(_angle), targetDistance(_targetDistance), distanceThreshold(_threshold), units(_units) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
-	bool firstRun = true;
 	double startTime = -1;
-	const float angle;
-	const float targetDistance;
-	const float threshold;
+	const double angle;
+	const double targetDistance;
+	const double distanceThreshold;
+	const Units units;
 };
 
 #endif /* SRC_AUTONOMOUS_PIDDRIVE_H_ */

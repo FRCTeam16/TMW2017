@@ -61,7 +61,6 @@ void GearSystem::SetGearBarSpeed(double speed) {
 }
 
 void GearSystem::SetGearBarSpeedByProcess(double speed) {
-	std::cout << "GearSystem::SetGearBarSpeedByProcess\n";
 	gearProcessPickUpSpeed = speed;
 	gearPickupSpeedLocked = (fabs(speed) + resetRange > 0.0);
 }
@@ -389,7 +388,7 @@ void GearResetProcess::Run() {
 		gearSystem->SetSqueezeEnabled(false);
 		gearSystem->SetLiftEnabled(true);
 		gearSystem->SetRotateEnabled(true);
-		gearSystem->SetGearBarSpeedByProcess(0.5);
+		gearSystem->SetGearBarSpeedByProcess(1.0);
 		break;
 	case ProcessState::kComplete:
 		currentState = kStopped;
