@@ -5,8 +5,8 @@
  *      Author: User
  */
 
+#include <Autonomous/Steps/DriveSteps.h>
 #include "DebugAutoStrategy.h"
-#include "../Steps/PIDDrive.h"
 #include "../Steps/NoOp.h"
 
 DebugAutoStrategy::DebugAutoStrategy() {

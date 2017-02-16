@@ -166,7 +166,7 @@ void DriveBase::ZeroDriveEncoders() {
 	const std::vector<std::shared_ptr<CANTalon>> drives {frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive};
 	std::for_each(drives.begin(), drives.end(),
 			[](std::shared_ptr<CANTalon> motor) {
-		motor->SetEncPosition(0);
+		motor->SetPosition(0);
 	});
 }
 

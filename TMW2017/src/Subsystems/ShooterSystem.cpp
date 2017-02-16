@@ -114,7 +114,6 @@ void ShooterSystem::Run() {
 			hopperSpeedToSet = reverseHopperSpeed;
 		}
 	}
-	std::cout << "Hopper Speed to Set: " << hopperSpeedToSet << " reverse? " << reverseHopper << " countdown " << reverseHopperCountdownTimer << "\n";
 	hopper->Set(hopperSpeedToSet);
 }
 

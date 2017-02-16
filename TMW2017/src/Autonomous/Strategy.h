@@ -31,6 +31,7 @@ public:
 protected:
 	unsigned int currentStep = 0;
 	std::vector<Step*> steps;
+	void RunDrives(const CrabInfo *crab);
 };
 
 #endif /* SRC_AUTONOMOUS_STRATEGY_H_ */
