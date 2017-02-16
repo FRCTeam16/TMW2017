@@ -48,29 +48,33 @@ void BallPickupSystem::Run() {
 	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
 
-	const bool tripped = (ballPickup->GetOutputCurrent() > ballPickupAmperageThreshold);
-	if (tripped) {
-		ballCheckScanCount++;
-		std::cout << "Tripped Ball Pickup " << ballCheckScanCount << "\n";
-		if ((ballCheckScanCount > ballCheckScanCountThreshold) &&
-				!ballPickupAmperageTripped) {
-			// first time we trip
-			ballPickupAmperageTripped = true;
-			reverseCountdownTimer = 5;
-		}
-	}
-
-	if (ballPickupAmperageTripped && (reverseCountdownTimer-- == 0)) {
-		ballPickupAmperageTripped = false;
-		ballCheckScanCount = 0.0;
-	}
-
 	if (ballPickupAmperageTripped) {
 		ballPickup->Set(ballPickupDirection*-1*ballPickupEnabled);
 	}
 	else {
 		ballPickup->Set(ballPickupDirection*ballPickupEnabled);
 	}
+}
+
+bool BallPickupSystem::ShouldReverseBallPickUp() {
+	const bool tripped = (ballPickup->GetOutputCurrent() > ballPickupAmperageThreshold);
+	if (tripped) {
+		ballCheckScanCount++;
+		std::cout << "Tripped Ball Pickup " << ballCheckScanCount << "\n";
+		if ((ballCheckScanCount > ballCheckScanCountThreshold) && !ballPickupAmperageTripped) {
+			// first time we trip
+			ballPickupAmperageTripped = true;
+			reverseBallPickupCountdownTimer = reverseBallPickupCountdownTimerStartValue;
+		}
+	} else {
+		ballCheckScanCount = 0;
+	}
+
+	if (ballPickupAmperageTripped && (--reverseBallPickupCountdownTimer == 0)) {
+		ballPickupAmperageTripped = false;
+		ballCheckScanCount = 0.0;
+	}
+	return ballPickupAmperageTripped;
 }
 
 void BallPickupSystem::InitManager(Manager::RunMode runMode) {
@@ -81,7 +85,6 @@ void BallPickupSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("BallPickup Volts", ballPickup->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("BallPickup Amps", ballPickup->GetOutputCurrent());
 
-	// FIXME: Put defaults in .h
 	ballPickupAmperageThreshold = frc::SmartDashboard::GetNumber("BallPU Amp Threshold", 6);
 	frc::SmartDashboard::PutNumber("BallPU Amp Threshold", ballPickupAmperageThreshold);
 	ballCheckScanCountThreshold = frc::SmartDashboard::GetNumber("BallPU Trip Scans", 6);

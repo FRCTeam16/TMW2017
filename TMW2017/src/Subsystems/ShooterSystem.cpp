@@ -121,13 +121,12 @@ void ShooterSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("ShootRPM", shooter1->Get());
 	frc::SmartDashboard::PutNumber("Hopper Amps", hopper->GetOutputCurrent());
 
-	// FIXME: Set default in .h
 	hopperAmperageThreshold = frc::SmartDashboard::GetNumber("Hopper Amp Threshold", 6);
 	frc::SmartDashboard::PutNumber("Hopper Amp Threshold", hopperAmperageThreshold);
 	hopperCheckScanCountThreshold = frc::SmartDashboard::GetNumber("Hopper Scan Threshold", 15);
 	frc::SmartDashboard::PutNumber("Hopper Scan Threshold", hopperAmperageThreshold);
-	reverseCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 50);
-	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseCountDownTimerStartValue);
+	reverseHopperCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 50);
+	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseHopperCountDownTimerStartValue);
 }
 
 bool ShooterSystem::ShouldAutoReverseHopper() {
@@ -135,24 +134,25 @@ bool ShooterSystem::ShouldAutoReverseHopper() {
 	if (tripped) {
 		hopperCheckScanCount++;
 		std::cout << "Checking for Tripped Hopper " << hopperCheckScanCount << "\n";
-		if ((hopperCheckScanCount > hopperCheckScanCountThreshold) &&
-				reverseCountdownTimer == 0) {
+		if ((hopperCheckScanCount > hopperCheckScanCountThreshold) &&  !hopperAmperageTripped) {
 			std::cout << "Tripped Hopper, Reversing!\n";
 			hopperAmperageTripped = true;
-			reverseCountdownTimer = reverseCountDownTimerStartValue;
+			reverseHopperCountdownTimer = reverseHopperCountDownTimerStartValue;
 		}
+	} else {
+		hopperCheckScanCount = 0;
 	}
 
 	if (hopperAmperageTripped) {
-		std::cout << "Hopper Reverse Countdown Timer: " << reverseCountdownTimer << "\n";
+		std::cout << "Hopper Reverse Countdown Timer: " << reverseHopperCountdownTimer << "\n";
 	}
 
-	if (hopperAmperageTripped && (--reverseCountdownTimer == 0)) {
+	if (hopperAmperageTripped && (--reverseHopperCountdownTimer == 0)) {
 		std::cout << "Resetting Hopper Tripped Status\n";
 		hopperAmperageTripped = false;
 		hopperCheckScanCount = 0.0;
 	}
-	return reverseCountdownTimer > 0;
+	return hopperAmperageTripped;
 }
 
 

@@ -34,7 +34,10 @@ private:
 	float ballPickupAmperageThreshold = 6;
 	int ballCheckScanCount = 0;
 	int ballCheckScanCountThreshold = 5;
-	int reverseCountdownTimer = 0;
+	int reverseBallPickupCountdownTimer = 0;
+	int reverseBallPickupCountdownTimerStartValue = 25;
+
+	bool ShouldReverseBallPickUp();
 public:
 	BallPickupSystem();
 	void InitDefaultCommand();

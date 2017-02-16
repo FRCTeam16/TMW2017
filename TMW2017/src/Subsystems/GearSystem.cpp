@@ -62,18 +62,23 @@ void GearSystem::SetGearBarSpeed(double speed) {
 
 void GearSystem::SetGearBarSpeedByProcess(double speed) {
 	std::cout << "GearSystem::SetGearBarSpeedByProcess\n";
-	gearPickUpSpeed = speed;
+	gearProcessPickUpSpeed = speed;
+	gearPickupSpeedLocked = (fabs(speed) + resetRange > 0.0);
 }
 
-bool GearSystem::CheckGearBar() {
+void GearSystem::UnlockGearPickupSpeedLocked() {
+	gearPickupSpeedLocked = false;
+}
+
+void GearSystem::StartAutoPickup() {
 	const bool tripped = (gearPickUp->GetOutputCurrent() > gearPickupAmperageThreshold);
+	bool tripThresholdExceeded = false;
 	if (tripped) {
 		gearCheckScanCount++;
 		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << "\n";
 		if (gearCheckScanCount > gearCheckScanCountThreshold) {
 			std::cout << "Exceeded scan count threshold\n";
-			gearPickupAmperageTripped = true;
-//			std::cout << "\t rotate = " << rotateEnabled << "  extend = " << extendEnabled << "\n";
+			tripThresholdExceeded = true;
 			if (!AnyProcessesRunning()
 					&& rotateEnabled == true
 					&& extendEnabled == EXTEND_DISABLED) {
@@ -81,9 +86,9 @@ bool GearSystem::CheckGearBar() {
 				gearPickupProcess->Start();
 			}
 		}
+	} else {
+		gearCheckScanCount = 0;
 	}
-
-	return gearPickupAmperageTripped;
 }
 
 
@@ -91,15 +96,10 @@ bool GearSystem::CheckGearBar() {
 // here. Call these from Commands.
 
 void GearSystem::Run() {
-	if (!gearPickupAmperageTripped && !CheckGearBar()) {
-		gearPickUp->Set(gearPickUpSpeed);
-	} else {
-		gearPickUp->Set(0.0);
-	}
-	if (fabs(gearPickUpSpeed) <= resetRange) {
-		gearPickupAmperageTripped = false;
-		gearCheckScanCount = 0;
-	}
+	StartAutoPickup();
+	gearPickUp->Set( (!gearPickupSpeedLocked) ?
+						gearPickUpSpeed :
+						gearProcessPickUpSpeed );
 
 	gearPickupProcess->Run();
 	gearEjectProcess->Run();
@@ -169,6 +169,7 @@ void GearSystem::SetSqueezeEnabled(bool enabled) {
 
 void GearSystem::PickUpGear() {
 	std::cout << "GearSystem::PickUpGear\n";
+	UnlockGearPickupSpeedLocked();
 	if (!gearPickupProcess->Start()) {
 		// TODO: ERROR here, should we display on SMDB?
 		std::cerr << "************************ Unable to start gear pick up process\n";
@@ -177,6 +178,7 @@ void GearSystem::PickUpGear() {
 
 void GearSystem::EjectGear() {
 	std::cout << "GearSystem::EjectGear\n";
+	UnlockGearPickupSpeedLocked();
 	if (!gearEjectProcess->Start()) {
 		// Error on SMDB?
 	}
@@ -184,6 +186,7 @@ void GearSystem::EjectGear() {
 
 void GearSystem::ResetGear() {
 	std::cout << "GearSystem::ResetGear\n";
+	UnlockGearPickupSpeedLocked();
 	if (!gearResetProcess->Start()) {
 		// Error on SMDB?
 	}
