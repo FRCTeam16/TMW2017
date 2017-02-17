@@ -57,7 +57,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 		Robot::driveBase->SetTargetAngle(angle);
 		Robot::driveBase->SetTargetDriveDistance(targetDistance);
 		// Allow robot drive to use % vbus to manage speed
-		Robot::driveBase->UseClosedLoopDrive();		// TODO: is this required?
+		Robot::driveBase->UseClosedLoopDrive();
 		startingEncoderCount = Robot::driveBase->GetDriveControlEncoderPosition();
 	}
 
@@ -78,7 +78,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 		crab->Stop();
 		return true;
 	} else {
-		const double crabSpeed = speed + currentPIDOutput;	// FIXME
+		const double crabSpeed = speed + currentPIDOutput;	// FIXME - incorrect speed handling
 		const double xspeed = crabSpeed * sin(angle * M_PI / 180.0);
 		const double yspeed = crabSpeed * cos(angle * M_PI / 180.0);
 		crab->Update(

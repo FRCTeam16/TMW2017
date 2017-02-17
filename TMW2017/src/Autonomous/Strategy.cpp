@@ -11,12 +11,9 @@
 #include <iomanip>
 
 Strategy::Strategy() {
-	// TODO Auto-generated constructor stub
-
 }
 
 Strategy::~Strategy() {
-	// TODO Auto-generated destructor stub
 }
 
 /*****************************************************************************/

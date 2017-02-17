@@ -12,9 +12,9 @@
 CenterGearStrategy::CenterGearStrategy() {
 	steps.push_back(new ZeroDriveEncoders());
 	steps.push_back(new PIDControlledDrive(0.0, 0.3, 1170, 50, PIDControlledDrive::Units::kPulses));
-// FIXME	steps.push_back(new PIDControlledDrive(0.0, -0.3, 1170, 50, PIDControlledDrive::Units::kPulses));
 //	steps.push_back(new SimpleEncoderDrive(0.0, 0.3, 0.0, 1500));
 	steps.push_back(new EjectGear());
+	// FIXME need reverse	steps.push_back(new PIDControlledDrive(0.0, -0.3, 1170, 50, PIDControlledDrive::Units::kPulses));
 }
 
 CenterGearStrategy::~CenterGearStrategy() {

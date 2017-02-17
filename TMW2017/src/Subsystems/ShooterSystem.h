@@ -37,8 +37,8 @@ private:
 
 	double hopperSpeed = 0.0;
 	bool reverseHopper = false;
-	const double reverseHopperSpeed = -0.5;
-	const double firingHopperSpeed = 0.5;
+	double reverseHopperSpeed = -0.5;
+	double firingHopperSpeed = 0.5;
 	int reverseHopperCountdownTimer = 0;
 	int reverseHopperCountDownTimerStartValue = 15;
 

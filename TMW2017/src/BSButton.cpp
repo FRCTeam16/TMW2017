@@ -15,7 +15,6 @@ BSButton::BSButton(std::shared_ptr<Joystick> joystick, int button) {
 }
 
 BSButton::~BSButton() {
-	// TODO Auto-generated destructor stub
 }
 
 bool BSButton::Pressed() {

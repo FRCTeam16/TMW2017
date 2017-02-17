@@ -9,11 +9,10 @@
 
 
 World::World() {
-	timer.reset(new Timer());
+	timer.reset(new frc::Timer());
 }
 
 World::~World() {
-	// TODO Auto-generated destructor stub
 }
 
 double World::GetClock() const {

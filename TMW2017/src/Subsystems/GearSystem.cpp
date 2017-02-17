@@ -71,13 +71,11 @@ void GearSystem::UnlockGearPickupSpeedLocked() {
 
 void GearSystem::StartAutoPickup() {
 	const bool tripped = (gearPickUp->GetOutputCurrent() > gearPickupAmperageThreshold);
-	bool tripThresholdExceeded = false;
 	if (tripped) {
 		gearCheckScanCount++;
 		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << "\n";
 		if (gearCheckScanCount > gearCheckScanCountThreshold) {
 			std::cout << "Exceeded scan count threshold\n";
-			tripThresholdExceeded = true;
 			if (!AnyProcessesRunning()
 					&& rotateEnabled == true
 					&& extendEnabled == EXTEND_DISABLED) {
@@ -351,7 +349,7 @@ bool GearEjectProcess::IsStopped() {
 GearResetProcess::GearResetProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	std::cout << "GearResetProcess::GearResetProcess\n";
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kInit, StateInfo {0.1, kRotate}));
+	stateMapping.insert(std::make_pair(kInit, StateInfo {0.3, kRotate}));
 	stateMapping.insert(std::make_pair(kRotate, StateInfo {0.5, kComplete}));
 	timer->Start();
 }
@@ -362,6 +360,7 @@ bool GearResetProcess::Start() {
 	if (IsStopped()) {
 		timer->Reset();
 		currentState = kInit;
+		gearSystem->SetExtendEnabled(EXTEND_DISABLED);
 		firstStateRun = true;
 		return true;
 	} else {
