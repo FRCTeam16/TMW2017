@@ -49,14 +49,16 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 }
 
 bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
-	cout << "PIDControlledDrive target distance" << targetDistance << '\n';
+	const double currentEncoderPosition = Robot::driveBase->GetDriveControlEncoderPosition();
+	const double currentError = Robot::driveBase->GetDriveControlError();
 
-	// Initialize
 	if (startTime < 0) {
+		targetSetpoint = currentEncoderPosition + targetDistance;
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
-		Robot::driveBase->SetTargetDriveDistance(targetDistance);
-		// Allow robot drive to use % vbus to manage speed
+
+		Robot::driveBase->SetTargetDriveDistance(targetSetpoint);
+		// DriveBase transforms vbus type inputs into RPMs per wheel during swerve calcs
 		Robot::driveBase->UseClosedLoopDrive();
 		startingEncoderCount = Robot::driveBase->GetDriveControlEncoderPosition();
 	}
@@ -65,12 +67,15 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 	const double currentPIDOutput = Robot::driveBase->GetDriveControlOutput();
 
 	SmartDashboard::PutNumber("PIDController Output", currentPIDOutput);
-	cout << "PIDController Output: " << currentPIDOutput << "\n";
+	cout << "PIDControlledDrive target setpoint          = " << targetSetpoint << '\n';
+	cout << "PIDControlledDrive Current Encoder Position = " << currentEncoderPosition << "\n";
+	cout << "PIDControlledDrive Current Error            = " << currentError << "\n";
+	cout << "PIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
 
-	const double currentEncoderPosition = Robot::driveBase->GetDriveControlEncoderPosition();
 
-	if (abs((startingEncoderCount + targetDistance) - currentEncoderPosition) <= distanceThreshold) {
-		cout << "Position reached in " << elapsedTimeMillis << "\n";
+
+	if (abs(currentEncoderPosition - targetSetpoint) <= distanceThreshold) {
+		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
 	} else if (elapsedTimeMillis > 5000) {
@@ -78,7 +83,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 		crab->Stop();
 		return true;
 	} else {
-		const double crabSpeed = speed + currentPIDOutput;	// FIXME - incorrect speed handling
+		const double crabSpeed = currentPIDOutput;	// FIXME - incorrect speed handling
 		const double xspeed = crabSpeed * sin(angle * M_PI / 180.0);
 		const double yspeed = crabSpeed * cos(angle * M_PI / 180.0);
 		crab->Update(

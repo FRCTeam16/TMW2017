@@ -84,6 +84,21 @@ void Robot::RobotInit() {
 		prefs->PutFloat("DriveIZone", 20.0);
 	}
 	// driveBase Drive PID
+	if (!prefs->ContainsKey("DriveControlP")) {
+		prefs->PutFloat("DriveControlP", 0.001);
+	}
+	if (!prefs->ContainsKey("DriveControlI")) {
+		prefs->PutFloat("DriveControlI", 0.0);
+	}
+	if (!prefs->ContainsKey("DriveControlD")) {
+		prefs->PutFloat("DriveControlD", 0.0);
+	}
+	if (!prefs->ContainsKey("DriveControlF")) {
+		prefs->PutFloat("DriveControlF", 0);
+	}
+	if (!prefs->ContainsKey("DriveControlIZone")) {
+		prefs->PutFloat("DriveControlIZone", 0.0);
+	}
 
   }
 

@@ -104,12 +104,13 @@ public:
 	void SetTargetAngle(double angle);
 	double GetTwistControlOutput();
 
-	void SetTargetDriveDistance(double pulses);
+	void SetTargetDriveDistance(double distance);
 	void UseClosedLoopDrive();
 	void UseOpenLoopDrive();
 
 	double GetDriveControlEncoderPosition();
 	double GetDriveControlOutput();
+	double GetDriveControlError();
 
 	std::shared_ptr<CANTalon> GetFrontLeftDrive();
 };

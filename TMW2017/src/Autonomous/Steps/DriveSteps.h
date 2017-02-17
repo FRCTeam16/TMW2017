@@ -54,6 +54,7 @@ private:
 	const Units units;
 
 	double startingEncoderCount = 0;
+	double targetSetpoint;
 };
 
 #endif /* SRC_AUTONOMOUS_PIDDRIVE_H_ */

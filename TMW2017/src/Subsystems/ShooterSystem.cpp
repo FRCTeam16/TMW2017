@@ -124,7 +124,7 @@ void ShooterSystem::SMDB() {
 	reverseHopperCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 15);
 	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseHopperCountDownTimerStartValue);
 
-	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", -0.5);
+	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", 0.5);
 	frc::SmartDashboard::PutNumber("Hopper Shoot Speed", firingHopperSpeed);
 
 	reverseHopperSpeed = -1 * firingHopperSpeed;

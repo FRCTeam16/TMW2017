@@ -13,11 +13,12 @@ class CANTalon;
 
 class DriveEncoderPIDSource : public PIDSource {
 public:
-	DriveEncoderPIDSource(std::shared_ptr<CANTalon> _motor);
+	DriveEncoderPIDSource(std::shared_ptr<CANTalon> _motor, int *_inverted);
 	virtual ~DriveEncoderPIDSource();
 	virtual double PIDGet();
 private:
 	std::shared_ptr<CANTalon> motor;
+	int *inverted;
 };
 
 #endif /* SRC_SUBSYSTEMS_DRIVEENCODERPIDSOURCE_H_ */

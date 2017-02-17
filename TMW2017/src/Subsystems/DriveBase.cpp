@@ -105,12 +105,18 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	});
 
 	// Drive PID Control
-	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive));
+	const double driveControlP = prefs->GetFloat("DriveControlP");
+	const double driveControlI = prefs->GetFloat("DriveControlI");
+	const double driveControlD = prefs->GetFloat("DriveControlD");
+	const double driveControlF = prefs->GetFloat("DriveControlF");
+	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
+	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
 	driveControlDistanceSpeed.reset(new CrabSpeed());
 	driveControlSpeedController.reset(
-			new PIDController(2, 0.001, 0,
+			new PIDController(driveControlP, driveControlI, driveControlD, driveControlF,
 					driveControlEncoderSource.get(),
 					driveControlDistanceSpeed.get()));
+	driveControlSpeedController->Enable();
 	std::cout << "DriveBase::DriveBase() Finished\n";
 }
 
@@ -456,8 +462,8 @@ double DriveBase::GetTwistControlOutput() {
 	return driveControlTwist->Get();
 }
 
-void DriveBase::SetTargetDriveDistance(double pulses) {
-	driveControlSpeedController->SetSetpoint(pulses);
+void DriveBase::SetTargetDriveDistance(double distance) {
+	driveControlSpeedController->SetSetpoint(distance);
 }
 
 double DriveBase::GetDriveControlEncoderPosition() {
@@ -466,6 +472,10 @@ double DriveBase::GetDriveControlEncoderPosition() {
 
 double DriveBase::GetDriveControlOutput() {
 	return driveControlDistanceSpeed->Get();
+}
+
+double DriveBase::GetDriveControlError() {
+	return driveControlSpeedController->GetError();
 }
 
 std::shared_ptr<CANTalon> DriveBase::GetFrontLeftDrive() {
