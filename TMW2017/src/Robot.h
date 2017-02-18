@@ -38,6 +38,8 @@ private:
 	std::vector<std::shared_ptr<Manager>> managers;
 	std::unique_ptr<AutoManager> autoManager;
 	std::shared_ptr<World> world;
+
+	double angle = 0;
 public:
 	std::unique_ptr<Command> autonomousCommand;
 	static std::unique_ptr<OI> oi;

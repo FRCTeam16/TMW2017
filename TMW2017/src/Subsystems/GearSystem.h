@@ -38,11 +38,15 @@ private:
 	float gearPickupAmperageThreshold = 10;
 	int gearCheckScanCount = 0;
 	int gearCheckScanCountThreshold = 5;		// Tracks # of scans before amp tripping
-	const double resetRange = 0.00001;			// detect noisy float zeros for restting trip
+	const double resetRange = 0.00001;			// detect noisy float zeros for resetting trip
+	int gearBarReverseCooloffThreshold = 5;
+	int gearBarReverseCooloffCount = gearBarReverseCooloffThreshold;
 
 	double gearPickUpSpeed = 0.0;
 	double gearProcessPickUpSpeed = 0.0;		// overrides gearPickUpSpeed
 	bool gearPickupSpeedLocked = false;
+	bool gearBarReverse = false;
+	bool endGearBarReverse = false;
 
 	// pneumatic states
 	bool liftEnabled = false;
@@ -70,6 +74,7 @@ public:
 	void SMDB();
 	void SetGearBarSpeed(double speed);
 	void SetGearBarSpeedByProcess(double speed);
+	void ToggleGearBarReverse();
 
 	void ToggleLift();
 	void SetLiftEnabled(bool enabled);

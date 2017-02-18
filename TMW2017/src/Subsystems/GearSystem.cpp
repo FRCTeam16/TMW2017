@@ -69,18 +69,36 @@ void GearSystem::UnlockGearPickupSpeedLocked() {
 	gearPickupSpeedLocked = false;
 }
 
+void GearSystem::ToggleGearBarReverse() {
+	if (gearBarReverse) {
+		gearBarReverseCooloffCount = 0;
+		endGearBarReverse = true;
+	}
+	gearBarReverse = !gearBarReverse;
+}
+
 void GearSystem::StartAutoPickup() {
-	const bool tripped = (gearPickUp->GetOutputCurrent() > gearPickupAmperageThreshold);
-	if (tripped) {
+	if (endGearBarReverse) {
+		if (gearBarReverseCooloffCount++ <= gearBarReverseCooloffThreshold) {
+			return;
+		}
+		else {
+			endGearBarReverse = false;
+		}
+	}
+
+	const double currentAmps = gearPickUp->GetOutputCurrent();
+	const bool tripped = (currentAmps > gearPickupAmperageThreshold);
+	if (tripped && !gearBarReverse) {
 		gearCheckScanCount++;
-		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << "\n";
+		std::cout << "Tripped Gear Pickup " << gearCheckScanCount << " Amps = " << currentAmps << "\n";
 		if (gearCheckScanCount > gearCheckScanCountThreshold) {
 			std::cout << "Exceeded scan count threshold\n";
 			if (!AnyProcessesRunning()
-					&& rotateEnabled == true
-					&& extendEnabled == EXTEND_DISABLED) {
-				std::cout << "Autostarting gear pickup process\n";
-				gearPickupProcess->Start();
+				&& rotateEnabled == true
+				&& extendEnabled == EXTEND_DISABLED) {
+					std::cout << "Autostarting gear pickup process\n";
+					gearPickupProcess->Start();
 			}
 		}
 	} else {
@@ -94,9 +112,14 @@ void GearSystem::StartAutoPickup() {
 
 void GearSystem::Run() {
 	StartAutoPickup();
-	gearPickUp->Set( (!gearPickupSpeedLocked) ?
-						gearPickUpSpeed :
-						gearProcessPickUpSpeed );
+	double speed = gearPickUpSpeed;
+	if (gearPickupSpeedLocked) {
+		speed = gearProcessPickUpSpeed;
+		if (gearBarReverse == true) {
+			speed = speed * -1;
+		}
+	}
+	gearPickUp->Set(speed);
 
 	gearPickupProcess->Run();
 	gearEjectProcess->Run();
@@ -184,7 +207,9 @@ void GearSystem::EjectGear() {
 void GearSystem::ResetGear() {
 	std::cout << "GearSystem::ResetGear\n";
 	UnlockGearPickupSpeedLocked();
-	if (!gearResetProcess->Start()) {
+	if (gearResetProcess->Start()) {
+		gearBarReverse = false;
+	} else {
 		// Error on SMDB?
 	}
 }
@@ -199,6 +224,8 @@ void GearSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("GearPickupAmpTrigger", gearPickupAmperageThreshold);
 	gearCheckScanCountThreshold = frc::SmartDashboard::GetNumber("GearPickupTripScans", 5);
 	frc::SmartDashboard::PutNumber("GearPickupTripScans", gearCheckScanCountThreshold);
+	gearBarReverseCooloffThreshold = frc::SmartDashboard::GetNumber("GearBarReverseCooloffThreshold", 5);
+	frc::SmartDashboard::PutNumber("GearBarReverseCooloffThreshold", gearBarReverseCooloffThreshold);
 }
 
 

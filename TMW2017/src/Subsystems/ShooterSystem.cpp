@@ -86,6 +86,10 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
+	double hopperSpeedToSet = 0.0;
+	double shooterSetPoint = 0.0;
+	double elevatorSpeedToSet = 0.0;
+
 	if (shooterMotorsEnabled) {
 		Preferences *prefs = Preferences::GetInstance();
 		const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
@@ -94,27 +98,27 @@ void ShooterSystem::Run() {
 	    const double D = prefs->GetDouble("ShootD", 0);
 	    const double F = prefs->GetDouble("ShootF", 0.035);
 	    shooter1->SetPID(P, I, D, F);
-		shooter1->SetSetpoint(shooterSpeedRpm * -1);
-	} else {
-		shooter1->SetSetpoint(0);
-	}
+	    shooterSetPoint = shooterSpeedRpm * -.8;
 
-	double hopperSpeedToSet = 0.0;
-	if (fireEnabled) {
-		hopperSpeedToSet = firingHopperSpeed;
-		elevator->Set(-1.0);
+		if (fireEnabled) {
+			hopperSpeedToSet = firingHopperSpeed;
+			elevatorSpeedToSet = -1.0;
+		}
+
+		if (reverseHopper) {
+			if (--reverseHopperCountdownTimer == 0) {
+				reverseHopper = false;
+			} else {
+				hopperSpeedToSet = reverseHopperSpeed;
+			}
+		}
 	} else {
 		hopperSpeedToSet = hopperSpeed;
-		elevator->Set(0);
 	}
-	if (reverseHopper) {
-		if (--reverseHopperCountdownTimer == 0) {
-			reverseHopper = false;
-		} else {
-			hopperSpeedToSet = reverseHopperSpeed;
-		}
-	}
+
+	shooter1->SetSetpoint(shooterSetPoint);
 	hopper->Set(hopperSpeedToSet);
+	elevator->Set(elevatorSpeedToSet);
 }
 
 void ShooterSystem::SMDB() {

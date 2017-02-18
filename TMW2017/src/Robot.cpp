@@ -145,6 +145,23 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
+	bool useGyro = true;
+	bool useDriveBaseAngle = false;
+
+	if (oi->DR2->Pressed()) {
+		driveBase->SetTargetAngle(0.0);
+		useDriveBaseAngle = true;
+	}
+
+	if (oi->DR3->Pressed()) {
+		driveBase->SetTargetAngle(60.0);
+		useDriveBaseAngle = true;
+	}
+
+	if (oi->DR4->Pressed()) {
+		driveBase->SetTargetAngle(-60.0);
+		useDriveBaseAngle = true;
+	}
 
 	if (oi->GPStart->RisingEdge()) {
 		ballPickupSystem->ToggleBallPickup();
@@ -181,16 +198,35 @@ void Robot::TeleopPeriodic() {
 		shooterSystem->SetFireEnabled(false);
 	}
 
+	if (oi->DL1->RisingEdge()) {
+		gearSystem->EjectGear();
+	}
+
+	if (oi->DL2->Pressed()) {
+		useGyro = false;
+	}
+
+	//DR2 to field centric centered
+	//DR3 to field centric right spring
+	//DR4 to field centric left spring
+
+	if (oi->GPRB->RisingEdge()) {
+		gearSystem->ToggleGearBarReverse();
+	}
 
 	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 
 	shooterSystem->SetHopperSpeed(oi->GetGamepadRightStick());
 
+	const double twistInput = (useDriveBaseAngle) ?
+			driveBase->GetTwistControlOutput() :
+			oi->GetJoystickTwist();
+
 	driveBase->Crab(
-			oi->GetJoystickTwist(),
+			twistInput,
 			-oi->GetJoystickY(),
 			oi->GetJoystickX(),
-			true);
+			useGyro);
 
 	RunManagers();
 }

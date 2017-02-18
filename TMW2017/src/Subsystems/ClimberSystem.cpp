@@ -62,8 +62,5 @@ void ClimberSystem::ToggleProd() {
 
 void ClimberSystem::SetClimberSpeed(double speed) {
 	climberSpeed = speed;
-	if (climberSpeed > 0.1) {
-		SetProdEnabled(true);
-	}
 }
 
