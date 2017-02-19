@@ -42,8 +42,8 @@ OI::OI() {
     GPY.reset(new BSButton(gamepad, 4));
     GPB.reset(new BSButton(gamepad, 2));
     GPA.reset(new BSButton(gamepad, 1));
-    GPLB.reset(new BSButton(gamepad, 5));//actually LB, LT is RawAxis2
-    GPRB.reset(new BSButton(gamepad, 6));//actually RB, RT is RawAxis3
+    GPLB.reset(new BSButton(gamepad, 5));
+    GPRB.reset(new BSButton(gamepad, 6));
     GPBack.reset(new BSButton(gamepad, 7));
     GPStart.reset(new BSButton(gamepad, 8));
     DL1.reset(new BSButton(driverLeft, 1));
@@ -150,4 +150,43 @@ double OI::GetGamepadLT() {
 	} else {
 		return gamepad->GetRawAxis(2);
 	}
+}
+
+OI::DPad OI::GetGamepadDPad() {
+	DPad value = kUnknown;
+	switch (gamepad->GetPOV()) {
+	case -1: value = kUnpressed;
+			break;
+	case 0: value = kUp;
+			break;
+	case 45: value = kUpRight;
+			break;
+	case 90: value = kRight;
+			break;
+	case 135: value = kDownRight;
+			break;
+	case 180: value = kDown;
+			break;
+	case 225: value = kDownLeft;
+			break;
+	case 270: value = kLeft;
+			break;
+	case 315: value = kUpLeft;
+			break;
+	default: value = kUnknown;
+	}
+	return value;
+}
+
+void OI::SetGamepadLeftRumble(double rumble) {
+	gamepad->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, rumble);
+}
+
+void OI::SetGamepadRightRumble(double rumble) {
+	gamepad->SetRumble(frc::GenericHID::RumbleType::kRightRumble, rumble);
+}
+
+void OI::SetGamepadBothRumble(double rumble) {
+	SetGamepadLeftRumble(rumble);
+	SetGamepadRightRumble(rumble);
 }

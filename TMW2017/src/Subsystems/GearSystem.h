@@ -48,6 +48,10 @@ private:
 	bool gearBarReverse = false;
 	bool endGearBarReverse = false;
 
+	bool rumbleEnabled = false;
+	int rumbleCounter = 0;
+	const int rumbleCounterThreshold = 25;
+
 	// pneumatic states
 	bool liftEnabled = false;
 	bool rotateEnabled = false;

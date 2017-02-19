@@ -66,6 +66,20 @@ public:
 	std::shared_ptr<BSButton> DR11;
 	std::shared_ptr<BSButton> DR12;
 
+	enum DPad {
+		kUnpressed = -1,
+		kUp = 0,
+		kUpRight = 45,
+		kRight = 90,
+		kDownRight = 135,
+		kDown = 180,
+		kDownLeft = 225,
+		kLeft = 270,
+		kUpLeft = 315,
+		kUnknown = 999
+	};
+
+	DPad GetGamepadDPad();
 	double GetJoystickTwist();
 	double GetJoystickX();
 	double GetJoystickY();
@@ -73,6 +87,9 @@ public:
 	double GetGamepadRightStick();
 	double GetGamepadLT();
 	double GetGamepadRT();
+	void SetGamepadLeftRumble(double rumble);
+	void SetGamepadRightRumble(double rumble);
+	void SetGamepadBothRumble(double rumble);
 };
 
 #endif
