@@ -74,7 +74,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 
 
 
-	if (abs(currentEncoderPosition - targetSetpoint) <= distanceThreshold) {
+	if (abs(currentError) <= distanceThreshold) {
 		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
@@ -83,7 +83,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 		crab->Stop();
 		return true;
 	} else {
-		const double crabSpeed = currentPIDOutput;	// FIXME - incorrect speed handling
+		const double crabSpeed = currentPIDOutput;
 		const double xspeed = crabSpeed * sin(angle * M_PI / 180.0);
 		const double yspeed = crabSpeed * cos(angle * M_PI / 180.0);
 		crab->Update(

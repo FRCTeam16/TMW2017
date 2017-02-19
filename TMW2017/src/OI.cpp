@@ -116,6 +116,48 @@ double OI::GetJoystickY() {
 	}
 }
 
+double OI::getScaledJoystickRadians() {
+	double steerAngle = M_PI / 2;
+	steerAngle = driverRight->GetDirectionRadians();
+	if (steerAngle > M_PI)
+		steerAngle = M_PI;
+	if (steerAngle < -M_PI)
+		steerAngle = -M_PI;
+
+	if (steerAngle < -M_PI / 2)
+		steerAngle = -M_PI / 2 - steerAngle;
+	else if (steerAngle < M_PI / 2)
+		steerAngle = M_PI / 2 + steerAngle;
+	else
+		steerAngle = 3 * M_PI / 2 - steerAngle;
+//	scalingFactor = driverJoystick->GetTwist()/2+1.5;
+
+	return scaledRadians(steerAngle);
+}
+
+double OI::getLeftJoystickXRadians() {
+	if(fabs(driverLeft->GetX())<.00)
+		return M_PI/2;
+	else
+		return scaledRadians(M_PI/2 + driverLeft->GetX()*M_PI/2);
+}
+
+double OI::scaledRadians(double radians) {
+	double scaledradians = M_PI / 2;
+	double scalingFactor = 1.8;
+	if (radians <= M_PI / 2)
+		scaledradians =
+				(-(M_PI / 2) / pow(pow(-M_PI / 2, 2), scalingFactor / 2))
+						* pow(pow(radians - M_PI / 2, 2), scalingFactor / 2)
+						+ M_PI / 2;
+	else
+		//if(steerAngle <= M_PI)
+		scaledradians = ((M_PI / 2) / pow((M_PI / 2), scalingFactor))
+				* pow(radians - M_PI / 2, scalingFactor) + M_PI / 2;
+
+	return scaledradians;
+}
+
 double OI::GetGamepadLeftStick() {
 	const double threshold = 0.1;
 	if ((fabs(gamepad->GetRawAxis(1))) < threshold) {

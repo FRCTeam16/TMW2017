@@ -58,6 +58,12 @@ private:
 	DriveInfo<int> turns;
 	DriveInfo<int> inv;
 	DriveInfo<int> hotCount;
+
+	double A = 0;					// steer mode
+	double thetaRC = 0;
+	DriveInfo<double> theta;		// steer mode theta
+	DriveInfo<double> steerSpeed;	// steer mode wheel speeds
+
 	int coolCount = 0;
 	double driveLimit = 1.0;
 
@@ -84,6 +90,9 @@ private:
 			float offset, std::shared_ptr<PIDController> PIDCon,
 			std::shared_ptr<CANTalon> steer, int turns, int &inv);
 	void SetDriveSpeed(DriveInfo<double> speed);
+
+	void LeftTurn4Wheels();
+	void RightTurn4Wheels();
 
 public:
 	DriveBase();
@@ -113,5 +122,9 @@ public:
 	double GetDriveControlError();
 
 	std::shared_ptr<CANTalon> GetFrontLeftDrive();
+
+	// Ackerman Steering
+	void Steer(float radian, float speed, float a);
+
 };
 #endif

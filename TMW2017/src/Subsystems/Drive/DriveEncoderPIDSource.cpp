@@ -7,6 +7,7 @@
 
 #include "DriveEncoderPIDSource.h"
 #include "CANTalon.h"
+#include "Robot.h"
 
 DriveEncoderPIDSource::DriveEncoderPIDSource(std::shared_ptr<CANTalon> _motor, int *_inverted) {
 	motor = _motor;
@@ -18,6 +19,10 @@ DriveEncoderPIDSource::~DriveEncoderPIDSource() {
 }
 
 double DriveEncoderPIDSource::PIDGet() {
+	if (!DriverStation::GetInstance().IsDisabled()) {
+	std::cout << "DriveEncoderPIDSource::PIDGet() EncPosition = " << motor->GetEncPosition()
+			  << "  Inverted = " << *inverted << "\n";
+	}
 	return motor->GetEncPosition() * (*inverted) * -1;
 }
 

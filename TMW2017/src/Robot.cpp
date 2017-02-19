@@ -145,23 +145,39 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
-	bool useGyro = true;
+	bool useCrab = true;
 	bool useDriveBaseAngle = false;
 
-	if (oi->DR2->Pressed()) {
+	if (oi->DR1->Pressed()) {
+		shooterSystem->SetFireEnabled(true);
+	} else {
+		shooterSystem->SetFireEnabled(false);
+	}
+
+	if (oi->DR2->RisingEdge()) {
+		gearSystem->EjectGear();
+	}
+
+	if (oi->DL1->Pressed()) {
+		useCrab = false;
+	}
+
+	if (oi->DL2->Pressed()) {
 		driveBase->SetTargetAngle(0.0);
 		useDriveBaseAngle = true;
 	}
 
-	if (oi->DR3->Pressed()) {
+	if (oi->DL4->Pressed()) {
 		driveBase->SetTargetAngle(60.0);
 		useDriveBaseAngle = true;
 	}
 
-	if (oi->DR4->Pressed()) {
+	if (oi->DL5->Pressed()) {
 		driveBase->SetTargetAngle(-60.0);
 		useDriveBaseAngle = true;
 	}
+
+
 
 	if (oi->GPStart->RisingEdge()) {
 		ballPickupSystem->ToggleBallPickup();
@@ -192,20 +208,6 @@ void Robot::TeleopPeriodic() {
 	}
 
 
-	if (oi->DR1->Pressed()) {
-		shooterSystem->SetFireEnabled(true);
-	} else {
-		shooterSystem->SetFireEnabled(false);
-	}
-
-	if (oi->DL1->RisingEdge()) {
-		gearSystem->EjectGear();
-	}
-
-	if (oi->DL2->Pressed()) {
-		useGyro = false;
-	}
-
 	//DR2 to field centric centered
 	//DR3 to field centric right spring
 	//DR4 to field centric left spring
@@ -222,11 +224,17 @@ void Robot::TeleopPeriodic() {
 			driveBase->GetTwistControlOutput() :
 			oi->GetJoystickTwist();
 
-	driveBase->Crab(
-			twistInput,
-			-oi->GetJoystickY(),
-			oi->GetJoystickX(),
-			useGyro);
+	if (useCrab) {
+		driveBase->Crab(
+				twistInput,
+				-oi->GetJoystickY(),
+				oi->GetJoystickX(),
+				true);
+	} else {
+		driveBase->Steer(oi->getLeftJoystickXRadians(),
+						 oi->GetJoystickY(),
+						 0.5);
+	}
 
 	RunManagers();
 }
