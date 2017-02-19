@@ -98,7 +98,7 @@ void ShooterSystem::Run() {
 	    const double D = prefs->GetDouble("ShootD", 0);
 	    const double F = prefs->GetDouble("ShootF", 0.035);
 	    shooter1->SetPID(P, I, D, F);
-	    shooterSetPoint = shooterSpeedRpm * -.8;
+	    shooterSetPoint = shooterSpeedRpm * -1.0;
 
 		if (fireEnabled) {
 			hopperSpeedToSet = firingHopperSpeed;
