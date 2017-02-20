@@ -125,6 +125,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
+	// Update World
 	Scheduler::GetInstance()->Run();
 	autoManager->Periodic(world);
 	RunManagers();
@@ -139,7 +140,6 @@ void Robot::TeleopInit() {
 		autonomousCommand->Cancel();
 	}
 	driveBase->InitTeleop();
-	driveBase->UseOpenLoopDrive();
 	InitManagers();
 }
 
@@ -235,6 +235,8 @@ void Robot::TeleopPeriodic() {
 						 oi->GetJoystickY(),
 						 0.5);
 	}
+
+	SmartDashboard::PutNumber("GyroAngle",RobotMap::ahrs->GetYaw());
 
 	RunManagers();
 }

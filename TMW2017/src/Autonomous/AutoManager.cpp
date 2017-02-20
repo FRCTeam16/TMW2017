@@ -15,18 +15,19 @@ enum AutoStrategy {
 	kDebug = 0, kCenter, kBoiler, kReturn
 };
 
-AutoManager::AutoManager() {
+AutoManager::AutoManager() :
+		strategies(new frc::SendableChooser<void*>())
+{
 	strategyLookup.insert(std::make_pair(AutoStrategy::kDebug, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kCenter, std::shared_ptr<Strategy>{ new CenterGearStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kBoiler, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kReturn, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 
-	strategies.reset(new frc::SendableChooser<void*>());
 	strategies->AddDefault("Debug Auto Strategy", (void *) AutoStrategy::kDebug);
 	strategies->AddObject("Center", (void *) AutoStrategy::kCenter);
 	strategies->AddObject("Boiler", (void *) AutoStrategy::kBoiler);
 	strategies->AddObject("Return", (void *) AutoStrategy::kReturn);
-	SmartDashboard::PutData("Autonomous Strategy", strategies.get());
+	frc::SmartDashboard::PutData("Autonomous Strategy", strategies.get());
 }
 
 AutoManager::~AutoManager() {
@@ -41,9 +42,8 @@ void AutoManager::Init(std::shared_ptr<World> world) {
 	if (iterator != strategyLookup.end()) {
 		currentStrategy = iterator->second;
 	} else {
-		std::cout << "NO STRATEGY FOUND\n";
+		std::cerr << "NO AUTONOMOUS STRATEGY FOUND\n";
 	}
-
 	RobotMap::ahrs->ZeroYaw();
 	std::cout << "AutoManager::Init COMPLETE\n";
 }
@@ -53,5 +53,4 @@ void AutoManager::Periodic(std::shared_ptr<World> world) {
 	if (currentStrategy) {
 		currentStrategy->Run(world);
 	}
-
 }

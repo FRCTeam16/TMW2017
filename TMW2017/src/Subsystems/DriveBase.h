@@ -86,9 +86,6 @@ private:
 			std::shared_ptr<PIDController> PIDCon, std::shared_ptr<CANTalon> steer,
 			int turns, int &inv);
 	double CorrectSteerSetpoint(double setpoint);
-	void SetSteerSetpoint(float setpoint, std::shared_ptr<AnalogInput> actual,
-			float offset, std::shared_ptr<PIDController> PIDCon,
-			std::shared_ptr<CANTalon> steer, int turns, int &inv);
 	void SetDriveSpeed(DriveInfo<double> speed);
 
 	void LeftTurn4Wheels();

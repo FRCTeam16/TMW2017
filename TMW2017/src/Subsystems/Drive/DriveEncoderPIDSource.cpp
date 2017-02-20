@@ -20,8 +20,8 @@ DriveEncoderPIDSource::~DriveEncoderPIDSource() {
 
 double DriveEncoderPIDSource::PIDGet() {
 	if (!DriverStation::GetInstance().IsDisabled()) {
-	std::cout << "DriveEncoderPIDSource::PIDGet() EncPosition = " << motor->GetEncPosition()
-			  << "  Inverted = " << *inverted << "\n";
+		std::cout << "DriveEncoderPIDSource::PIDGet() EncPosition = " << motor->GetEncPosition()
+				  << "  Inverted = " << *inverted << "\n";
 	}
 	return motor->GetEncPosition() * (*inverted) * -1;
 }
