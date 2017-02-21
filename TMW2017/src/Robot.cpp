@@ -113,6 +113,7 @@ void Robot::DisabledInit(){
 void Robot::DisabledPeriodic() {
 	Scheduler::GetInstance()->Run();
 	RunManagerSMDBs();
+	frc::SmartDashboard::PutNumber("Gyro Angle", RobotMap::ahrs->GetAngle());
 }
 
 void Robot::AutonomousInit() {
