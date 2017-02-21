@@ -13,6 +13,7 @@
 class EjectGear : public Step {
 private:
 	double startTime = -1;
+	const double maxTime = 3000;
 public:
 	EjectGear() : startTime(-1) {}
 	~EjectGear() {}

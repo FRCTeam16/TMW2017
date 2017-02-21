@@ -149,8 +149,19 @@ void ShooterSystem::SetFireEnabled(bool enabled) {
 	fireEnabled = enabled;
 }
 
+void ShooterSystem::SetShooterMotorsEnabled(bool enabled) {
+	shooterMotorsEnabled = enabled;
+}
+
 void ShooterSystem::ToggleShooter() {
 	shooterMotorsEnabled = !shooterMotorsEnabled;
+}
+
+bool ShooterSystem::AreShooterMotorReady() {
+	Preferences *prefs = Preferences::GetInstance();
+	const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
+	const double currentRPM = shooter1->Get();
+	return ((currentRPM/shooterSpeedRpm) > 0.8);
 }
 
 void ShooterSystem::SetHopperSpeed(double speed) {

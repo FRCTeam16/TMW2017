@@ -43,6 +43,8 @@ GearSystem::GearSystem() : Subsystem("GearSystem") {
     gearResetProcess.reset(new GearResetProcess(this));
     gearEjectProcess.reset(new GearEjectProcess(this));
 
+    gearBumperLeft.reset(new DigitalInput(0));
+    gearBumperRight.reset(new DigitalInput(1));
 }
 
 void GearSystem::InitDefaultCommand() {
@@ -78,16 +80,8 @@ void GearSystem::ToggleGearBarReverse() {
 	gearBarReverse = !gearBarReverse;
 }
 
-void GearSystem::StartAutoPickup() {
-	if (endGearBarReverse) {
-		if (gearBarReverseCooloffCount++ <= gearBarReverseCooloffThreshold) {
-			return;
-		}
-		else {
-			endGearBarReverse = false;
-		}
-	}
 
+void GearSystem::StartAutoPickupByAmps() {
 	const double currentAmps = gearPickUp->GetOutputCurrent();
 	const bool tripped = (currentAmps > gearPickupAmperageThreshold);
 	if (tripped && !gearBarReverse) {
@@ -110,11 +104,44 @@ void GearSystem::StartAutoPickup() {
 }
 
 
+void GearSystem::StartAutoPickupBySwitches() {
+	frc::SmartDashboard::PutBoolean("GearBumperLeft", gearBumperLeft->Get());
+	frc::SmartDashboard::PutBoolean("GearBumperRight", gearBumperRight->Get());
+
+	if (gearBumperLeft->Get() && gearBumperRight->Get()) {
+		std::cout << "Detected Both Gear Bumpers Pressed\n";
+		if (!AnyProcessesRunning()
+			&& rotateEnabled == true
+			&& extendEnabled == EXTEND_DISABLED) {
+				std::cout << "Autostarting gear pickup process\n";
+				gearPickupProcess->Start();
+				rumbleEnabled = true;
+				rumbleCounter = 0;
+		}
+	}
+}
+
+
+
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
 void GearSystem::Run() {
-	StartAutoPickup();
+	if (endGearBarReverse) {
+		if (gearBarReverseCooloffCount++ <= gearBarReverseCooloffThreshold) {
+			return;
+		}
+		else {
+			endGearBarReverse = false;
+		}
+	}
+
+	if (useSwitchAutoPickup) {
+		StartAutoPickupBySwitches();
+	} else {
+		StartAutoPickupByAmps();
+	}
+
 	if (rumbleEnabled) {
 		if (rumbleCounter++ == rumbleCounterThreshold) {
 			rumbleEnabled = false;
@@ -216,6 +243,10 @@ void GearSystem::EjectGear() {
 	}
 }
 
+bool GearSystem::IsEjectGearRunning() {
+	return !gearEjectProcess->IsStopped();
+}
+
 void GearSystem::ResetGear() {
 	std::cout << "GearSystem::ResetGear\n";
 	UnlockGearPickupSpeedLocked();
@@ -231,6 +262,9 @@ void GearSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("GearPickup Amps", gearPickUp->GetOutputCurrent());
 	frc::SmartDashboard::PutNumber("Pressure Gauge",
 			pressureGauge->GetAverageVoltage() * 40); 	// 0 to 5 0 to 200
+
+	useSwitchAutoPickup = frc::SmartDashboard::GetBoolean("GearAutoPickup SwitchOrAmp", useSwitchAutoPickup);
+	frc::SmartDashboard::PutBoolean("GearAutoPickup SwitchOrAmp", useSwitchAutoPickup);
 
 	gearPickupAmperageThreshold = frc::SmartDashboard::GetNumber("GearPickupAmpTrigger", 6.0);
 	frc::SmartDashboard::PutNumber("GearPickupAmpTrigger", gearPickupAmperageThreshold);

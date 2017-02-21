@@ -15,7 +15,12 @@ bool EjectGear::Run(std::shared_ptr<World> world) {
 		startTime = world->GetClock();
 		Robot::gearSystem->EjectGear();
 	}
-	return true;
+	const double currentTime = world->GetClock();
+	if (currentTime - startTime > maxTime) {
+		std::cerr << "Eject Gear Step timed out\n";
+		return true;
+	}
+	return !Robot::gearSystem->IsEjectGearRunning();
 }
 
 

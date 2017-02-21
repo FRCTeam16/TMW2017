@@ -51,7 +51,9 @@ public:
 	void SMDB();
 
 	void SetFireEnabled(bool enabled);
+	void SetShooterMotorsEnabled(bool enabled);
 	void ToggleShooter();
+	bool AreShooterMotorReady();
 
 	void SetHopperSpeed(double speed);
 

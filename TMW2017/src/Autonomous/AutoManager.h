@@ -13,6 +13,8 @@
 #include "Strategy.h"
 #include <map>
 
+static const std::string AUTO_DELAY = "Auto Delay";
+
 class AutoManager {
 public:
 	AutoManager();
@@ -23,6 +25,8 @@ private:
 	std::shared_ptr<frc::SendableChooser<void*>> strategies;
 	std::map<int, std::shared_ptr<Strategy>> strategyLookup;
 	std::shared_ptr<Strategy> currentStrategy;
+
+	void InitSmartDashboardParams();
 
 };
 
