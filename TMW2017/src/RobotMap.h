@@ -54,7 +54,7 @@ public:
 	static std::shared_ptr<Compressor> gearSystemGearCompressor;
 	static std::shared_ptr<AnalogInput> gearSystemPressureGauge;
 	static std::shared_ptr<CANTalon> climberSystemClimber;
-	static std::shared_ptr<Solenoid> climberSystemProd;
+	static std::shared_ptr<DoubleSolenoid> climberSystemProd;
 	static std::shared_ptr<CANTalon> shooterSystemElevator;
 	static std::shared_ptr<CANTalon> shooterSystemHopper;
 	static std::shared_ptr<CANTalon> shooterSystemShooter1;

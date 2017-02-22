@@ -46,7 +46,11 @@ void ClimberSystem::InitDefaultCommand() {
 
 void ClimberSystem::Run() {
 	climber->Set(climberSpeed *-1);
-	prod->Set(prodEnabled);
+	if (prodEnabled) {
+		prod->Set(DoubleSolenoid::kForward);
+	} else {
+		prod->Set(DoubleSolenoid::kReverse);
+	}
 }
 
 void ClimberSystem::InitManager(Manager::RunMode runMode) {
