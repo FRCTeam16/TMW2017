@@ -5,7 +5,10 @@
 #ifndef SRC_AUTONOMOUS_PIDDRIVE_H_
 #define SRC_AUTONOMOUS_PIDDRIVE_H_
 
-#include "../Step.h"
+#include "WPILib.h"
+#include <Autonomous/Step.h>
+#include <Util/CollisionDetector.h>
+#include <RobotMap.h>
 
 
 class ZeroDriveEncoders : public Step {
@@ -17,6 +20,15 @@ private:
 	bool firstRun = true;
 	int lastEncoderPosition = 0;
 };
+
+
+class DriveUnit {
+public:
+	enum Units { kPulses, kInches };
+	static double ToPulses(double value, Units units);
+	static const std::string PULSES_PER_INCH;
+};
+
 
 /**
  * Uses encoder counting to drive to a specified target distance
@@ -41,10 +53,11 @@ private:
  */
 class PIDControlledDrive : public Step {
 public:
-	enum Units { kPulses, kInches };
-	PIDControlledDrive(double _angle, double _speed, double _targetDistance, int _threshold, Units _units, bool _reverse = false) :
-		angle(_angle), speed(_speed), targetDistance(_targetDistance),
-		distanceThreshold(_threshold), units(_units), reverse(_reverse) {}
+	PIDControlledDrive(double _angle, double _speed, double _targetDistance,
+			int _threshold, DriveUnit::Units _units, bool _reverse = false) :
+			angle(_angle), speed(_speed), targetDistance(_targetDistance), distanceThreshold(
+					_threshold), units(_units), reverse(_reverse),
+					collisionDetector(new CollisionDetector(RobotMap::ahrs, 1.0)) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	double startTime = -1;
@@ -52,22 +65,23 @@ private:
 	const double speed;
 	const double targetDistance;
 	const double distanceThreshold;
-	const Units units;
+	const DriveUnit::Units units;
 	const bool reverse;
+	const std::unique_ptr<CollisionDetector> collisionDetector ;
 
 	double startingEncoderCount = 0;
-	double targetSetpoint;
+	double targetSetpoint = 0;
 };
 
 class XYPIDControlledDrive : public Step {
 public:
-	enum Units { kPulses, kInches };
 	XYPIDControlledDrive(double _angle, double _speed,
 			double _XtargetDistance, double _YtargetDistance,
-			int _threshold, Units _units, bool _reverse = false) :
+			int _threshold, DriveUnit::Units _units, bool _reverse = false) :
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
-		units(_units), reverse(_reverse) {}
+		units(_units), reverse(_reverse),
+		collisionDetector(new CollisionDetector(RobotMap::ahrs, 1.0)) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	double startTime = -1;
@@ -76,11 +90,12 @@ private:
 	const double XtargetDistance;
 	const double YtargetDistance;
 	const double distanceThreshold;
-	const Units units;
+	const DriveUnit::Units units;
 	const bool reverse;
+	const std::unique_ptr<CollisionDetector> collisionDetector;
 
 	double startingEncoderCount = 0;
-	double targetSetpoint;
+	double targetSetpoint = 0;
 };
 
 #endif /* SRC_AUTONOMOUS_PIDDRIVE_H_ */

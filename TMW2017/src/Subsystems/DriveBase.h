@@ -22,6 +22,9 @@ struct DriveInfo {
 	T FR = 0;
 	T RL = 0;
 	T RR = 0;
+
+	DriveInfo() {}
+	DriveInfo(T value) : FL(value), FR(value), RL(value), RR(value) {}
 };
 
 struct Wheelbase {
@@ -81,7 +84,6 @@ private:
 	void InitializeOffsets();
 	void EnableSteerPIDControllers(const bool enable);
 
-	void SetSteering(DriveInfo<double> setpoint);
 	void SetSteerSetpoint(double setpoint,
 			std::shared_ptr<AnalogInput> actual, double offset,
 			std::shared_ptr<PIDController> PIDCon, std::shared_ptr<CANTalon> steer,
@@ -103,6 +105,7 @@ public:
 	DriveInfo<double> GetPositionOffsets() const;
 	void ZeroTurnInfo();
 	void ZeroDriveEncoders();
+	void SetSteering(DriveInfo<double> setpoint);
 
 	void InitTeleop();
 

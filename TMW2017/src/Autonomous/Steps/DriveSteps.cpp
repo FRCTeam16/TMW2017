@@ -3,7 +3,7 @@
  */
 
 #include <Autonomous/Steps/DriveSteps.h>
-#include "../../Robot.h"
+#include <Robot.h>
 
 using namespace std;
 
@@ -18,6 +18,26 @@ bool ZeroDriveEncoders::Run(std::shared_ptr<World> world) {
 	return (lastEncoderPosition == 0);
 }
 
+const std::string DriveUnit::PULSES_PER_INCH = "PulsesPerInch";
+double DriveUnit::ToPulses(double value, DriveUnit::Units unit) {
+	Preferences *prefs = Preferences::GetInstance();
+	const double pulsesPerInch = prefs->GetDouble(PULSES_PER_INCH, 16.5);
+	double converted = 0;
+	switch (unit) {
+	case kInches:
+		converted = value * pulsesPerInch;
+		break;
+	case kPulses:
+		converted = value;
+		break;
+	default:
+		std::cerr << "Asked to convert unhandled unit: " << unit << "\n";
+		converted = value;
+		break;
+	}
+	std::cout << "Converted " << value << " to " << converted << " with ppi " << pulsesPerInch << "\n";
+	return converted;
+}
 
 bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 	cout << "SimpleEncoderDrive target distance" << targetDistance << '\n';
@@ -48,14 +68,14 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 	}
 }
 
+
+
 bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 	if (startTime < 0) {
-		targetSetpoint = targetDistance;
+		targetSetpoint = DriveUnit::ToPulses(targetDistance, units);
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
-
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
-		// DriveBase transforms vbus type inputs into RPMs per wheel during swerve calcs
 		Robot::driveBase->UseClosedLoopDrive();
 		startingEncoderCount = Robot::driveBase->GetDriveControlEncoderPosition();
 	}
@@ -71,12 +91,16 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 	cout << "PIDControlledDrive Current Error            = " << currentError << "\n";
 	cout << "PIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
 
-	if (abs(currentError) <= distanceThreshold) {
+	if (abs(currentError) <= DriveUnit::ToPulses(distanceThreshold, units)) {
 		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
 	} else if (elapsedTimeMillis > 5000) {
-		cout << "**** EMERGENCY HALT ***" << "\n";
+		cerr << "**** EMERGENCY HALT ***" << "\n";
+		crab->Stop();
+		return true;
+	} else if (collisionDetector->Detect()) {
+		cerr << "**** EMERGENCY HALT DUE TO COLLISION ****\n";
 		crab->Stop();
 		return true;
 	} else {
@@ -93,14 +117,14 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 }
 
 
+
 bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 	if (startTime < 0) {
-		targetSetpoint = sqrt(XtargetDistance*XtargetDistance + YtargetDistance*YtargetDistance);
+		const double hypotenuse = sqrt(XtargetDistance*XtargetDistance + YtargetDistance*YtargetDistance);
+		targetSetpoint = DriveUnit::ToPulses(hypotenuse, units);
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
-
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
-		// DriveBase transforms vbus type inputs into RPMs per wheel during swerve calcs
 		Robot::driveBase->UseClosedLoopDrive();
 		startingEncoderCount = Robot::driveBase->GetDriveControlEncoderPosition();
 	}
@@ -116,7 +140,7 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 	cout << "PIDControlledDrive Current Error            = " << currentError << "\n";
 	cout << "PIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
 
-	if (abs(currentError) <= distanceThreshold) {
+	if (abs(currentError) <= DriveUnit::ToPulses(distanceThreshold, units)) {
 		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
@@ -124,13 +148,17 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		cout << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;
+	} else if (collisionDetector->Detect()) {
+		cerr << "**** EMERGENCY HALT DUE TO COLLISION ****\n";
+		crab->Stop();
+		return true;
 	} else {
 		const double crabSpeed = currentPIDOutput * ((reverse) ? -1.0 : 1.0);
 		const double angleRadians = atan(XtargetDistance/ YtargetDistance);
 
 		// FIXME: detect direction, avoid divide by zero, could abs ratio
-//		const double xspeed = crabSpeed * sin(angleRadians * M_PI / 180.0);
-//		const double yspeed = crabSpeed * cos(angleRadians * M_PI / 180.0);
+//		const double xspeed = crabSpeed * sin(angleRadians);
+//		const double yspeed = crabSpeed * cos(angleRadians);
 		const double xspeed = -crabSpeed * cos(angleRadians);
 		const double yspeed = -crabSpeed * sin(angleRadians);
 
