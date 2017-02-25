@@ -148,6 +148,7 @@ void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
 	bool useCrab = true;
 	bool useDriveBaseAngle = false;
+	bool robotCentricCrab = false;
 
 	if (oi->DR1->Pressed()) {
 		shooterSystem->SetFireEnabled(true);
@@ -163,9 +164,15 @@ void Robot::TeleopPeriodic() {
 		useCrab = false;
 	}
 
+
 	if (oi->DL2->Pressed()) {
-		driveBase->SetTargetAngle(0.0);
-		useDriveBaseAngle = true;
+		// Only run auto-centering when we are in field-centric crabbing
+		if (useCrab) {
+			driveBase->SetTargetAngle(0.0);
+			useDriveBaseAngle = true;
+		} else {
+			robotCentricCrab = true;
+		}
 	}
 
 	if (oi->DL4->Pressed()) {
@@ -201,37 +208,32 @@ void Robot::TeleopPeriodic() {
 		gearSystem->PickUpGear();
 	}
 
-
-	climberSystem->SetClimberSpeed(oi->GetGamepadLT());
-
 	if (oi->GPLB->RisingEdge()) {
 		climberSystem->ToggleProd();
 	}
-
-
-	//DR2 to field centric centered
-	//DR3 to field centric right spring
-	//DR4 to field centric left spring
 
 	if (oi->GPRB->RisingEdge()) {
 		gearSystem->ToggleGearBarReverse();
 	}
 
-	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 
+	climberSystem->SetClimberSpeed(oi->GetGamepadLT());
+	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());
 	shooterSystem->SetHopperSpeed(oi->GetGamepadRightStick());
 
-	const double twistInput = (useDriveBaseAngle) ?
-			driveBase->GetTwistControlOutput() :
-			oi->GetJoystickTwist();
 
-	if (useCrab) {
+	if (useCrab || robotCentricCrab) {
+		const double twistInput = (useDriveBaseAngle) ?
+					driveBase->GetTwistControlOutput() :
+					oi->GetJoystickTwist();
+		const bool useGyro = !robotCentricCrab;
 		driveBase->Crab(
 				twistInput,
 				-oi->GetJoystickY(),
 				oi->GetJoystickX(),
-				true);
+				useGyro);
 	} else {
+		// Ackermann Steering
 		driveBase->Steer(oi->getLeftJoystickXRadians(),
 						 oi->GetJoystickY(),
 						 0.5);
