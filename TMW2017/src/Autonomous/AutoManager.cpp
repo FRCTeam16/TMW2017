@@ -10,6 +10,7 @@
 #include "Strategies/DebugAutoStrategy.h"
 #include <Autonomous/Strategies/DebugAutoStrategy.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
+#include <Autonomous/Strategies/RightGearStrategy.h>
 
 enum AutoStrategy {
 	kDebug = 0, kCenter, kBoiler, kReturn
@@ -20,7 +21,7 @@ AutoManager::AutoManager() :
 {
 	strategyLookup.insert(std::make_pair(AutoStrategy::kDebug, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kCenter, std::shared_ptr<Strategy>{ new CenterGearStrategy() }));
-	strategyLookup.insert(std::make_pair(AutoStrategy::kBoiler, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
+	strategyLookup.insert(std::make_pair(AutoStrategy::kBoiler, std::shared_ptr<Strategy>{ new RightGearStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kReturn, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 
 	strategies->AddDefault("Debug Auto Strategy", (void *) AutoStrategy::kDebug);

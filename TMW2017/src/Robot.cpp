@@ -51,6 +51,7 @@ void Robot::RobotInit() {
 	managers.push_back(ballPickupSystem);
 
 	world.reset(new World());
+	autoManager.reset(new AutoManager());
 
 
 	// driveBase Twist control

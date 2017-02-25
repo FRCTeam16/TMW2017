@@ -16,9 +16,11 @@ public:
 	DriveEncoderPIDSource(std::shared_ptr<CANTalon> _motor, int *_inverted);
 	virtual ~DriveEncoderPIDSource();
 	virtual double PIDGet();
+	void SetInitialEncoderValue();
 private:
 	std::shared_ptr<CANTalon> motor;
 	int *inverted;
+	double initialEncoderValue = 0;
 };
 
 #endif /* SRC_SUBSYSTEMS_DRIVEENCODERPIDSOURCE_H_ */

@@ -18,11 +18,11 @@ DriveEncoderPIDSource::DriveEncoderPIDSource(std::shared_ptr<CANTalon> _motor, i
 DriveEncoderPIDSource::~DriveEncoderPIDSource() {
 }
 
+void DriveEncoderPIDSource::SetInitialEncoderValue() {
+	initialEncoderValue = motor->GetEncPosition();
+}
+
 double DriveEncoderPIDSource::PIDGet() {
-	if (!DriverStation::GetInstance().IsDisabled()) {
-		std::cout << "DriveEncoderPIDSource::PIDGet() EncPosition = " << motor->GetEncPosition()
-				  << "  Inverted = " << *inverted << "\n";
-	}
-	return motor->GetEncPosition() * (*inverted) * -1;
+	return abs(motor->GetEncPosition() - initialEncoderValue);
 }
 

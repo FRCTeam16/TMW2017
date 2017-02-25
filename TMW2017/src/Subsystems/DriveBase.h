@@ -14,6 +14,7 @@
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
 #include "Drive/CrabSpeed.h"
+#include "Drive/DriveEncoderPIDSource.h"
 
 template <typename T>
 struct DriveInfo {
@@ -70,7 +71,7 @@ private:
 	Wheelbase wheelbase;
 	std::unique_ptr<PIDController> driveControlTwist;
 	std::unique_ptr<CrabSpeed> crabSpeedTwist;
-	std::unique_ptr<PIDSource> driveControlEncoderSource;
+	std::unique_ptr<DriveEncoderPIDSource> driveControlEncoderSource;
 	std::unique_ptr<PIDController> driveControlSpeedController;
 	std::unique_ptr<CrabSpeed> driveControlDistanceSpeed;
 
@@ -109,8 +110,9 @@ public:
 
 	void SetTargetAngle(double angle);
 	double GetTwistControlOutput();
+	double GetTwistControlError();
 
-	void SetTargetDriveDistance(double distance);
+	void SetTargetDriveDistance(double distance, double maxSpeed = 0.5);
 	void UseClosedLoopDrive();
 	void UseOpenLoopDrive();
 

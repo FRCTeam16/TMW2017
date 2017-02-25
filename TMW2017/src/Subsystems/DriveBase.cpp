@@ -63,9 +63,9 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 
     InitializeOffsets();
 
-    wheelbase.W = 22.5/2;
-    wheelbase.X = 21.75;
-    wheelbase.Y = 22.5/2;
+    wheelbase.W = 23.5/2;
+    wheelbase.X = 27.25;
+    wheelbase.Y = 23.5/2;
 
     // Enable Controllers
 	std::vector<std::shared_ptr<PIDController>> controllers = {
@@ -552,8 +552,14 @@ double DriveBase::GetTwistControlOutput() {
 	return driveControlTwist->Get();
 }
 
-void DriveBase::SetTargetDriveDistance(double distance) {
+double DriveBase::GetTwistControlError() {
+	return driveControlTwist->GetError();
+}
+
+void DriveBase::SetTargetDriveDistance(double distance, double maxSpeed) {
 	driveControlSpeedController->SetSetpoint(distance);
+	driveControlEncoderSource->SetInitialEncoderValue();
+	driveControlSpeedController->SetOutputRange(-maxSpeed, maxSpeed);
 }
 
 double DriveBase::GetDriveControlEncoderPosition() {
