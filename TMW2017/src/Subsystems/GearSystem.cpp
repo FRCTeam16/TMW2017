@@ -360,7 +360,9 @@ GearEjectProcess::GearEjectProcess(GearSystem *gearSystem_) : timer(new Timer())
 	gearSystem.reset(gearSystem_);
 	stateMapping.insert(std::make_pair(kRelease, StateInfo {0.1, kExtend}));
 	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.1, kRetract}));
-	stateMapping.insert(std::make_pair(kRetract, StateInfo {0.25, kMotorOff}));
+	stateMapping.insert(std::make_pair(kRetract, StateInfo {0.25, kExtend2}));
+	stateMapping.insert(std::make_pair(kExtend2, StateInfo {0.1, kRetract2}));
+	stateMapping.insert(std::make_pair(kRetract2, StateInfo {0.25, kMotorOff}));
 	stateMapping.insert(std::make_pair(kMotorOff, StateInfo {0.1, kComplete}));
 	timer->Start();
 }
@@ -394,10 +396,12 @@ void GearEjectProcess::Run() {
 		gearSystem->SetSqueezeEnabled(false);
 		break;
 	case ProcessState::kExtend:
+	case ProcessState::kExtend2:
 		gearSystem->SetExtendEnabled(EXTEND_ENABLED);
 		gearSystem->SetGearBarSpeedByProcess(-0.5);
 		break;
 	case ProcessState::kRetract:
+	case ProcessState::kRetract2:
 		gearSystem->SetExtendEnabled(EXTEND_DISABLED);
 		break;
 	case ProcessState::kComplete:

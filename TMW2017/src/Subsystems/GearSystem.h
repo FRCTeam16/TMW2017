@@ -134,7 +134,7 @@ class GearEjectProcess {
 
 
 private:
-	enum ProcessState { kStopped, kExtend, kRelease, kRetract, kMotorOff, kComplete };
+	enum ProcessState { kStopped, kExtend, kExtend2, kRelease, kRetract, kRetract2, kMotorOff, kComplete };
 
 	struct StateInfo {
 			double waitTime;
