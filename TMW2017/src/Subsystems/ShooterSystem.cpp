@@ -100,7 +100,7 @@ void ShooterSystem::Run() {
 	    shooter1->SetPID(P, I, D, F);
 	    shooterSetPoint = shooterSpeedRpm * -1.0;
 
-		if (fireEnabled) {
+		if (fireEnabled || CheckPulsingBallLoad()) {
 			hopperSpeedToSet = firingHopperSpeed;
 			elevatorSpeedToSet = -1.0;
 		}
@@ -119,6 +119,19 @@ void ShooterSystem::Run() {
 	shooter1->SetSetpoint(shooterSetPoint);
 	hopper->Set(hopperSpeedToSet);
 	elevator->Set(elevatorSpeedToSet);
+}
+
+void ShooterSystem::PulseBallLoad(int countdownScansStart) {
+	pulseBallLoadCountdown = countdownScansStart;
+}
+
+bool ShooterSystem::CheckPulsingBallLoad() {
+	if (pulseBallLoadCountdown > 0) {
+		pulseBallLoadCountdown--;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void ShooterSystem::SMDB() {
@@ -151,6 +164,9 @@ void ShooterSystem::SetFireEnabled(bool enabled) {
 
 void ShooterSystem::ToggleShooter() {
 	shooterMotorsEnabled = !shooterMotorsEnabled;
+	if (shooterMotorsEnabled) {
+		PulseBallLoad();
+	}
 }
 
 void ShooterSystem::SetHopperSpeed(double speed) {
