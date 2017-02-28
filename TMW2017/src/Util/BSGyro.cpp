@@ -22,9 +22,7 @@ float BSGyro::GetOffset() {
 }
 
 float BSGyro::GetYaw() {
-	const float value = GetOffset() + ahrs->GetYaw();
-	std::cout << "GetYaw() = " << value << "\n";
-	return value;
+	return GetOffset() + ahrs->GetYaw();
 }
 
 double BSGyro::PIDGet() {
