@@ -35,6 +35,11 @@ private:
 	bool shooterMotorsEnabled = false;
 	bool fireEnabled = false;
 
+	bool  inElevatorRampUp = false;
+	double elevatorRampUp = 0;
+	double elevatorRampUpStartValue = 25;
+	double elevatorSpeed = -1.0;
+
 	double hopperSpeed = 0.0;
 	bool reverseHopper = false;
 	double reverseHopperSpeed = -0.5;
