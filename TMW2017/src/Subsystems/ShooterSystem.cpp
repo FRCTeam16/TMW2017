@@ -113,8 +113,14 @@ void ShooterSystem::Run() {
 	    shooterSetPoint = shooterSpeedRpm * -1.0;
 
 		if (fireEnabled || CheckPulsingBallLoad()) {
-			hopperSpeedToSet = firingHopperSpeed;
-			elevatorSpeedToSet = -1.0;
+			if (inElevatorRampUp) {
+				if (elevatorRampUp-- <= 0) {
+					inElevatorRampUp = false;
+				}
+			} else {
+				hopperSpeedToSet = firingHopperSpeed;
+			}
+			elevatorSpeedToSet = elevatorSpeed;
 		}
 
 		if (reverseHopper) {
@@ -156,6 +162,12 @@ void ShooterSystem::SMDB() {
 	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", 0.5);
 	frc::SmartDashboard::PutNumber("Hopper Shoot Speed", firingHopperSpeed);
 
+	elevatorSpeed = frc::SmartDashboard::GetNumber("Elevator Speed", -1.0);
+	frc::SmartDashboard::PutNumber("Elevator Speed", elevatorSpeed);
+
+	elevatorRampUpStartValue = frc::SmartDashboard::GetNumber("Elevator Rampup Start", 25);
+	frc::SmartDashboard::PutNumber("Elevator Rampup Start", elevatorRampUpStartValue);
+
 	reverseHopperSpeed = -1 * firingHopperSpeed;
 }
 
@@ -170,6 +182,11 @@ void ShooterSystem::InitManager(Manager::RunMode runMode) {
 void ShooterSystem::SetFireEnabled(bool enabled) {
 	if (fireEnabled && !enabled) {
 		PulseHopperReverse();
+		inElevatorRampUp = false;
+	}
+	if (!fireEnabled && enabled) {
+		inElevatorRampUp = true;
+		elevatorRampUp = elevatorRampUpStartValue;
 	}
 	fireEnabled = enabled;
 }
