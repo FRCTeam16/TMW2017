@@ -107,6 +107,9 @@ void Robot::RobotInit() {
 	if (!prefs->ContainsKey(DriveUnit::PULSES_PER_INCH)) {
 		prefs->PutDouble(DriveUnit::PULSES_PER_INCH, 16.5);
 	}
+	if (!prefs->ContainsKey("YawOffset")) {
+		prefs->PutFloat("YawOffset", 0.0);
+	}
 	// TODO: Store boiler right X/Y coordinates
 
   }
@@ -122,7 +125,7 @@ void Robot::DisabledInit(){
 void Robot::DisabledPeriodic() {
 	Scheduler::GetInstance()->Run();
 	RunManagerSMDBs();
-	frc::SmartDashboard::PutNumber("Gyro Angle", RobotMap::ahrs->GetAngle());
+	frc::SmartDashboard::PutNumber("Gyro Angle", RobotMap::gyro->GetAHRS()->GetAngle());
 }
 
 void Robot::AutonomousInit() {
@@ -248,7 +251,7 @@ void Robot::TeleopPeriodic() {
 						 0.5);
 	}
 
-	SmartDashboard::PutNumber("GyroAngle",RobotMap::ahrs->GetYaw());
+	SmartDashboard::PutNumber("GyroAngle",RobotMap::gyro->GetYaw());
 
 	RunManagers();
 }

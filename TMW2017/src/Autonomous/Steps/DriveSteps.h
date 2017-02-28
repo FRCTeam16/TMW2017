@@ -8,6 +8,7 @@
 #include "WPILib.h"
 #include <Autonomous/Step.h>
 #include <Util/CollisionDetector.h>
+#include <Util/BSGyro.h>
 #include <RobotMap.h>
 
 
@@ -57,7 +58,7 @@ public:
 			int _threshold, DriveUnit::Units _units, bool _reverse = false) :
 			angle(_angle), speed(_speed), targetDistance(_targetDistance), distanceThreshold(
 					_threshold), units(_units), reverse(_reverse),
-					collisionDetector(new CollisionDetector(RobotMap::ahrs, 1.0)) {}
+					collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	double startTime = -1;
@@ -81,7 +82,7 @@ public:
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
 		units(_units), reverse(_reverse),
-		collisionDetector(new CollisionDetector(RobotMap::ahrs, 1.0)) {}
+		collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	double startTime = -1;

@@ -16,7 +16,7 @@ bool Rotate::Run(std::shared_ptr<World> world) {
 		startTime = currentTime;
 	}
 
-	const float yaw = RobotMap::ahrs->GetYaw();
+	const float yaw = RobotMap::gyro->GetYaw();
 	const double yawError = Robot::driveBase->GetTwistControlError();
 	std::cout << "Rotate(yaw = " << yaw << ", error = " << yawError << ")\n";
 

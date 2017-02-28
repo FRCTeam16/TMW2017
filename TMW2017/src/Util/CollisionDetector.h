@@ -6,14 +6,15 @@
 #define SRC_UTIL_COLLISIONDETECTOR_H_
 
 #include "AHRS.h"
+#include <Util/BSGyro.h>
 
 class CollisionDetector {
 public:
-	CollisionDetector(std::shared_ptr<AHRS> imu, double threshold_=1.0);
+	CollisionDetector(std::shared_ptr<BSGyro> imu, double threshold_=1.0);
 	virtual ~CollisionDetector();
 	bool Detect();
 private:
-	std::shared_ptr<AHRS> imu;
+	std::shared_ptr<BSGyro> imu;
 	const double threshold;
 	double last_accel_x = 0.0;
 	double last_accel_y = 0.0;

@@ -45,7 +45,7 @@ void AutoManager::Init(std::shared_ptr<World> world) {
 	} else {
 		std::cerr << "NO AUTONOMOUS STRATEGY FOUND\n";
 	}
-	RobotMap::ahrs->ZeroYaw();
+	RobotMap::gyro->GetAHRS()->ZeroYaw();
 	std::cout << "AutoManager::Init COMPLETE\n";
 }
 

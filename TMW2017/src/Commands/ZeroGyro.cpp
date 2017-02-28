@@ -27,7 +27,7 @@ ZeroGyro::ZeroGyro(): Command() {
 // Called just before this Command runs the first time
 void ZeroGyro::Initialize() {
 	std::cout << "****** ZERO GYRO ******\n";
-	RobotMap::ahrs->ZeroYaw();
+	RobotMap::gyro->GetAHRS()->ZeroYaw();
 	SetTimeout(1);
 }
 

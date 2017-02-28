@@ -78,7 +78,7 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	// Initialize Drive Control Twist
     driveControlTwist.reset(
     		new PIDController(0.01, 0.0, 0.05,
-    				RobotMap::ahrs.get(), crabSpeedTwist.get(), 0.02 ));
+    				RobotMap::gyro.get(), crabSpeedTwist.get(), 0.02 ));
     driveControlTwist->SetContinuous(true);
     driveControlTwist->SetAbsoluteTolerance(2.0);
     driveControlTwist->Enable();
@@ -235,7 +235,7 @@ void DriveBase::Crab(double twist, double y, double x, bool useGyro) {
 	float STR = x;
 
 	if (useGyro) {
-		const double robotangle = RobotMap::ahrs->GetYaw() * M_PI / 180;
+		const double robotangle = RobotMap::gyro->GetYaw() * M_PI / 180;
 		FWD =  y * cos(robotangle) + x * sin(robotangle);
 		STR = -y * sin(robotangle) + x * cos(robotangle);
 	}
