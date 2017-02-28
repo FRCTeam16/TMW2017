@@ -1,7 +1,7 @@
 #ifndef CRABSPEED_H_
 #define CRABSPEED_H_
 
-#include "PIDOutput.h"
+#include "WPILib.h"
 
 class CrabSpeed : public PIDOutput
 {

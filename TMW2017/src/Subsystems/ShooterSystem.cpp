@@ -41,6 +41,7 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     const double F = prefs->GetDouble("ShootF", 0.035);
     shooterRPM = prefs->GetDouble("ShootRPM");
     const double shootRampRate = prefs->GetDouble("ShootVoltRampRate", 6.0);
+    const uint32_t shootAveraging = prefs->GetInt("ShootAveraging", 100);
 
     if (!prefs->ContainsKey("ShootP")) {
     	prefs->PutDouble("ShootP", P);
@@ -60,6 +61,9 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     if (!prefs->ContainsKey("ShootVoltRampRate")) {
     	prefs->PutDouble("ShootVoltRampRate", shootRampRate);
     }
+    if (!prefs->ContainsKey("ShootAveraging")) {
+    	prefs->PutInt("ShootAveraging", shootAveraging);
+    }
 
 
     shooter1->SetControlMode(CANSpeedController::kSpeed);
@@ -67,6 +71,7 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     shooter1->SetPID(P, I, D, F);
     shooter1->ConfigPeakOutputVoltage(0.0, -12.0);
     shooter1->SetVoltageRampRate(shootRampRate);
+    shooter1->SetVelocityMeasurementWindow(shootAveraging);
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
     shooter2->Set(shooter1->GetDeviceID());
@@ -98,6 +103,13 @@ void ShooterSystem::Run() {
 	    const double D = prefs->GetDouble("ShootD", 0);
 	    const double F = prefs->GetDouble("ShootF", 0.035);
 	    shooter1->SetPID(P, I, D, F);
+
+	    const double shootRampRate = prefs->GetDouble("ShootVoltRampRate", 6.0);
+		shooter1->SetVoltageRampRate(shootRampRate);
+
+	    const uint32_t shootAveraging = prefs->GetInt("ShootAveraging", 100);
+	    shooter1->SetVelocityMeasurementWindow(shootAveraging);
+
 	    shooterSetPoint = shooterSpeedRpm * -1.0;
 
 		if (fireEnabled || CheckPulsingBallLoad()) {
