@@ -154,13 +154,17 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		return true;
 	} else {
 		const double crabSpeed = currentPIDOutput * ((reverse) ? -1.0 : 1.0);
-		const double angleRadians = atan(XtargetDistance/ YtargetDistance);
+
+//		const double angleRadians = atan2(XtargetDistance, YtargetDistance);
+		const double angleRadians = atan2(YtargetDistance, XtargetDistance);
 
 		// FIXME: detect direction, avoid divide by zero, could abs ratio
-//		const double xspeed = crabSpeed * sin(angleRadians);
-//		const double yspeed = crabSpeed * cos(angleRadians);
-		const double xspeed = -crabSpeed * cos(angleRadians);
-		const double yspeed = -crabSpeed * sin(angleRadians);
+		const double xspeed = crabSpeed * sin(angleRadians);
+		const double yspeed = crabSpeed * cos(angleRadians);
+
+		// Handle translation of axes manually if yaw offset is not available
+//		const double xspeed = -crabSpeed * cos(angleRadians);
+//		const double yspeed = -crabSpeed * sin(angleRadians);
 
 		crab->Update(
 				Robot::driveBase->GetTwistControlOutput(),
