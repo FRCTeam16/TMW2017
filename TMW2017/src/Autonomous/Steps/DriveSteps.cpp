@@ -18,6 +18,40 @@ bool ZeroDriveEncoders::Run(std::shared_ptr<World> world) {
 	return (lastEncoderPosition == 0);
 }
 
+bool TimedDrive::Run(std::shared_ptr<World> world) {
+	const double currentTime = world->GetClock();
+	if (startTime < 0) {
+		startTime = currentTime;
+	}
+	if ((currentTime - startTime) > timeToDrive) {
+		return true;
+	} else {
+		crab->Update(Robot::driveBase->GetTwistControlOutput(), ySpeed, xSpeed, true);
+		return false;
+	}
+}
+
+bool DriveToBump::Run(std::shared_ptr<World> world) {
+	const double currentTime = world->GetClock();
+	if (startTime < 0) {
+		startTime = currentTime;
+		Robot::driveBase->SetTargetAngle(angle);
+	}
+	if (collisionDetector->Detect()) {
+		std::cout << "DriveToBump detected collision\n";
+		return true;
+	}
+	if ((currentTime - startTime) > maxTimeToDrive) {
+		std::cerr << "DriveToBump timed out\n";
+		crab->Stop();
+		return true;
+	} else {
+		crab->Update(Robot::driveBase->GetTwistControlOutput(), ySpeed, xSpeed, true);
+		return false;
+	}
+}
+
+
 const std::string DriveUnit::PULSES_PER_INCH = "PulsesPerInch";
 double DriveUnit::ToPulses(double value, DriveUnit::Units unit) {
 	Preferences *prefs = Preferences::GetInstance();
@@ -47,18 +81,23 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 		firstRun = false;
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
+		targetPulses = DriveUnit::ToPulses(targetDistance, units);
 	}
 
 	const int currentPosition = abs(Robot::driveBase->GetFrontLeftDrive()->GetEncPosition());
 	const double elapsedTime = world->GetClock() - startTime;
-	SmartDashboard::PutNumber("Encoder Position", currentPosition);
-	cout << "SimpleEncoderDrive Encoder: " << currentPosition << "\n";
+	const double currentError = Robot::driveBase->GetDriveControlError();
 
-	if (currentPosition >= targetDistance) {
+	cout << "SimpleEncoderDrive Encoder       : " << currentPosition << "\n";
+	cout << "SimpleEncoderDrive Target        : " << targetPulses << "\n";
+	cout << "PIDControlledDrive Current Error : " << currentError << "\n";
+
+
+	if (currentPosition >= targetPulses) {
 		cout << "Position reached in " << elapsedTime << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTime > 20) {
+	} else if (elapsedTime > 6000) {
 		cout << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;
@@ -140,29 +179,32 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 	cout << "PIDControlledDrive Current Error            = " << currentError << "\n";
 	cout << "PIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
 
-	if (abs(currentError) <= DriveUnit::ToPulses(distanceThreshold, units)) {
+	frc::SmartDashboard::PutNumber("DriveControl P", Robot::driveBase->driveControlSpeedController->GetP());
+
+	if (distanceThreshold == -1 ) {
+		if (currentEncoderPosition > targetSetpoint) {
+			std::cout << "Current encoder passed target\n";
+			return true;
+		}
+	} else if (abs(currentError) <= DriveUnit::ToPulses(distanceThreshold, units)) {
 		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTimeMillis > 5000) {
+	}
+
+	if (elapsedTimeMillis > timeoutCommandMs) {
 		cout << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;
-	} else if (collisionDetector->Detect()) {
-		cerr << "**** EMERGENCY HALT DUE TO COLLISION ****\n";
-		crab->Stop();
-		return true;
+//	} else if (collisionDetector->Detect()) {
+//		cerr << "**** EMERGENCY HALT DUE TO COLLISION ****\n";
+//		crab->Stop();
+//		return true;
 	} else {
 		const double crabSpeed = currentPIDOutput * ((reverse) ? -1.0 : 1.0);
 		const double angleRadians = atan2(XtargetDistance, YtargetDistance);
-
-		// FIXME: detect direction, avoid divide by zero, could abs ratio
 		const double xspeed = crabSpeed * sin(angleRadians);
 		const double yspeed = crabSpeed * cos(angleRadians);
-
-		// Handle translation of axes manually if yaw offset is not available
-//		const double xspeed = -crabSpeed * cos(angleRadians);
-//		const double yspeed = -crabSpeed * sin(angleRadians);
 
 		crab->Update(
 				Robot::driveBase->GetTwistControlOutput(),

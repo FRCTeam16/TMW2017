@@ -192,10 +192,14 @@ void ShooterSystem::SetFireEnabled(bool enabled) {
 }
 
 void ShooterSystem::ToggleShooter() {
-	shooterMotorsEnabled = !shooterMotorsEnabled;
-	if (shooterMotorsEnabled) {
+	SetShooterEnabled(!shooterMotorsEnabled);
+}
+
+void ShooterSystem::SetShooterEnabled(bool enabled) {
+	if (enabled) {
 		PulseBallLoad();
 	}
+	shooterMotorsEnabled = enabled;
 }
 
 void ShooterSystem::SetHopperSpeed(double speed) {

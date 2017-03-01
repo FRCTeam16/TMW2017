@@ -12,13 +12,15 @@ BSGyro::BSGyro(I2C::Port i2c_port_id) :	ahrs(new AHRS(i2c_port_id)) {
 	std::cout << "Constructed BSGyro\n";
 }
 
-
 BSGyro::~BSGyro() {
 }
 
 float BSGyro::GetOffset() {
-	return Preferences::GetInstance()->GetFloat("YawOffset", 0.00);
+	return offset;
+}
 
+void BSGyro::SetOffset(float _offset) {
+	offset = _offset;
 }
 
 float BSGyro::GetYaw() {

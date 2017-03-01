@@ -8,13 +8,15 @@
 #ifndef SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_
 #define SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_
 
+#include "WPILib.h"
 #include "../Step.h"
 
 class EjectGear : public Step {
 private:
 	double startTime = -1;
+	const double delay;
 public:
-	EjectGear() : startTime(-1) {}
+	EjectGear(double _delay = 0.0) : delay(_delay) {}
 	~EjectGear() {}
 	bool Run(std::shared_ptr<World> world) override;
 };

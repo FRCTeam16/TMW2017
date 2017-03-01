@@ -75,7 +75,6 @@ private:
 	std::unique_ptr<PIDController> driveControlTwist;
 	std::unique_ptr<CrabSpeed> crabSpeedTwist;
 	std::unique_ptr<DriveEncoderPIDSource> driveControlEncoderSource;
-	std::unique_ptr<PIDController> driveControlSpeedController;
 	std::unique_ptr<CrabSpeed> driveControlDistanceSpeed;
 
 	const int MaxTurns = 1000;
@@ -127,6 +126,9 @@ public:
 
 	// Ackerman Steering
 	void Steer(float radian, float speed, float a);
+
+	std::unique_ptr<PIDController> driveControlSpeedController;
+
 
 };
 #endif

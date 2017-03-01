@@ -11,11 +11,17 @@
 
 
 bool EjectGear::Run(std::shared_ptr<World> world) {
+	const double currentTime = world->GetClock();
 	if (startTime < 0) {
-		startTime = world->GetClock();
+		startTime = currentTime;
 		Robot::gearSystem->EjectGear();
 	}
-	return true;
+	std::cout << "Current: " << currentTime << "\n";
+	std::cout << "Start  : " << startTime << "\n";
+	std::cout << "Delay  : " << delay << "\n";
+	const bool exitFn = (currentTime - startTime) > delay;
+	std::cout << "EjectGear: " << exitFn << "\n";
+	return exitFn;
 }
 
 

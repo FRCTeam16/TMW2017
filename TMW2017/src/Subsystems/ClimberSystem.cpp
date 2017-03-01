@@ -69,5 +69,5 @@ void ClimberSystem::SetClimberSpeed(double speed) {
 }
 
 void ClimberSystem::SMDB() {
-
+	frc::SmartDashboard::PutNumber("Climber Amps", climber->GetOutputCurrent());
 }

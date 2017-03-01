@@ -107,10 +107,16 @@ void Robot::RobotInit() {
 	if (!prefs->ContainsKey(DriveUnit::PULSES_PER_INCH)) {
 		prefs->PutDouble(DriveUnit::PULSES_PER_INCH, 16.5);
 	}
-	if (!prefs->ContainsKey("YawOffset")) {
-		prefs->PutFloat("YawOffset", 0.0);
-	}
 	// TODO: Store boiler right X/Y coordinates
+	if (!prefs->ContainsKey("RightGearX")) {
+		prefs->PutDouble("RightGearX", -83);
+	}
+	if (!prefs->ContainsKey("RightGearY")) {
+		prefs->PutDouble("RightGearY", 96);
+	}
+	if (!prefs->ContainsKey("RightGearT")) {
+		prefs->PutDouble("RightGearT", 1.5);
+	}
 
   }
 

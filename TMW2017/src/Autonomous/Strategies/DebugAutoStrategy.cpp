@@ -17,7 +17,10 @@ DebugAutoStrategy::DebugAutoStrategy() {
 //	steps.push_back(new PIDControlledDrive(0.0, 0.2, 24, 1, DriveUnit::Units::kInches));
 //	steps.push_back(new TurnWheels(-32, 79, 100));
 
-	steps.push_back(new XYPIDControlledDrive(0.0, 0.3, 32, 79, 1.5, DriveUnit::Units::kInches));
+//	steps.push_back(new XYPIDControlledDrive(0.0, 0.3, 0, 60, 1.5, DriveUnit::Units::kInches));
+
+	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, 21, -21, -1, DriveUnit::Units::kInches));
+
 }
 
 DebugAutoStrategy::~DebugAutoStrategy() {

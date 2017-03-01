@@ -24,11 +24,14 @@ AutoManager::AutoManager() :
 	strategyLookup.insert(std::make_pair(AutoStrategy::kBoiler, std::shared_ptr<Strategy>{ new RightGearStrategy() }));
 	strategyLookup.insert(std::make_pair(AutoStrategy::kReturn, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
 
-	strategies->AddDefault("Debug Auto Strategy", (void *) AutoStrategy::kDebug);
-	strategies->AddObject("Center", (void *) AutoStrategy::kCenter);
-	strategies->AddObject("Boiler", (void *) AutoStrategy::kBoiler);
-	strategies->AddObject("Return", (void *) AutoStrategy::kReturn);
-	frc::SmartDashboard::PutData("Autonomous Strategy", strategies.get());
+	strategies->AddDefault("0 - Debug Auto Strategy", (void *) AutoStrategy::kDebug);
+	strategies->AddObject("1 - Center", (void *) AutoStrategy::kCenter);
+	strategies->AddObject("2 - Boiler", (void *) AutoStrategy::kBoiler);
+	strategies->AddObject("3 - Return", (void *) AutoStrategy::kReturn);
+	frc::SmartDashboard::PutData("Autonomous Strategy1", strategies.get());
+
+	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
+	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);
 }
 
 AutoManager::~AutoManager() {
@@ -36,8 +39,8 @@ AutoManager::~AutoManager() {
 
 void AutoManager::Init(std::shared_ptr<World> world) {
 	std::cout << "AutoMan Init\n";
-	const AutoStrategy selectedKey =
-				static_cast<AutoStrategy>((int) strategies->GetSelected());
+	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
+	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);
 	std::cout << "Selected Strategy: " << selectedKey << "\n";
 	auto iterator = strategyLookup.find(selectedKey);
 	if (iterator != strategyLookup.end()) {

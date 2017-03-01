@@ -15,12 +15,14 @@ class BSGyro : public PIDSource {
 private:
 	std::unique_ptr<AHRS> ahrs;
 	float GetOffset();
+	float offset = 0.0;
 public:
 	BSGyro(I2C::Port i2c_port_id);
 	virtual ~BSGyro();
 	float GetYaw();
 	double PIDGet();
 	AHRS* GetAHRS();
+	void SetOffset(float offset);
 };
 
 #endif /* SRC_UTIL_BSGYRO_H_ */

@@ -23,6 +23,10 @@ StepStrategy::StepStrategy() {
 }
 
 StepStrategy::~StepStrategy() {
+	for (auto it = steps.begin(); it != steps.end(); ++it) {
+		delete *it;
+	}
+	steps.clear();
 }
 
 void StepStrategy::Init(std::shared_ptr<World> world) {
