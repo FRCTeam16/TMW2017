@@ -68,3 +68,6 @@ void ClimberSystem::SetClimberSpeed(double speed) {
 	climberSpeed = speed;
 }
 
+void ClimberSystem::SMDB() {
+
+}
