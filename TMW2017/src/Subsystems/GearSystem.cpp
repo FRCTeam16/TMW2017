@@ -287,7 +287,8 @@ GearPickupProcess::GearPickupProcess(GearSystem *gearSystem_) : timer(new Timer(
 	stateMapping.insert(std::make_pair(kInit, StateInfo {0.0, kExtend}));
 	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.1 ,kSqueeze}));
 	stateMapping.insert(std::make_pair(kSqueeze, StateInfo {0.1, kLift}));
-	stateMapping.insert(std::make_pair(kLift, StateInfo {0.5, kComplete}));
+	stateMapping.insert(std::make_pair(kLift, StateInfo {0.2, kEjectBalls}));
+	stateMapping.insert(std::make_pair(kEjectBalls, StateInfo {1.0, kComplete}));
 	timer->Start();
 	std::cout << "GearPickupProcess::GearPickupProcess\n";
 }
@@ -320,25 +321,24 @@ void GearPickupProcess::Run() {
 
 	switch (currentState) {
 	case ProcessState::kInit:
-		std::cout << "handling kInit\n";
-		gearSystem->SetGearBarSpeed(1.0);
+		gearSystem->SetGearBarSpeedByProcess(1.0);
 		break;
 	case ProcessState::kExtend:
-		std::cout << "handling kExtend\n";
 		gearSystem->SetExtendEnabled(EXTEND_ENABLED);
 		break;
 	case ProcessState::kSqueeze:
-		std::cout << "handling kSqueeze\n";
 		gearSystem->SetSqueezeEnabled(true);
 		gearSystem->SetGearBarSpeedByProcess(0.0);
 		break;
 	case ProcessState::kLift:
-		std::cout << "handling kLift\n";
 		gearSystem->SetLiftEnabled(false);
 		gearSystem->SetRotateEnabled(false);
 		break;
+	case ProcessState::kEjectBalls:
+		gearSystem->SetGearBarSpeedByProcess(-1.0);
+		break;
 	case ProcessState::kComplete:
-		std::cout << "handling kComplete\n";
+		gearSystem->SetGearBarSpeedByProcess(0.0);
 		currentState = kStopped;
 		break;
 	case ProcessState::kStopped:
@@ -349,7 +349,6 @@ void GearPickupProcess::Run() {
 }
 
 bool GearPickupProcess::IsStopped() {
-//	std::cout << "Pickup stopped? " << (ProcessState::kStopped == currentState) << "\n";
 	return ProcessState::kStopped == currentState;
 }
 

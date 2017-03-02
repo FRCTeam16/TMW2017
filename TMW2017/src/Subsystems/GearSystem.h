@@ -107,7 +107,7 @@ class GearPickupProcess {
 
 
 private:
-	enum ProcessState { kStopped, kInit, kLift, kExtend, kSqueeze, kComplete };
+	enum ProcessState { kStopped, kInit, kLift, kExtend, kSqueeze, kEjectBalls, kComplete };
 
 	struct StateInfo {
 			double waitTime;
