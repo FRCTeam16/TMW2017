@@ -20,6 +20,7 @@ float BSGyro::GetOffset() {
 }
 
 void BSGyro::SetOffset(float _offset) {
+	frc::SmartDashboard::PutNumber("BSGyro Set Offset", _offset);
 	offset = _offset;
 }
 

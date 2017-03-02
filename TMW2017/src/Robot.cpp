@@ -138,7 +138,8 @@ void Robot::AutonomousInit() {
 	if (autonomousCommand.get() != nullptr) {
 		autonomousCommand->Start();
 	}
-	autoManager.reset(new AutoManager());
+	world.reset(new World());
+	world->Init();
 	autoManager->Init(world);
 	InitManagers();
 }
@@ -281,6 +282,7 @@ void Robot::RunManagers() {
 				manager->Run();
 				manager->SMDB();
 			});
+	autoManager->SMDB();
 }
 
 void Robot::RunManagerSMDBs() {
@@ -288,6 +290,7 @@ void Robot::RunManagerSMDBs() {
 			[](std::shared_ptr<Manager> &manager) {
 				manager->SMDB();
 			});
+	autoManager->SMDB();
 }
 
 START_ROBOT_CLASS(Robot);

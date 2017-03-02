@@ -15,6 +15,10 @@ World::World() {
 World::~World() {
 }
 
+void World::Init() {
+	timer->Start();
+}
+
 double World::GetClock() const {
 	return timer->Get();
 }

@@ -19,10 +19,14 @@ public:
 	virtual ~AutoManager();
 	void Init(std::shared_ptr<World> world);
 	void Periodic(std::shared_ptr<World> world);
+	void SMDB();
 private:
+	enum AutoStrategy {
+		kDebug = 0, kCenter, kBoiler, kReturn
+	};
 	std::shared_ptr<frc::SendableChooser<void*>> strategies;
-	std::map<int, std::shared_ptr<Strategy>> strategyLookup;
-	std::shared_ptr<Strategy> currentStrategy;
+	std::unique_ptr<Strategy> CreateStrategy(const AutoStrategy &key);
+	std::unique_ptr<Strategy> currentStrategy;
 
 };
 

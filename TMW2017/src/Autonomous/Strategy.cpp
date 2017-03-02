@@ -34,10 +34,10 @@ void StepStrategy::Init(std::shared_ptr<World> world) {
 }
 
 bool StepStrategy::Run(std::shared_ptr<World> world) {
-	std::cout << "StepStrategy::Run\n";
+	std::cout << "StepStrategy::Run ";
 	std::cout << "currentStep = " << currentStep << "\n";
 	if (currentStep >= steps.size()) {
-		RunDrives(new CrabInfo());	// FIXME: Move to 	const std::unique_ptr<CrabInfo> STOP { new CrabInfo() };
+		RunDrives(STOP.get(), false);
 		return true;
 	}
 	Step* step = steps[currentStep];
@@ -49,12 +49,14 @@ bool StepStrategy::Run(std::shared_ptr<World> world) {
 	return false;
 }
 
-void StepStrategy::RunDrives(const CrabInfo *crab) {
-	std::cout << "RunDrives -> ";
-	std::cout << "\ttwist: " << std::setw(5) << crab->twist
-			  << "  yspeed: " << std::setw(5) << crab->yspeed
-			  << "  xspeed: " << std::setw(5) << crab->xspeed
-			  << "\n";
+void StepStrategy::RunDrives(const CrabInfo *crab, bool showMessage) {
+	if (showMessage) {
+		std::cout << "RunDrives -> ";
+		std::cout << "\ttwist: " << std::setw(5) << crab->twist
+				  << "  yspeed: " << std::setw(5) << crab->yspeed
+				  << "  xspeed: " << std::setw(5) << crab->xspeed
+				  << "\n";
+	}
 	Robot::driveBase->Crab(crab->twist, crab->yspeed, crab->xspeed, crab->gyro);
 
 }

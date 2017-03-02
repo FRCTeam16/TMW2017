@@ -12,18 +12,11 @@
 #include <Autonomous/Strategies/CenterGearStrategy.h>
 #include <Autonomous/Strategies/RightGearStrategy.h>
 
-enum AutoStrategy {
-	kDebug = 0, kCenter, kBoiler, kReturn
-};
+
 
 AutoManager::AutoManager() :
 		strategies(new frc::SendableChooser<void*>())
 {
-	strategyLookup.insert(std::make_pair(AutoStrategy::kDebug, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
-	strategyLookup.insert(std::make_pair(AutoStrategy::kCenter, std::shared_ptr<Strategy>{ new CenterGearStrategy() }));
-	strategyLookup.insert(std::make_pair(AutoStrategy::kBoiler, std::shared_ptr<Strategy>{ new RightGearStrategy() }));
-	strategyLookup.insert(std::make_pair(AutoStrategy::kReturn, std::shared_ptr<Strategy>{ new DebugAutoStrategy() }));
-
 	strategies->AddDefault("0 - Debug Auto Strategy", (void *) AutoStrategy::kDebug);
 	strategies->AddObject("1 - Center", (void *) AutoStrategy::kCenter);
 	strategies->AddObject("2 - Boiler", (void *) AutoStrategy::kBoiler);
@@ -37,15 +30,35 @@ AutoManager::AutoManager() :
 AutoManager::~AutoManager() {
 }
 
+std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
+	Strategy *strategy = 0;
+	switch (key) {
+	case kDebug:
+		strategy = new DebugAutoStrategy();
+		break;
+	case kCenter:
+		strategy = new CenterGearStrategy();
+		break;
+	case kBoiler:
+		strategy = new RightGearStrategy();
+		break;
+	case kReturn:
+		strategy = new DebugAutoStrategy();
+		break;
+	default:
+		std::cerr << "No valid strategy selected";
+	}
+	return std::unique_ptr<Strategy>(strategy);
+}
+
+
 void AutoManager::Init(std::shared_ptr<World> world) {
 	std::cout << "AutoMan Init\n";
 	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
 	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);
 	std::cout << "Selected Strategy: " << selectedKey << "\n";
-	auto iterator = strategyLookup.find(selectedKey);
-	if (iterator != strategyLookup.end()) {
-		currentStrategy = iterator->second;
-	} else {
+	currentStrategy = CreateStrategy(selectedKey);
+	if (!currentStrategy) {
 		std::cerr << "NO AUTONOMOUS STRATEGY FOUND\n";
 	}
 	RobotMap::gyro->GetAHRS()->ZeroYaw();
@@ -57,4 +70,9 @@ void AutoManager::Periodic(std::shared_ptr<World> world) {
 	if (currentStrategy) {
 		currentStrategy->Run(world);
 	}
+}
+
+void AutoManager::SMDB() {
+	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
+	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);
 }

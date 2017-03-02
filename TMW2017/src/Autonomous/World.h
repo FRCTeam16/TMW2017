@@ -14,6 +14,7 @@ class World {
 public:
 	World();
 	virtual ~World();
+	void Init();							// perform world initializatoin
 	double GetClock() const;				// time elapsed since Init() in seconds
 private:
 	std::unique_ptr<Timer> timer;			// tracks time in autonomous world

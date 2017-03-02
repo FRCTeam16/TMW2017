@@ -24,4 +24,24 @@ bool EjectGear::Run(std::shared_ptr<World> world) {
 	return exitFn;
 }
 
+bool ResetGear::Run(std::shared_ptr<World> world) {
+	const double currentTime = world->GetClock();
+	if (startTime < 0) {
+		startTime = currentTime;
+		Robot::gearSystem->ResetGear();
+	}
+	const bool exitFn = (currentTime - startTime) > delay;
+	return exitFn;
+}
+
+bool PickupGear::Run(std::shared_ptr<World> world) {
+	const double currentTime = world->GetClock();
+	if (startTime < 0) {
+		startTime = currentTime;
+		Robot::gearSystem->PickUpGear();
+	}
+	const bool exitFn = (currentTime - startTime) > delay;
+	return exitFn;
+}
+
 

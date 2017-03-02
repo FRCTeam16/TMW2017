@@ -21,4 +21,25 @@ public:
 	bool Run(std::shared_ptr<World> world) override;
 };
 
+
+class ResetGear : public Step {
+private:
+	double startTime = -1;
+	const double delay;
+public:
+	ResetGear(double _delay = 0.0) : delay(_delay) {}
+	~ResetGear() {}
+	bool Run(std::shared_ptr<World> world) override;
+};
+
+class PickupGear : public Step {
+private:
+	double startTime = -1;
+	const double delay;
+public:
+	PickupGear(double _delay = 0.0) : delay(_delay) {}
+	~PickupGear() {}
+	bool Run(std::shared_ptr<World> world) override;
+};
+
 #endif /* SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_ */

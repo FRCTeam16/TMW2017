@@ -23,9 +23,13 @@ RightGearStrategy::RightGearStrategy() {
 	steps.push_back(new SetGyroOffset(-45.0));
 	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, rightGearX, rightGearY, rightGearT, DriveUnit::Units::kInches));
 	steps.push_back(new EjectGear(0.5));
-	steps.push_back(new ControlShooterMotor(true));
-	steps.push_back(new XYPIDControlledDrive(-45.0, 0.4, 21, -21, -1, DriveUnit::Units::kInches));
+	steps.push_back(new XYPIDControlledDrive(-45.0, 0.35, 21, -21, -1, DriveUnit::Units::kInches, 999.0));	// ignore collisions
+	steps.push_back(new ResetGear(0.25));
+	steps.push_back(new ControlShooterMotor(false));			// FIXME: Temporarily disabled 3/2/2017 until hopper is fixed
 	steps.push_back(new DriveToBump(-180.0, 0, 0.4, 4000));
+	steps.push_back(new ControlShooterMotor(false));
+	steps.push_back(new PickupGear(0.1));
+
 
 	/*
 	 * 	steps.push_back(new SimpleEncoderDrive(-45.0, -0.3, 0.3, 400, DriveUnit::Units::kPulses));

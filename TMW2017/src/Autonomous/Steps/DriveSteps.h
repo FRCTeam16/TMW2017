@@ -138,6 +138,17 @@ public:
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
 		units(_units), reverse(_reverse),
 		collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
+
+	XYPIDControlledDrive(double _angle, double _speed,
+			double _XtargetDistance, double _YtargetDistance,
+			double _threshold, DriveUnit::Units _units, double _collisionThreshold,
+			bool _reverse = false) :
+		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
+		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
+		units(_units), reverse(_reverse),
+		collisionDetector(new CollisionDetector(RobotMap::gyro, _collisionThreshold)) {}
+
+
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	double startTime = -1;
