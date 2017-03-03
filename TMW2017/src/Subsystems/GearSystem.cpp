@@ -226,6 +226,7 @@ void GearSystem::SetSqueezeEnabled(bool enabled) {
 void GearSystem::PickUpGear() {
 	std::cout << "GearSystem::PickUpGear\n";
 	UnlockGearPickupSpeedLocked();
+	hasGear = true;
 	if (!gearPickupProcess->Start()) {
 		// TODO: ERROR here, should we display on SMDB?
 		std::cerr << "************************ Unable to start gear pick up process\n";
@@ -235,6 +236,7 @@ void GearSystem::PickUpGear() {
 void GearSystem::EjectGear() {
 	std::cout << "GearSystem::EjectGear\n";
 	UnlockGearPickupSpeedLocked();
+	hasGear = false;
 	if (!gearEjectProcess->Start()) {
 		// Error on SMDB?
 	}
@@ -252,6 +254,10 @@ void GearSystem::ResetGear() {
 	} else {
 		// Error on SMDB?
 	}
+}
+
+bool GearSystem::HasGear() {
+	return hasGear;
 }
 
 void GearSystem::SMDB() {

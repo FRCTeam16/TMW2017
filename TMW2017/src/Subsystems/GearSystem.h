@@ -68,6 +68,7 @@ private:
 	std::unique_ptr<GearPickupProcess> gearPickupProcess;
 	std::unique_ptr<GearEjectProcess> gearEjectProcess;
 	std::unique_ptr<GearResetProcess> gearResetProcess;
+	bool hasGear = false;	// guess whether we have a gear
 
 	void StartAutoPickupByAmps();
 	void StartAutoPickupBySwitches();
@@ -100,7 +101,7 @@ public:
 	void EjectGear();
 	bool IsEjectGearRunning();
 	void ResetGear();
-
+	bool HasGear();
 };
 
 class GearPickupProcess {
