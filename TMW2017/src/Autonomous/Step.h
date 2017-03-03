@@ -38,8 +38,10 @@ public:
 	virtual ~Step();
 	virtual bool Run(std::shared_ptr<World> world) = 0;
 	const CrabInfo* GetCrabInfo() { return crab.get(); }
+	bool IsManualDriveControl() const { return manualDriveControl; }
 protected:
 	std::unique_ptr<CrabInfo> crab { new CrabInfo() };
+	bool manualDriveControl = false;
 };
 
 #endif /* SRC_AUTONOMOUS_STEP_H_ */

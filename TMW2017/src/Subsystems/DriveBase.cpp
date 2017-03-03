@@ -578,4 +578,8 @@ std::shared_ptr<CANTalon> DriveBase::GetFrontLeftDrive() {
 	return frontLeftDrive;
 }
 
+std::shared_ptr<CANTalon> DriveBase::GetRearRightDrive() {
+	return rearRightDrive;
+}
+
 

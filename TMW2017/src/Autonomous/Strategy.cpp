@@ -42,7 +42,11 @@ bool StepStrategy::Run(std::shared_ptr<World> world) {
 	}
 	Step* step = steps[currentStep];
 	const bool stepComplete = step->Run(world);
-	RunDrives(step->GetCrabInfo());
+
+	if (!step->IsManualDriveControl()) {
+		RunDrives(step->GetCrabInfo());
+	}
+
 	if (stepComplete) {
 		currentStep++;
 	}

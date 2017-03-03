@@ -9,6 +9,7 @@
 #include <Autonomous/Steps/DriveSteps.h>
 #include <Autonomous/Steps/NoOp.h>
 //#include <Autonomous/Steps/TurnWheels.h>
+#include <Autonomous/Steps/AckermannDrive.h>
 
 DebugAutoStrategy::DebugAutoStrategy() {
 //	steps.push_back(new ZeroDriveEncoders());
@@ -19,7 +20,8 @@ DebugAutoStrategy::DebugAutoStrategy() {
 
 //	steps.push_back(new XYPIDControlledDrive(0.0, 0.3, 0, 60, 1.5, DriveUnit::Units::kInches));
 
-	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, 21, -21, -1, DriveUnit::Units::kInches));
+//	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, 21, -21, -1, DriveUnit::Units::kInches));
+	steps.push_back(new AckermannDrive(0.2, 110));
 
 }
 

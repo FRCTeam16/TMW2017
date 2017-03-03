@@ -122,7 +122,9 @@ public:
 	double GetDriveControlOutput();
 	double GetDriveControlError();
 
+	/* Leak Talon Information */
 	std::shared_ptr<CANTalon> GetFrontLeftDrive();
+	std::shared_ptr<CANTalon> GetRearRightDrive();
 
 	// Ackerman Steering
 	void Steer(float radian, float speed, float a);
