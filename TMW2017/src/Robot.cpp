@@ -168,9 +168,11 @@ void Robot::TeleopPeriodic() {
 	bool useCrab = true;
 	bool useDriveBaseAngle = false;
 	bool robotCentricCrab = false;
+	bool firing = false;
 
 	if (oi->DR1->Pressed()) {
 		shooterSystem->SetFireEnabled(true);
+		firing = true;
 	} else {
 		shooterSystem->SetFireEnabled(false);
 	}
@@ -241,16 +243,33 @@ void Robot::TeleopPeriodic() {
 	shooterSystem->SetHopperSpeed(oi->GetGamepadRightStick());
 
 
+	const double threshold = (firing) ? 0.2 : 0.1;
+	bool lockWheels = false;
+	if (firing) {
+		if (fabs(oi->GetJoystickTwist(threshold)) > 0 ||
+			fabs(oi->GetJoystickX(threshold)) > 0 ||
+			fabs(oi->GetJoystickY(threshold)) > 0) {
+			lockWheels = false;
+		} else {
+			lockWheels = true;
+		}
+	}
+
 	if (useCrab || robotCentricCrab) {
 		const double twistInput = (useDriveBaseAngle) ?
 					driveBase->GetTwistControlOutput() :
-					oi->GetJoystickTwist();
+					oi->GetJoystickTwist(threshold);
 		const bool useGyro = !robotCentricCrab;
-		driveBase->Crab(
-				twistInput,
-				-oi->GetJoystickY(),
-				oi->GetJoystickX(),
-				useGyro);
+
+		if (!lockWheels) {
+			driveBase->Crab(
+					twistInput,
+					-oi->GetJoystickY(threshold),
+					oi->GetJoystickX(threshold),
+					useGyro);
+		} else {
+			driveBase->Lock();
+		}
 	} else {
 		// Ackermann Steering
 		driveBase->Steer(oi->getLeftJoystickXRadians(),

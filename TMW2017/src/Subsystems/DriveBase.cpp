@@ -64,7 +64,7 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
     InitializeOffsets();
 
     wheelbase.W = 23.5/2;
-    wheelbase.X = 27.25;
+    wheelbase.X = 27.5;
     wheelbase.Y = 23.5/2;
 
     // Enable Controllers
@@ -152,6 +152,18 @@ void DriveBase::InitializeOffsets() {
 	positionOffsets.RL = constantsFile->getValueForKey("RLOff");
 	positionOffsets.RR = constantsFile->getValueForKey("RROff");
 	std::cout << "DriveBase initialized offsets\n";
+}
+
+void DriveBase::Lock() {
+	DriveInfo<double> steering;
+	steering.FL = 2.5;
+	steering.FR = 0.75;
+	steering.RL = 3.25;
+	steering.RR = 4.5;
+	SetSteering(steering);
+
+	DriveInfo<double> lockSpeed;
+	SetDriveSpeed(lockSpeed);
 }
 
 DriveInfo<double> DriveBase::CalculatePositionOffsets() {
@@ -274,7 +286,7 @@ void DriveBase::Crab(double twist, double y, double x, bool useGyro) {
 	speed.RL = sqrt(pow(AP, 2) + pow(DP, 2));
 	speed.RR = sqrt(pow(AP, 2) + pow(CP, 2));
 
-	double speedarray[] = {fabs(speed.FL), fabs(speed.FR), fabs(speed.FL), fabs(speed.RR)};
+	double speedarray[] = {fabs(speed.FL), fabs(speed.FR), fabs(speed.RL), fabs(speed.RR)};
 	const double maxspeed = *std::max_element(speedarray, speedarray+4);
 
 	DriveInfo<double> ratio;

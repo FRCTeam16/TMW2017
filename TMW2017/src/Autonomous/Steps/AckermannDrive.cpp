@@ -10,18 +10,18 @@
 
 
 bool AckermannDrive::Run(std::shared_ptr<World> world) {
-	const int encoderPosition = Robot::driveBase->GetRearRightDrive()->GetEncPosition();
+	const double currentAngle = RobotMap::gyro->GetYaw();
 
 	if (startTime < 0) {
 		startTime = world->GetClock();
-		encoderStartPosition = encoderPosition;
 		manualDriveControl = true;
+		startAngle = currentAngle;
 	}
 
 	const float A = 1.0;
 	const float radians = M_PI;
 	Robot::driveBase->Steer(radians, speed, A);
 
-	return (abs(encoderPosition - encoderStartPosition) > distance);
+	return (fabs(currentAngle - startAngle) > targetYawDiff);
 }
 

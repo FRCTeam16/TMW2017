@@ -13,15 +13,14 @@
 
 class AckermannDrive : public Step {
 public:
-	AckermannDrive(double _speed, int _distance) : speed(_speed), distance(_distance) {}
+	AckermannDrive(double _speed, double _targetYawDiff) : speed(_speed), targetYawDiff(_targetYawDiff) {}
 	virtual ~AckermannDrive() {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	const double speed;
-	const int distance;
+	const double targetYawDiff;
 	double startTime = -1;
-	int encoderStartPosition = 0;
-
+	double startAngle;
 };
 
 #endif /* SRC_AUTONOMOUS_STEPS_ACKERMANNDRIVE_H_ */

@@ -47,15 +47,16 @@ private:
 
 class DriveToBump : public Step {
 public:
-	DriveToBump(double _angle, double _yspeed, double _xspeed, double _maxTimeToDrive) :
-		angle(_angle), ySpeed(_yspeed), xSpeed(_xspeed), maxTimeToDrive(_maxTimeToDrive),
-		collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
+	DriveToBump(double _angle, double _yspeed, double _xspeed, double _maxTimeToDrive, double _ignoreTime = 0.0, double _collisionThreshold = 1.0) :
+		angle(_angle), ySpeed(_yspeed), xSpeed(_xspeed), maxTimeToDrive(_maxTimeToDrive), ignoreTime(_ignoreTime),
+		collisionDetector(new CollisionDetector(RobotMap::gyro, _collisionThreshold)) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	const double angle;
 	const double ySpeed;
 	const double xSpeed;
 	const double maxTimeToDrive;
+	const double ignoreTime;
 	const std::unique_ptr<CollisionDetector> collisionDetector;
 
 	double startTime = -1;
@@ -80,6 +81,7 @@ private:
 	const double targetDistance;
 	const DriveUnit::Units units;
 	double targetPulses = 0;
+	double startEncoder = 0;
 };
 
 

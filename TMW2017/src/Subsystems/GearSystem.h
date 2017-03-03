@@ -102,6 +102,8 @@ public:
 	bool IsEjectGearRunning();
 	void ResetGear();
 	bool HasGear();
+
+	void DropPickupForShooting(bool doDrop);
 };
 
 class GearPickupProcess {

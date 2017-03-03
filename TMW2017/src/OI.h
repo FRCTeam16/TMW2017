@@ -81,9 +81,9 @@ public:
 	};
 
 	DPad GetGamepadDPad();
-	double GetJoystickTwist();
-	double GetJoystickX();
-	double GetJoystickY();
+	double GetJoystickTwist(double threshold = 0.1);
+	double GetJoystickX(double threshold = 0.1);
+	double GetJoystickY(double threshold = 0.1);
 	double GetGamepadLeftStick();
 	double GetGamepadRightStick();
 	double GetGamepadLT();

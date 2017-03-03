@@ -37,7 +37,7 @@ bool DriveToBump::Run(std::shared_ptr<World> world) {
 		startTime = currentTime;
 		Robot::driveBase->SetTargetAngle(angle);
 	}
-	if (collisionDetector->Detect()) {
+	if (collisionDetector->Detect() && ((currentTime - startTime) > ignoreTime)) {
 		std::cout << "DriveToBump detected collision\n";
 		return true;
 	}
@@ -81,6 +81,7 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 		firstRun = false;
 		startTime = world->GetClock();
 		Robot::driveBase->SetTargetAngle(angle);
+		startEncoder = Robot::driveBase->GetFrontLeftDrive()->GetEncPosition();
 		targetPulses = DriveUnit::ToPulses(targetDistance, units);
 	}
 
@@ -93,11 +94,11 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 	cout << "PIDControlledDrive Current Error : " << currentError << "\n";
 
 
-	if (currentPosition >= targetPulses) {
+	if (abs(currentPosition - startEncoder) >= targetPulses) {
 		cout << "Position reached in " << elapsedTime << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTime > 6000) {
+	} else if (elapsedTime > 10000) {
 		cout << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;

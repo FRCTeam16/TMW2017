@@ -21,7 +21,7 @@ DebugAutoStrategy::DebugAutoStrategy() {
 //	steps.push_back(new XYPIDControlledDrive(0.0, 0.3, 0, 60, 1.5, DriveUnit::Units::kInches));
 
 //	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, 21, -21, -1, DriveUnit::Units::kInches));
-	steps.push_back(new AckermannDrive(0.2, 110));
+	steps.push_back(new AckermannDrive(0.2, 20));
 
 }
 

@@ -260,6 +260,22 @@ bool GearSystem::HasGear() {
 	return hasGear;
 }
 
+
+void GearSystem::DropPickupForShooting(bool doDrop) {
+	// FIXME: cleanup/simplify
+	if (doDrop) {
+		if (!rotateEnabled && !liftEnabled) {
+			SetRotateEnabled(true);
+			SetLiftEnabled(true);
+		}
+	} else {
+		if (rotateEnabled && liftEnabled) {
+			SetRotateEnabled(false);
+			SetLiftEnabled(false);
+		}
+	}
+}
+
 void GearSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("GearPickup Volts", gearPickUp->GetOutputVoltage());
 	frc::SmartDashboard::PutNumber("GearPickup Amps", gearPickUp->GetOutputCurrent());

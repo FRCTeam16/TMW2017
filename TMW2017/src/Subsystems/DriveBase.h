@@ -108,6 +108,7 @@ public:
 
 	void InitTeleop();
 
+	void Lock();
 	void Crab(double twist, double y, double x, bool useGyro);
 
 	void SetTargetAngle(double angle);
