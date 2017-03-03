@@ -40,7 +40,6 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     const double D = prefs->GetDouble("ShootD", 0);
     const double F = prefs->GetDouble("ShootF", 0.035);
     shooterRPM = prefs->GetDouble("ShootRPM");
-    const double shootRampRate = prefs->GetDouble("ShootVoltRampRate", 6.0);
     const uint32_t shootAveraging = prefs->GetInt("ShootAveraging", 100);
 
     if (!prefs->ContainsKey("ShootP")) {
@@ -58,9 +57,6 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     if (!prefs->ContainsKey("ShootRPM")) {
 		prefs->PutDouble("ShootRPM", shooterRPM);
 	}
-    if (!prefs->ContainsKey("ShootVoltRampRate")) {
-    	prefs->PutDouble("ShootVoltRampRate", shootRampRate);
-    }
     if (!prefs->ContainsKey("ShootAveraging")) {
     	prefs->PutInt("ShootAveraging", shootAveraging);
     }
@@ -70,7 +66,6 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
     shooter1->SetFeedbackDevice(CANTalon::FeedbackDevice::CtreMagEncoder_Relative);
     shooter1->SetPID(P, I, D, F);
     shooter1->ConfigPeakOutputVoltage(0.0, -12.0);
-    shooter1->SetVoltageRampRate(shootRampRate);
     shooter1->SetVelocityMeasurementWindow(shootAveraging);
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
@@ -104,8 +99,7 @@ void ShooterSystem::Run() {
 	    const double F = prefs->GetDouble("ShootF", 0.035);
 	    shooter1->SetPID(P, I, D, F);
 
-	    const double shootRampRate = prefs->GetDouble("ShootVoltRampRate", 6.0);
-		shooter1->SetVoltageRampRate(shootRampRate);
+	    ControlShooterRamp();
 
 	    const uint32_t shootAveraging = prefs->GetInt("ShootAveraging", 100);
 	    shooter1->SetVelocityMeasurementWindow(shootAveraging);
@@ -141,6 +135,19 @@ void ShooterSystem::Run() {
 
 void ShooterSystem::PulseBallLoad(int countdownScansStart) {
 	pulseBallLoadCountdown = countdownScansStart;
+}
+
+void ShooterSystem::TriggerShooterRamp(int countdownScansStart) {
+	shooterRampCountdown = countdownScansStart;
+	shooter1->SetVoltageRampRate(24);
+}
+
+void ShooterSystem::ControlShooterRamp() {
+	if (shooterRampCountdown > 0) {
+		if (--shooterRampCountdown == 0) {
+		    shooter1->SetVoltageRampRate(0);
+		}
+	}
 }
 
 bool ShooterSystem::CheckPulsingBallLoad() {
@@ -197,6 +204,7 @@ void ShooterSystem::ToggleShooter() {
 
 void ShooterSystem::SetShooterEnabled(bool enabled) {
 	if (enabled) {
+		TriggerShooterRamp();
 		PulseBallLoad();
 	}
 	shooterMotorsEnabled = enabled;

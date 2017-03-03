@@ -48,8 +48,11 @@ private:
 	int reverseHopperCountDownTimerStartValue = 15;
 
 	int pulseBallLoadCountdown = 0;
+	int shooterRampCountdown = 0;
 
 	bool CheckPulsingBallLoad();
+	void TriggerShooterRamp(int countdownScansStart = 25);
+	void ControlShooterRamp();
 
 public:
 	ShooterSystem();
