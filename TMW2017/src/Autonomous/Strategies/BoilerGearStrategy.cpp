@@ -1,23 +1,23 @@
 /*
- * RightGearStrategy.cpp
+ * BoilerGearStrategy.cpp
  *
  *  Created on: Feb 25, 2017
  *      Author: User
  */
 
-#include <Autonomous/Strategies/RightGearStrategy.h>
 #include <Autonomous/Steps/DriveSteps.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
-#include <Autonomous/Steps/EjectGear.h>
 #include <Autonomous/Steps/Rotate.h>
 #include <Autonomous/Steps/SetGyroOffset.h>
 #include <Autonomous/Steps/ControlShooterMotor.h>
 #include <Autonomous/Steps/AckermannDrive.h>
 #include <Autonomous/Steps/Delay.h>
+#include <Autonomous/Steps/GearSteps.h>
 #include <Autonomous/Steps/Shoot.h>
+#include <Autonomous/Strategies/BoilerGearStrategy.h>
 
 
-RightGearStrategy::RightGearStrategy() {
+BoilerGearStrategy::BoilerGearStrategy() {
 	Preferences *prefs = Preferences::GetInstance();
 	const double rightGearX = prefs->GetDouble("RightGearX", -83);
 	const double rightGearY = prefs->GetDouble("RightGearY", 96);
@@ -38,6 +38,6 @@ RightGearStrategy::RightGearStrategy() {
 	steps.push_back(new Shoot(10));
 }
 
-RightGearStrategy::~RightGearStrategy() {
+BoilerGearStrategy::~BoilerGearStrategy() {
 }
 

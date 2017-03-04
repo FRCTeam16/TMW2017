@@ -6,11 +6,11 @@
  */
 
 #include <Autonomous/AutoManager.h>
+#include <Autonomous/Strategies/BoilerGearStrategy.h>
 #include "../RobotMap.h"
 #include "Strategies/DebugAutoStrategy.h"
 #include <Autonomous/Strategies/DebugAutoStrategy.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
-#include <Autonomous/Strategies/RightGearStrategy.h>
 
 
 
@@ -40,7 +40,7 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
 		strategy = new CenterGearStrategy();
 		break;
 	case kBoiler:
-		strategy = new RightGearStrategy();
+		strategy = new BoilerGearStrategy();
 		break;
 	case kReturn:
 		strategy = new DebugAutoStrategy();

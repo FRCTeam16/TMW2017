@@ -6,8 +6,8 @@
  */
 
 #include <Autonomous/Steps/DriveSteps.h>
+#include <Autonomous/Steps/GearSteps.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
-#include <Autonomous/Steps/EjectGear.h>
 #include <Autonomous/Steps/SetGyroOffset.h>
 
 CenterGearStrategy::CenterGearStrategy() {

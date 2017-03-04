@@ -5,8 +5,8 @@
  *      Author: User
  */
 
-#ifndef SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_
-#define SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_
+#ifndef SRC_AUTONOMOUS_STEPS_GEARSTEPS_H_
+#define SRC_AUTONOMOUS_STEPS_GEARSTEPS_H_
 
 #include "WPILib.h"
 #include "../Step.h"
@@ -42,4 +42,4 @@ public:
 	bool Run(std::shared_ptr<World> world) override;
 };
 
-#endif /* SRC_AUTONOMOUS_STEPS_EJECTGEAR_H_ */
+#endif /* SRC_AUTONOMOUS_STEPS_GEARSTEPS_H_ */
