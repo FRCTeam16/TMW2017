@@ -22,6 +22,17 @@ public:
 };
 
 
+class DropGearAssembly : public Step {
+private:
+	const double delay;
+	const bool doDrop;
+	double startTime = -1;
+public:
+	DropGearAssembly(double _delay, bool _doDrop) : delay(_delay), doDrop(_doDrop) {}
+	~DropGearAssembly() {}
+	bool Run(std::shared_ptr<World> world) override;
+};
+
 class ResetGear : public Step {
 private:
 	double startTime = -1;

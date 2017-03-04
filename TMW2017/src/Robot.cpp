@@ -107,7 +107,9 @@ void Robot::RobotInit() {
 	if (!prefs->ContainsKey(DriveUnit::PULSES_PER_INCH)) {
 		prefs->PutDouble(DriveUnit::PULSES_PER_INCH, 16.5);
 	}
-	// TODO: Store boiler right X/Y coordinates
+	if (!prefs->ContainsKey("BoilerAutoAngle")) {
+		prefs->PutDouble("BoilerAutoAngle", -52.0);
+	}
 	if (!prefs->ContainsKey("RightGearX")) {
 		prefs->PutDouble("RightGearX", -83);
 	}

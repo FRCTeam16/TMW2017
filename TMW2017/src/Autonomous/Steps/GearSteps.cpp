@@ -10,6 +10,17 @@
 #include <Subsystems/GearSystem.h>
 
 
+bool DropGearAssembly::Run(std::shared_ptr<World> world) {
+	std::cout << "DropGearAssembly::doDrop = " << doDrop << "\n";
+	const double currentTime = world->GetClock();
+	if (startTime < 0) {
+		startTime = currentTime;
+		Robot::gearSystem->DropPickupForShooting(doDrop);
+	}
+	const bool exitFn = (currentTime - startTime) > delay;
+	return exitFn;
+}
+
 bool EjectGear::Run(std::shared_ptr<World> world) {
 	const double currentTime = world->GetClock();
 	if (startTime < 0) {

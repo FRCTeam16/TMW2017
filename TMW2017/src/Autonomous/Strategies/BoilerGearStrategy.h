@@ -8,8 +8,8 @@
 #ifndef SRC_AUTONOMOUS_STRATEGIES_BOILERGEARSTRATEGY_H_
 #define SRC_AUTONOMOUS_STRATEGIES_BOILERGEARSTRATEGY_H_
 
+#include "WPILib.h"
 #include <Autonomous/Strategy.h>
-
 
 class BoilerGearStrategy : public StepStrategy {
 public:
