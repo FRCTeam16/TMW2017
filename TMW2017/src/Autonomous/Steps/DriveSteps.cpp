@@ -85,16 +85,16 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 		targetPulses = DriveUnit::ToPulses(targetDistance, units);
 	}
 
-	const int currentPosition = abs(Robot::driveBase->GetFrontLeftDrive()->GetEncPosition());
+	const int currentPosition = Robot::driveBase->GetFrontLeftDrive()->GetEncPosition();
 	const double elapsedTime = world->GetClock() - startTime;
-	const double currentError = Robot::driveBase->GetDriveControlError();
+	const double currentError = fabs(currentPosition - startEncoder);
 
 	cout << "SimpleEncoderDrive Encoder       : " << currentPosition << "\n";
 	cout << "SimpleEncoderDrive Target        : " << targetPulses << "\n";
 	cout << "PIDControlledDrive Current Error : " << currentError << "\n";
 
 
-	if (abs(currentPosition - startEncoder) >= targetPulses) {
+	if (currentError >= targetPulses) {
 		cout << "Position reached in " << elapsedTime << "\n";
 		crab->Stop();
 		return true;

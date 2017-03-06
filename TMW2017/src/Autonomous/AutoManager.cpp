@@ -11,6 +11,7 @@
 #include "Strategies/DebugAutoStrategy.h"
 #include <Autonomous/Strategies/DebugAutoStrategy.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
+#include <Autonomous/Strategies/ReturnGearStrategy.h>
 
 
 
@@ -31,6 +32,12 @@ AutoManager::~AutoManager() {
 }
 
 std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
+	const frc::DriverStation::Alliance alliance = frc::DriverStation::GetInstance().GetAlliance();
+	const bool isRed =  alliance == frc::DriverStation::Alliance::kRed;
+	//|| alliance == frc::DriverStation::Alliance::kInvalid;
+
+	std::cout << "AutoManager::CreateStrategy -> isRed = " << isRed << "\n";
+
 	Strategy *strategy = 0;
 	switch (key) {
 	case kDebug:
@@ -40,10 +47,10 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
 		strategy = new CenterGearStrategy();
 		break;
 	case kBoiler:
-		strategy = new BoilerGearStrategy();
+		strategy = new BoilerGearStrategy(isRed, isRed);
 		break;
 	case kReturn:
-		strategy = new DebugAutoStrategy();
+		strategy = new ReturnGearStrategy(isRed);
 		break;
 	default:
 		std::cerr << "No valid strategy selected";

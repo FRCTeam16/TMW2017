@@ -61,6 +61,8 @@ private:
 	bool extendEnabled = false;
 	bool squeezeEnabled = false;
 
+	bool compressorEnabled = true;
+
 	// Auto gear pickup selection strategy
 	bool useSwitchAutoPickup = true;
 
@@ -104,6 +106,7 @@ public:
 	bool HasGear();
 
 	void DropPickupForShooting(bool doDrop);
+	void SetCompressorEnabled(bool enabled);
 };
 
 class GearPickupProcess {

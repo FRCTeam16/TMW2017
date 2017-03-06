@@ -12,6 +12,7 @@
 #include "CANTalon.h"
 
 #include "ClimberSystem.h"
+#include <Robot.h>
 #include "../RobotMap.h"
 
 using namespace frc;
@@ -51,6 +52,9 @@ void ClimberSystem::Run() {
 	} else {
 		prod->Set(DoubleSolenoid::kReverse);
 	}
+
+
+	Robot::gearSystem->SetCompressorEnabled(!(fabs(climberSpeed) > 0.0));
 }
 
 void ClimberSystem::InitManager(Manager::RunMode runMode) {

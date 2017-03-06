@@ -13,7 +13,7 @@
 
 class BoilerGearStrategy : public StepStrategy {
 public:
-	BoilerGearStrategy();
+	BoilerGearStrategy(bool isRed, bool shoot);
 	virtual ~BoilerGearStrategy();
 };
 

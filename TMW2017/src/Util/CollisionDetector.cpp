@@ -22,10 +22,14 @@ bool CollisionDetector::Detect() {
 	double current_jerk_y = current_accel_y - last_accel_y;
 	last_accel_y = current_accel_y;
 
-	std::cout << "CollisionDetector jerk: x->" << current_jerk_x
-			  << " y-> " << current_jerk_y << "\n";
+//	std::cout << "CollisionDetector jerk: x->" << current_jerk_x
+//			  << " y-> " << current_jerk_y << "\n";
+
+	frc::SmartDashboard::PutNumber("Current Jerk X", current_jerk_x);
+	frc::SmartDashboard::PutNumber("Current Jerk Y", current_jerk_y);
 
 	return ((fabs(current_jerk_x) > threshold) ||
 			(fabs(current_jerk_y) > threshold));
 }
+
 

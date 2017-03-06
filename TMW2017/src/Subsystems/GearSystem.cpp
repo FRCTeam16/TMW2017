@@ -111,6 +111,7 @@ void GearSystem::StartAutoPickupBySwitches() {
 			&& rotateEnabled == true
 			&& extendEnabled == EXTEND_DISABLED) {
 				std::cout << "Autostarting gear pickup process\n";
+				hasGear = true;
 				gearPickupProcess->Start();
 				rumbleEnabled = true;
 				rumbleCounter = 0;
@@ -148,6 +149,13 @@ void GearSystem::Run() {
 			Robot::oi->SetGamepadBothRumble(1);
 		}
 	}
+
+	if (compressorEnabled) {
+		gearCompressor->Start();
+	} else {
+		gearCompressor->Stop();
+	}
+
 	double speed = gearPickUpSpeed;
 	if (gearPickupSpeedLocked) {
 		speed = gearProcessPickUpSpeed;
@@ -249,6 +257,7 @@ bool GearSystem::IsEjectGearRunning() {
 void GearSystem::ResetGear() {
 	std::cout << "GearSystem::ResetGear\n";
 	UnlockGearPickupSpeedLocked();
+	hasGear = false;	// assume no gear when we reset
 	if (gearResetProcess->Start()) {
 		gearBarReverse = false;
 	} else {
@@ -262,6 +271,7 @@ bool GearSystem::HasGear() {
 
 
 void GearSystem::DropPickupForShooting(bool doDrop) {
+	// false is up, true is down
 	// FIXME: cleanup/simplify
 	if (doDrop) {
 		if (!rotateEnabled && !liftEnabled) {
@@ -274,6 +284,10 @@ void GearSystem::DropPickupForShooting(bool doDrop) {
 			SetLiftEnabled(false);
 		}
 	}
+}
+
+void GearSystem::SetCompressorEnabled(bool enabled) {
+	compressorEnabled = enabled;
 }
 
 void GearSystem::SMDB() {
