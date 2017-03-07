@@ -15,7 +15,7 @@ class LEDCommunications : public Manager {
 private:
 	std::unique_ptr<I2C> i2c;
 	int counter = 0;
-	const int scanFrequency = 12;
+	const int scanFrequency = 1;
 	void SendData();
 public:
 	LEDCommunications(int portNumber);

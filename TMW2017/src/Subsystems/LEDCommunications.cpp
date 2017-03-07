@@ -20,19 +20,16 @@ LEDCommunications::LEDCommunications(int portNumber) {
 
 void LEDCommunications::Run() {
 	std::cout << "LEDCommunications::Run() started\n";
-//	frc::SetCurrentThreadPriority(true, 20);
+	frc::SetCurrentThreadPriority(true, 10);
 
 	while (true) {
-	//	if ((++counter %= scanFrequency) != 0) {
-	//		return;
-	//	}
-
 		try {
 			SendData();
 		} catch (...) {
 			std::cerr << "LEDCommunications default exception handler\n";
 			return;
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
 	}
 }
@@ -47,6 +44,7 @@ void LEDCommunications::SendData() {
 
 		const double maxSpeed = 13000;
 		const double maxCurrent = 40;
+		const uint8_t MAX = 255;
 
 		const int DATA_SIZE = 10;
 		uint8_t data[DATA_SIZE];
@@ -67,7 +65,7 @@ void LEDCommunications::SendData() {
 		if (!DriverStation::GetInstance().IsAutonomous()) {
 			data[i++] = map(DriverStation::GetInstance().GetMatchTime(), 135, 0, 135, 0);
 		} else {
-			data[i++] = 255;
+			data[i++] = MAX;
 		}
 
 		// Debug
@@ -75,7 +73,9 @@ void LEDCommunications::SendData() {
 	//		std::cout << "data[" << i << "] = " << data[i] << "\n";
 	//	}
 
+		std::cout << "Starting transaction\n";
 		i2c->Transaction(data, 10, nullptr, 0);
+		std::cout << "Transaction finished\n";
 }
 
 void LEDCommunications::SMDB() {

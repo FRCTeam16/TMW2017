@@ -50,6 +50,7 @@ BoilerGearStrategy::BoilerGearStrategy(bool isRed, bool shoot) {
 
 	if (isRed && shoot) {
 //		steps.push_back(new DropGearAssembly(0.25, true));
+		steps.push_back(new Rotate(-180.0));
 		steps.push_back(new ControlShooterMotor(true));
 		steps.push_back(new DriveToBump(-180.0, 0, 0.4, 4, 0.75, jerk));
 		steps.push_back(new SimpleEncoderDrive(-180.0, -0.5, 0.0, 5.5, DriveUnit::Units::kInches));

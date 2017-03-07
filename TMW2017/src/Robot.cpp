@@ -132,11 +132,18 @@ void Robot::RobotInit() {
 	SetDoublePref("ReverseReturnGearY", -15);
 	SetDoublePref("ReverseReturnGearT", -1);
 
+	SetDoublePref("CenterGearY", 64.25);
+
+	if (!prefs->ContainsKey("EnabledLED")) {
+		prefs->PutBoolean("EnabledLED", false);
+	}
 
 	// Initialize LED Communications background thread
 	// If problems here, may need to be located in an InitManager() type call in Auto or Teleop
-	//ledThread = std::thread(&LEDCommunications::Run, new LEDCommunications(16));
-	//ledThread.detach();	// Thread must be detached since WPILIB doesn't provide a suitable join() point
+//	if (prefs->GetBoolean("EnabledLED", false)) {
+//		ledThread = std::thread(&LEDCommunications::Run, new LEDCommunications(16));
+//		ledThread.detach();	// Thread must be detached since WPILIB doesn't provide a suitable join() point
+//	}
 }
 
 void Robot::SetDoublePref(llvm::StringRef key, double value) {
@@ -329,6 +336,14 @@ void Robot::InitManagers() {
 			[=](std::shared_ptr<Manager> &manager) {
 				manager->InitManager(runMode);
 			});
+
+	if (!ledThread.joinable()) {
+		Preferences *prefs = Preferences::GetInstance();
+		if (prefs->GetBoolean("EnabledLED", false)) {
+			ledThread = std::thread(&LEDCommunications::Run, new LEDCommunications(16));
+			ledThread.detach();	// Thread must be detached since WPILIB doesn't provide a suitable join() point
+		}
+	}
 }
 
 void Robot::RunManagers() {
