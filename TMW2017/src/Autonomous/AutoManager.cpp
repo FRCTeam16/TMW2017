@@ -41,7 +41,7 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
 	Strategy *strategy = 0;
 	switch (key) {
 	case kDebug:
-		strategy = new DebugAutoStrategy();
+		strategy = new CenterGearStrategy();
 		break;
 	case kCenter:
 		strategy = new CenterGearStrategy();
