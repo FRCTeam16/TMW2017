@@ -114,9 +114,11 @@ void Robot::RobotInit() {
 	SetDoublePref("BoilerGearY", 88.0);
 	SetDoublePref("BoilerGearT", 1.5);
 	SetDoublePref("BoilerJerk", 1.3);
+	SetDoublePref("BoilerBumpX", 0.4);
 	SetDoublePref("ReverseBoilerGearY", -15);
 	SetDoublePref("ReverseBoilerGearX", -15);
 	SetDoublePref("ReverseBoilerGearT", -1);
+	SetDoublePref("AckermannAngle", 7.0);
 
 	SetDoublePref("ReturnAutoAngle", 60.0);
 	SetDoublePref("ReturnGearX", 83);
@@ -223,6 +225,14 @@ void Robot::TeleopPeriodic() {
 	if (oi->DR2->RisingEdge()) {
 		gearSystem->EjectGear();
 	}
+
+	if (oi->DR4->Pressed()) {
+		const double ackermannAngle = Preferences::GetInstance()->GetDouble("AckermannAngle", 7.0);
+		driveBase->SetTargetAngle(ackermannAngle);
+		useDriveBaseAngle = true;
+	}
+
+
 
 	if (oi->DL1->Pressed()) {
 		useCrab = false;

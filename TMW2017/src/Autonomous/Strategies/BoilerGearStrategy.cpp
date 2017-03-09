@@ -26,8 +26,9 @@ BoilerGearStrategy::BoilerGearStrategy(bool isRed, bool shoot) {
 	double gearX = prefs->GetDouble("BoilerGearX", -83);
 	const double gearY = prefs->GetDouble("BoilerGearY", 96);
 	const double gearT = prefs->GetDouble("BoilerGearT", 1.5);
+	double driveBumpX = prefs->GetDouble("BoilerBumpX", 0.4);
 	const double jerk = prefs->GetDouble("BoilerJerk", 1.3);
-
+	const double ackermannAngle = prefs->GetDouble("AckermannAngle", 7.0);
 
 	const double reverseGearY = prefs->GetDouble("ReverseBoilerGearY", -15);
 	double reverseGearX = prefs->GetDouble("ReverseBoilerGearX", -15);
@@ -37,28 +38,29 @@ BoilerGearStrategy::BoilerGearStrategy(bool isRed, bool shoot) {
 		angle *= -1;
 		gearX *= -1;
 		reverseGearX *= -1;
+		driveBumpX *= -1;
 	}
 
 	//
-	// Begin Step Definitions
+	// Hang Gear
 	//
 	steps.push_back(new SetGyroOffset(angle));
 	steps.push_back(new XYPIDControlledDrive(angle, speed, gearX, gearY, gearT, DriveUnit::Units::kInches));
 	steps.push_back(new EjectGear(0.5));
 	steps.push_back(new XYPIDControlledDrive(angle, 0.6, reverseGearX, reverseGearY, reverseGearT, DriveUnit::Units::kInches, 999.0));	// ignore collisions
 
-
-	if (isRed && shoot) {
+	//
+	// Move to wall and shoot
+	//
 //		steps.push_back(new DropGearAssembly(0.25, true));
-		steps.push_back(new Rotate(-180.0));
-		steps.push_back(new ControlShooterMotor(true));
-		steps.push_back(new DriveToBump(-180.0, 0, 0.4, 4, 0.75, jerk));
-		steps.push_back(new SimpleEncoderDrive(-180.0, -0.5, 0.0, 5.5, DriveUnit::Units::kInches));
-		steps.push_back(new AckermannDrive(0.3, 7));
-		steps.push_back(new Shoot(10));
-	} else {
-		// blue specific steps
+	steps.push_back(new Rotate(-180.0));
+	steps.push_back(new ControlShooterMotor(true));
+	steps.push_back(new DriveToBump(-180.0, 0, driveBumpX, 4, 0.75, jerk));
+	steps.push_back(new SimpleEncoderDrive(-180.0, -0.5, 0.0, 5.5, DriveUnit::Units::kInches));
+	if (isRed) {
+		steps.push_back(new AckermannDrive(0.3, ackermannAngle));
 	}
+	steps.push_back(new Shoot(10));
 }
 
 BoilerGearStrategy::~BoilerGearStrategy() {
