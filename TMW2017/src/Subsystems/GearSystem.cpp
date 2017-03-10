@@ -393,7 +393,7 @@ bool GearPickupProcess::IsStopped() {
 GearEjectProcess::GearEjectProcess(GearSystem *gearSystem_) : timer(new Timer()) {
 	std::cout << "GearEjectProcess::GearEjectProcess\n";
 	gearSystem.reset(gearSystem_);
-	stateMapping.insert(std::make_pair(kRelease, StateInfo {0.1, kExtend}));
+	stateMapping.insert(std::make_pair(kRelease, StateInfo {0.25, kExtend}));
 	stateMapping.insert(std::make_pair(kExtend, StateInfo {0.1, kRetract}));
 	stateMapping.insert(std::make_pair(kRetract, StateInfo {0.25, kExtend2}));
 	stateMapping.insert(std::make_pair(kExtend2, StateInfo {0.1, kRetract2}));
