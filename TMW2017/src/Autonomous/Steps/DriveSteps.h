@@ -129,25 +129,26 @@ private:
 
 
 /**
- * Threshold of -1 will use pass the line stopping
+ * Threshold of -1 will use past the encoder target stopping
  */
 class XYPIDControlledDrive : public Step {
 public:
 	XYPIDControlledDrive(double _angle, double _speed,
 			double _XtargetDistance, double _YtargetDistance,
-			double _threshold, DriveUnit::Units _units, bool _reverse = false) :
+			double _threshold, DriveUnit::Units _units, bool _reverse = false,
+			double _timeoutCommand = 6.0) :
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
-		units(_units), reverse(_reverse),
+		units(_units), reverse(_reverse), timeoutCommand(_timeoutCommand),
 		collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
 
 	XYPIDControlledDrive(double _angle, double _speed,
 			double _XtargetDistance, double _YtargetDistance,
 			double _threshold, DriveUnit::Units _units, double _collisionThreshold,
-			bool _reverse = false) :
+			bool _reverse = false, double _timeoutCommand = 6.0) :
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
-		units(_units), reverse(_reverse),
+		units(_units), reverse(_reverse), timeoutCommand(_timeoutCommand),
 		collisionDetector(new CollisionDetector(RobotMap::gyro, _collisionThreshold)) {}
 
 
@@ -159,9 +160,9 @@ private:
 	const double XtargetDistance;
 	const double YtargetDistance;
 	const double distanceThreshold;
-	const double timeoutCommandMs = 8000;
 	const DriveUnit::Units units;
 	const bool reverse;
+	const double timeoutCommand;
 	const std::unique_ptr<CollisionDetector> collisionDetector;
 
 	double startingEncoderCount = 0;

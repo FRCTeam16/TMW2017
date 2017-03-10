@@ -193,8 +193,8 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		return true;
 	}
 
-	if (elapsedTimeMillis > timeoutCommandMs) {
-		cout << "**** EMERGENCY HALT ***" << "\n";
+	if (elapsedTimeMillis > timeoutCommand) {
+		cout << "**** EMERGENCY EXIT OF STEP DUE TO TIMEOUT ***" << "\n";
 		crab->Stop();
 		return true;
 //	} else if (collisionDetector->Detect()) {
