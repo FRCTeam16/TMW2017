@@ -1,0 +1,48 @@
+/*
+ * BoilerShootOnlyStrategy.cpp
+ *
+ *  Created on: Mar 10, 2017
+ *      Author: User
+ */
+
+#include <Autonomous/Strategies/BoilerShootOnlyStrategy.h>
+#include <Autonomous/Steps/DriveSteps.h>
+#include <Autonomous/Steps/ControlShooterMotor.h>
+#include <Autonomous/Steps/SetGyroOffset.h>
+#include <Autonomous/Steps/Shoot.h>
+#include <Autonomous/Steps/AckermannDrive.h>
+
+BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
+	Preferences *prefs = Preferences::GetInstance();
+
+	const double angle = 180.0;
+	const double speed = prefs->GetDouble("ShootOnlySpeed", 0.4);
+	const double yDistance = prefs->GetDouble("ShootOnlyY", 85);
+	const double threshold = prefs->GetDouble("ShootOnlyT", 1.5);
+	double driveBumpX = prefs->GetDouble("ShootOnlyBumpXSpeed", 0.4);
+	const double ignoreJerk = prefs->GetDouble("ShootOnlyIgnoreJerk", 0.04);
+	const double jerk = prefs->GetDouble("ShootOnlyJerk", 1.0);
+	const double ackermannAngle = prefs->GetDouble("AckermannAngle", 7.0);
+	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed", -0.5);
+	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY", 3);
+
+
+	if (!isRed) {
+		driveBumpX *= -1;
+	}
+
+	steps.push_back(new SetGyroOffset(angle));
+	steps.push_back(new ControlShooterMotor(true));
+	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
+	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 3.0, ignoreJerk, jerk));
+	steps.push_back(new SimpleEncoderDrive(angle, afterBumpSpeed, 0.0, afterBumpY, DriveUnit::Units::kInches));
+	if (isRed) {
+		steps.push_back(new AckermannDrive(0.3, ackermannAngle));
+	}
+	steps.push_back(new Shoot(13));
+
+}
+
+BoilerShootOnlyStrategy::~BoilerShootOnlyStrategy() {
+}
+

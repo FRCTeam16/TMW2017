@@ -12,6 +12,7 @@
 #include <Autonomous/Strategies/DebugAutoStrategy.h>
 #include <Autonomous/Strategies/CenterGearStrategy.h>
 #include <Autonomous/Strategies/ReturnGearStrategy.h>
+#include <Autonomous/Strategies/BoilerShootOnlyStrategy.h>
 
 
 
@@ -22,7 +23,8 @@ AutoManager::AutoManager() :
 	strategies->AddObject("1 - Center", (void *) AutoStrategy::kCenter);
 	strategies->AddObject("2 - Boiler", (void *) AutoStrategy::kBoiler);
 	strategies->AddObject("3 - Return", (void *) AutoStrategy::kReturn);
-	frc::SmartDashboard::PutData("Autonomous Strategy1", strategies.get());
+	strategies->AddObject("4 - Shoot Only", (void *) AutoStrategy::kShootOnly);
+	frc::SmartDashboard::PutData("Autonomous Strategy2", strategies.get());
 
 	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
 	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);
@@ -51,6 +53,9 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
 		break;
 	case kReturn:
 		strategy = new ReturnGearStrategy(isRed);
+		break;
+	case kShootOnly:
+		strategy = new BoilerShootOnlyStrategy(isRed);
 		break;
 	default:
 		std::cerr << "No valid strategy selected";

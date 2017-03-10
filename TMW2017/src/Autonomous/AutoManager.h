@@ -22,7 +22,7 @@ public:
 	void SMDB();
 private:
 	enum AutoStrategy {
-		kDebug = 0, kCenter, kBoiler, kReturn
+		kDebug = 0, kCenter, kBoiler, kReturn, kShootOnly
 	};
 	std::shared_ptr<frc::SendableChooser<void*>> strategies;
 	std::unique_ptr<Strategy> CreateStrategy(const AutoStrategy &key);
