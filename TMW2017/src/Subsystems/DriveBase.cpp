@@ -122,7 +122,7 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	const double driveControlD = prefs->GetFloat("DriveControlD");
 	const double driveControlF = prefs->GetFloat("DriveControlF");
 	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
-	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
+	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive, &inv.FR));
 	driveControlDistanceSpeed.reset(new CrabSpeed());
 	driveControlSpeedController.reset(
 			new PIDController(driveControlP, driveControlI, driveControlD, driveControlF,
@@ -156,7 +156,7 @@ void DriveBase::InitializeOffsets() {
 
 void DriveBase::Lock() {
 	DriveInfo<double> steering;
-	steering.FL = 2.5;
+	steering.FL = 2.0;
 	steering.FR = 0.75;
 	steering.RL = 3.25;
 	steering.RR = 4.5;
