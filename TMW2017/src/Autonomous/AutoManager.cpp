@@ -58,6 +58,7 @@ std::unique_ptr<Strategy> AutoManager::CreateStrategy(const AutoStrategy &key) {
 		strategy = new BoilerShootOnlyStrategy(isRed);
 		break;
 	default:
+		strategy = new CenterGearStrategy();
 		std::cerr << "No valid strategy selected";
 	}
 	return std::unique_ptr<Strategy>(strategy);
