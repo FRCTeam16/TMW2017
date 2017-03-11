@@ -69,8 +69,9 @@ private:
  */
 class SimpleEncoderDrive : public Step {
 public:
-	SimpleEncoderDrive(double _angle, double _yspeed, double _xspeed, double _targetDistance, DriveUnit::Units _units) :
-		angle(_angle), ySpeed(_yspeed), xSpeed(_xspeed), targetDistance(_targetDistance), units(_units) {}
+	SimpleEncoderDrive(double _angle, double _yspeed, double _xspeed, double _targetDistance, DriveUnit::Units _units, double _timeout = 2.0) :
+		angle(_angle), ySpeed(_yspeed), xSpeed(_xspeed), targetDistance(_targetDistance), units(_units),
+		timeout(_timeout) {}
 	bool Run(std::shared_ptr<World> world) override;
 private:
 	bool firstRun = true;
@@ -82,6 +83,7 @@ private:
 	const DriveUnit::Units units;
 	double targetPulses = 0;
 	double startEncoder = 0;
+	const double timeout;
 };
 
 

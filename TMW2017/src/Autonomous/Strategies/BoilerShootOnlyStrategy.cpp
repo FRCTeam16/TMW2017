@@ -11,6 +11,7 @@
 #include <Autonomous/Steps/SetGyroOffset.h>
 #include <Autonomous/Steps/Shoot.h>
 #include <Autonomous/Steps/AckermannDrive.h>
+#include <Autonomous/Steps/Delay.h>
 
 BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
@@ -24,18 +25,21 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double jerk = prefs->GetDouble("ShootOnlyJerk", 1.0);
 	const double ackermannAngle = prefs->GetDouble("AckermannAngle", 7.0);
 	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed", -0.5);
+	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX", 0.1);
 	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY", 3);
-
+	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump", 0.5);
 
 	if (!isRed) {
 		driveBumpX *= -1;
+		afterBumpSpeedX *= -1;
 	}
 
 	steps.push_back(new SetGyroOffset(angle));
 	steps.push_back(new ControlShooterMotor(true));
 	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
 	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 3.0, ignoreJerk, jerk));
-	steps.push_back(new SimpleEncoderDrive(angle, afterBumpSpeed, 0.0, afterBumpY, DriveUnit::Units::kInches));
+	steps.push_back(new SimpleEncoderDrive(angle, afterBumpSpeed, afterBumpSpeedX, afterBumpY, DriveUnit::Units::kInches));
+	steps.push_back(new Delay(delayBeforeShoot));
 	if (isRed) {
 		steps.push_back(new AckermannDrive(0.3, ackermannAngle));
 	}

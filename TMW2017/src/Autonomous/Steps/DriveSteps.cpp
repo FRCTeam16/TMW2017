@@ -98,8 +98,8 @@ bool SimpleEncoderDrive::Run(std::shared_ptr<World> world) {
 		cout << "Position reached in " << elapsedTime << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTime > 10000) {
-		cout << "**** EMERGENCY HALT ***" << "\n";
+	} else if (elapsedTime > timeout) {
+		cout << "***** Timed out *****";
 		crab->Stop();
 		return true;
 	} else {
@@ -135,7 +135,7 @@ bool PIDControlledDrive::Run(std::shared_ptr<World> world) {
 		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
 		crab->Stop();
 		return true;
-	} else if (elapsedTimeMillis > 5000) {
+	} else if (elapsedTimeMillis > 8) {
 		cerr << "**** EMERGENCY HALT ***" << "\n";
 		crab->Stop();
 		return true;

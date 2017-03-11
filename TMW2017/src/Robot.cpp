@@ -135,6 +135,8 @@ void Robot::RobotInit() {
 	SetDoublePref("ReverseReturnGearT", -1);
 
 	SetDoublePref("CenterGearY", 64.25);
+	SetDoublePref("CenterGearYSpeed", 0.2);
+	SetDoublePref("CenterGearTInches", 4);
 
 	SetDoublePref("ShootOnlySpeed", 0.4);
 	SetDoublePref("ShootOnlyY", 85);
@@ -144,7 +146,9 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyJerk", 1.0);
 
 	SetDoublePref("ShootOnlyAfterBumpSpeed", -0.5);
+	SetDoublePref("ShootOnlyAfterBumpSpeedX", 0.1);
 	SetDoublePref("ShootOnlyAfterBumpY", 3);
+	SetDoublePref("ShootOnlyDelayAfterBump", 0.5);
 
 
 	if (!prefs->ContainsKey("EnabledLED")) {
