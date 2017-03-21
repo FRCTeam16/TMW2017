@@ -22,8 +22,11 @@ bool TimedDrive::Run(std::shared_ptr<World> world) {
 	const double currentTime = world->GetClock();
 	if (startTime < 0) {
 		startTime = currentTime;
+		Robot::driveBase->InitTeleop();
+		Robot::driveBase->SetTargetAngle(angle);
 	}
 	if ((currentTime - startTime) > timeToDrive) {
+		Robot::driveBase->UseClosedLoopDrive();
 		return true;
 	} else {
 		crab->Update(Robot::driveBase->GetTwistControlOutput(), ySpeed, xSpeed, true);

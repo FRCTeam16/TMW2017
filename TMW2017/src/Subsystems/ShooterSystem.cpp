@@ -168,13 +168,13 @@ void ShooterSystem::SMDB() {
 	reverseHopperCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 15);
 	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseHopperCountDownTimerStartValue);
 
-	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", 1.0);
+	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", 0.5);
 	frc::SmartDashboard::PutNumber("Hopper Shoot Speed", firingHopperSpeed);
 
 	elevatorSpeed = frc::SmartDashboard::GetNumber("Elevator Speed", -1.0);
 	frc::SmartDashboard::PutNumber("Elevator Speed", elevatorSpeed);
 
-	elevatorRampUpStartValue = frc::SmartDashboard::GetNumber("Elevator Rampup Start", 25);
+	elevatorRampUpStartValue = frc::SmartDashboard::GetNumber("Elevator Rampup Start", 5);
 	frc::SmartDashboard::PutNumber("Elevator Rampup Start", elevatorRampUpStartValue);
 
 	reverseHopperSpeed = -1 * firingHopperSpeed;
@@ -208,10 +208,6 @@ void ShooterSystem::SetShooterEnabled(bool enabled) {
 	if (enabled) {
 		TriggerShooterRamp();
 		PulseBallLoad();
-		// FIXME: cleanup
-		Robot::gearSystem->DropPickupForShooting(true);
-	} else {
-		Robot::gearSystem->DropPickupForShooting(false);
 	}
 	shooterMotorsEnabled = enabled;
 }

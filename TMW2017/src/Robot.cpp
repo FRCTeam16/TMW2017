@@ -149,6 +149,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyAfterBumpSpeedX", 0.1);
 	SetDoublePref("ShootOnlyAfterBumpY", 3);
 	SetDoublePref("ShootOnlyDelayAfterBump", 0.5);
+	SetDoublePref("ShootOnlyAckermannSpeed", 0.3);
 
 
 	if (!prefs->ContainsKey("EnabledLED")) {
@@ -216,6 +217,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
+	const bool isRed =  frc::DriverStation::GetInstance().GetAlliance() == frc::DriverStation::Alliance::kRed;
 	bool useCrab = true;
 	bool useDriveBaseAngle = false;
 	bool robotCentricCrab = false;
@@ -242,8 +244,9 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR4->Pressed()) {
-		const double ackermannAngle = Preferences::GetInstance()->GetDouble("AckermannAngle", 7.0);
-		driveBase->SetTargetAngle(ackermannAngle);
+		const double ackermannAngle = Preferences::GetInstance()->GetDouble("AckermannAngle", -7.0);
+		const double angle = (isRed) ? ackermannAngle : -90.0 + ackermannAngle;
+		driveBase->SetTargetAngle(angle);
 		useDriveBaseAngle = true;
 	}
 
