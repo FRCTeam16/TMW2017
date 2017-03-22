@@ -80,6 +80,7 @@ private:
 	const int MaxTurns = 1000;
 	bool driveFront = true;
 
+	void InitializePIDs();
 	void InitializeOffsets();
 	void EnableSteerPIDControllers(const bool enable);
 
@@ -107,6 +108,7 @@ public:
 	void SetSteering(DriveInfo<double> setpoint);
 
 	void InitTeleop();
+	void InitAuto();
 
 	void Lock();
 	void Crab(double twist, double y, double x, bool useGyro);

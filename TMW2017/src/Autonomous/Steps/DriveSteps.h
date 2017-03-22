@@ -166,6 +166,8 @@ private:
 	const bool reverse;
 	const double timeoutCommand;
 	const std::unique_ptr<CollisionDetector> collisionDetector;
+	int thresholdCounter = 0;
+	const int thresholdCounterTarget = 5;
 
 	double startingEncoderCount = 0;
 	double targetSetpoint = 0;

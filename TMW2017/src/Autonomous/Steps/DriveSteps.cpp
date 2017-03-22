@@ -191,9 +191,13 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 			return true;
 		}
 	} else if (abs(currentError) <= DriveUnit::ToPulses(distanceThreshold, units)) {
-		cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
-		crab->Stop();
-		return true;
+		if (thresholdCounter++ >= thresholdCounterTarget) {
+			cout << "!!!Position reached in " << elapsedTimeMillis << "\n";
+			crab->Stop();
+			return true;
+		}
+	} else {
+		thresholdCounter = 0;
 	}
 
 	if (elapsedTimeMillis > timeoutCommand) {

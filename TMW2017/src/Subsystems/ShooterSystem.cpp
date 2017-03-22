@@ -204,10 +204,12 @@ void ShooterSystem::ToggleShooter() {
 	SetShooterEnabled(!shooterMotorsEnabled);
 }
 
-void ShooterSystem::SetShooterEnabled(bool enabled) {
+void ShooterSystem::SetShooterEnabled(bool enabled, bool doLoad) {
 	if (enabled) {
 		TriggerShooterRamp();
-		PulseBallLoad();
+		if (doLoad) {
+			PulseBallLoad();
+		}
 	}
 	shooterMotorsEnabled = enabled;
 }

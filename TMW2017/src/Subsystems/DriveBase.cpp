@@ -93,13 +93,18 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
     	steer->ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
     });
 
-    // Initialize Drive Talons + PID feedback
-    Preferences *prefs = Preferences::GetInstance();
-    const double driveP = prefs->GetFloat("DriveP");
-    const double driveI = prefs->GetFloat("DriveI");
-    const double driveD = prefs->GetFloat("DriveD");
-    const double driveF = prefs->GetFloat("DriveF");
-    const double driveIZone = prefs->GetFloat("DriveIZone");
+    InitializePIDs();
+	std::cout << "DriveBase::DriveBase() Finished\n";
+}
+
+void DriveBase::InitializePIDs() {
+	 // Initialize Drive Talons + PID feedback
+	Preferences *prefs = Preferences::GetInstance();
+	const double driveP = prefs->GetFloat("DriveP");
+	const double driveI = prefs->GetFloat("DriveI");
+	const double driveD = prefs->GetFloat("DriveD");
+	const double driveF = prefs->GetFloat("DriveF");
+	const double driveIZone = prefs->GetFloat("DriveIZone");
 
 	const std::vector<std::shared_ptr<CANTalon>> drives {
 		frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive};
@@ -122,14 +127,13 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	const double driveControlD = prefs->GetFloat("DriveControlD");
 	const double driveControlF = prefs->GetFloat("DriveControlF");
 	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
-	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive, &inv.FR));
+	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive, &inv.FL));
 	driveControlDistanceSpeed.reset(new CrabSpeed());
 	driveControlSpeedController.reset(
 			new PIDController(driveControlP, driveControlI, driveControlD, driveControlF,
 					driveControlEncoderSource.get(),
 					driveControlDistanceSpeed.get()));
 	driveControlSpeedController->Enable();
-	std::cout << "DriveBase::DriveBase() Finished\n";
 }
 
 void DriveBase::InitDefaultCommand() {
@@ -201,6 +205,7 @@ void DriveBase::ZeroDriveEncoders() {
 }
 
 void DriveBase::InitTeleop() {
+	InitializePIDs();
 	this->EnableSteerPIDControllers(true);
 	this->UseOpenLoopDrive();
 	Preferences *prefs = Preferences::GetInstance();
@@ -209,6 +214,11 @@ void DriveBase::InitTeleop() {
 			prefs->GetFloat("TwistI", 0.0),
 			prefs->GetFloat("TwistD", 0.12));
 	driveControlTwist->SetOutputRange(-0.5, 0.5);
+}
+
+void DriveBase::InitAuto() {
+	InitializePIDs();
+	UseClosedLoopDrive();
 }
 
 void DriveBase::EnableSteerPIDControllers(const bool enable) {
@@ -232,6 +242,7 @@ void DriveBase::UseOpenLoopDrive() {
 				motor->SetControlMode(CANSpeedController::ControlMode::kPercentVbus);
 			});
 }
+
 
 void DriveBase::UseClosedLoopDrive() {
 	const std::vector<std::shared_ptr<CANTalon>> drives { frontLeftDrive,

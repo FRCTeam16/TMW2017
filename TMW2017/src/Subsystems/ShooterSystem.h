@@ -50,6 +50,7 @@ private:
 	int pulseBallLoadCountdown = 0;
 	int shooterRampCountdown = 0;
 
+	void ConfigureShooter();
 	bool CheckPulsingBallLoad();
 	void TriggerShooterRamp(int countdownScansStart = 25);
 	void ControlShooterRamp();
@@ -64,7 +65,7 @@ public:
 
 	void SetFireEnabled(bool enabled);
 	void ToggleShooter();
-	void SetShooterEnabled(bool enabled);
+	void SetShooterEnabled(bool enabled, bool doLoad = true);
 
 	void SetHopperSpeed(double speed);
 

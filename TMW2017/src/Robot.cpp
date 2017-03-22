@@ -152,6 +152,11 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyAckermannSpeed", 0.3);
 
 
+	SetDoublePref("ShootScootForwardSpeed", 0.4);
+	SetDoublePref("ShootScootForwardY", 66);
+	SetDoublePref("ShootScootForwardT", 1.5);
+
+
 	if (!prefs->ContainsKey("EnabledLED")) {
 		prefs->PutBoolean("EnabledLED", false);
 	}
@@ -192,7 +197,7 @@ void Robot::AutonomousInit() {
 	world.reset(new World());
 	world->Init();
 	autoManager->Init(world);
-	driveBase->UseClosedLoopDrive();
+	driveBase->InitAuto();
 	InitManagers();
 }
 
@@ -280,7 +285,7 @@ void Robot::TeleopPeriodic() {
 
 
 	if (oi->GPStart->RisingEdge()) {
-		ballPickupSystem->ToggleBallPickup();
+		gearSystem->ToggleGearBarReverse();
 	}
 	if (oi->GPBack->RisingEdge()) {
 		ballPickupSystem->ReverseBallPickup();
@@ -304,8 +309,10 @@ void Robot::TeleopPeriodic() {
 		climberSystem->ToggleProd();
 	}
 
-	if (oi->GPRB->RisingEdge()) {
-		gearSystem->ToggleGearBarReverse();
+	if (oi->GPRB->Pressed()) {
+		ballPickupSystem->SetBallPickupEnabled(true);
+	} else {
+		ballPickupSystem->SetBallPickupEnabled(false);
 	}
 
 
