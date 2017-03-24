@@ -185,6 +185,7 @@ void ShooterSystem::InitManager(Manager::RunMode runMode) {
 	SetHopperSpeed(0.0);
 	SetFireEnabled(false);
 	shooterMotorsEnabled = false;
+	reverseHopper = false;
 }
 
 

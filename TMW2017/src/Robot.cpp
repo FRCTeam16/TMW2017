@@ -106,6 +106,8 @@ void Robot::RobotInit() {
 		prefs->PutFloat("DriveControlIZone", 0.0);
 	}
 
+	SetDoublePref("TeleopAckermannAngle", 172.0);
+
 	// Autonomous
 	SetDoublePref(DriveUnit::PULSES_PER_INCH, 18.2);
 	SetDoublePref("BoilerAutoAngle", -52.0);
@@ -118,7 +120,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ReverseBoilerGearY", -15);
 	SetDoublePref("ReverseBoilerGearX", -15);
 	SetDoublePref("ReverseBoilerGearT", -1);
-	SetDoublePref("AckermannAngle", 7.0);
+	SetDoublePref("AckermannAngle", 167.0);
 
 	SetDoublePref("ReturnAutoAngle", 60.0);
 	SetDoublePref("ReturnGearX", 83);
@@ -155,6 +157,10 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootScootForwardSpeed", 0.4);
 	SetDoublePref("ShootScootForwardY", 66);
 	SetDoublePref("ShootScootForwardT", 1.5);
+	SetDoublePref("ShootScootHangSpeed", 0.2);
+	SetDoublePref("ShootScootHangY", 4.0);
+	SetDoublePref("ShootScootHangX", -2.3);
+	SetDoublePref("ShootScootHangT", 0.5);
 
 
 	if (!prefs->ContainsKey("EnabledLED")) {
@@ -249,7 +255,7 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR4->Pressed()) {
-		const double ackermannAngle = Preferences::GetInstance()->GetDouble("AckermannAngle", -7.0);
+		const double ackermannAngle = Preferences::GetInstance()->GetDouble("TeleopAckermannAngle");
 		const double angle = (isRed) ? ackermannAngle : -90.0 + ackermannAngle;
 		driveBase->SetTargetAngle(angle);
 		useDriveBaseAngle = true;

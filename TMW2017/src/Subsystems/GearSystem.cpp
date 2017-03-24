@@ -186,7 +186,7 @@ void GearSystem::InitManager(Manager::RunMode runMode) {
 		SetExtendEnabled(EXTEND_ENABLED);
 		break;
 	case Manager::RunMode::kTele:
-		SetSqueezeEnabled(false);
+		SetSqueezeEnabled(true);
 		SetExtendEnabled(EXTEND_ENABLED);
 		break;
 	}

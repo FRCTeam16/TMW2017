@@ -7,23 +7,47 @@
 
 #include "DebugAutoStrategy.h"
 #include <Autonomous/Steps/DriveSteps.h>
-#include <Autonomous/Steps/NoOp.h>
-//#include <Autonomous/Steps/TurnWheels.h>
+#include <Autonomous/Steps/ControlShooterMotor.h>
+#include <Autonomous/Steps/SetGyroOffset.h>
+#include <Autonomous/Steps/Rotate.h>
+#include <Autonomous/Steps/Shoot.h>
+#include <Autonomous/Steps/GearSteps.h>
 #include <Autonomous/Steps/AckermannDrive.h>
 
 DebugAutoStrategy::DebugAutoStrategy() {
-//	steps.push_back(new ZeroDriveEncoders());
-//	steps.push_back(new NoOp());
-	//steps.push_back(new PIDControlledDrive(0, 1000, 10) );
-//	steps.push_back(new PIDControlledDrive(0.0, 0.2, 24, 1, DriveUnit::Units::kInches));
-//	steps.push_back(new TurnWheels(-32, 79, 100));
+	Preferences *prefs = Preferences::GetInstance();
+	double angle = 90.0;
+	double turnAngle = -60.0;
+	const double fwdSpeed = prefs->GetDouble("ShootScootForwardSpeed");
+	const double fwdDist = prefs->GetDouble("ShootScootForwardY");
+	const double fwdDistThresh = prefs->GetDouble("ShootScootForwardT");
+	const double hangSpeed = prefs->GetDouble("ShootScootHangSpeed");
+	const double hangY = prefs->GetDouble("ShootScootHangY");
+	double hangX = prefs->GetDouble("ShootScootHangX");
+	const double hangT = prefs->GetDouble("ShootScootHangT");
 
-//	steps.push_back(new XYPIDControlledDrive(0.0, 0.3, 0, 60, 1.5, DriveUnit::Units::kInches));
+	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
+	double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
 
-//	steps.push_back(new XYPIDControlledDrive(-45.0, 0.3, 21, -21, -1, DriveUnit::Units::kInches));
-//	steps.push_back(new AckermannDrive(0.2, 20));
-	steps.push_back(new SimpleEncoderDrive(-180.0, 0.5, 0.0, 5.5, DriveUnit::Units::kInches));
 
+
+	ackermanTurnSpeed *= -1;
+
+
+	steps.push_back(new SetGyroOffset(angle));
+	angle += 4.5;
+//	steps.push_back(new ControlShooterMotor(true, 0.95, 0.1, false));
+	steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle));
+//	steps.push_back(new ControlShooterMotor(true, 0.95, 2.5, false));
+//	steps.push_back(new Shoot(2.0));
+//	steps.push_back(new ControlShooterMotor(false));
+
+	steps.push_back(new TimedDrive(angle, 0.001, 0.0, 0.25));
+	steps.push_back(new XYPIDControlledDrive(angle, fwdSpeed, 0.0, fwdDist, fwdDistThresh, DriveUnit::Units::kInches, false, 10.0));
+	steps.push_back(new Rotate(turnAngle));
+	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0));
+//	steps.push_back(new EjectGear(0.5));
+//	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, -hangY, hangT, DriveUnit::Units::kInches, true, 4.0));
 }
 
 DebugAutoStrategy::~DebugAutoStrategy() {

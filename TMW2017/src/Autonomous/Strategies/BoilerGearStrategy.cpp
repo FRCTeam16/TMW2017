@@ -21,18 +21,18 @@ BoilerGearStrategy::BoilerGearStrategy(bool isRed, bool shoot) {
 	// Step parameters
 	Preferences *prefs = Preferences::GetInstance();
 
-	double angle = prefs->GetDouble("BoilerAutoAngle", -52.0);
-	const double speed = prefs->GetDouble("BoilerGearSpeed", 0.3);
-	double gearX = prefs->GetDouble("BoilerGearX", -83);
-	const double gearY = prefs->GetDouble("BoilerGearY", 96);
-	const double gearT = prefs->GetDouble("BoilerGearT", 1.5);
-	double driveBumpX = prefs->GetDouble("BoilerBumpX", 0.4);
-	const double jerk = prefs->GetDouble("BoilerJerk", 1.3);
-	const double ackermannAngle = prefs->GetDouble("AckermannAngle", 7.0);
+	double angle = prefs->GetDouble("BoilerAutoAngle");
+	const double speed = prefs->GetDouble("BoilerGearSpeed");
+	double gearX = prefs->GetDouble("BoilerGearX");
+	const double gearY = prefs->GetDouble("BoilerGearY");
+	const double gearT = prefs->GetDouble("BoilerGearT");
+	double driveBumpX = prefs->GetDouble("BoilerBumpX");
+	const double jerk = prefs->GetDouble("BoilerJerk");
+	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
 
-	const double reverseGearY = prefs->GetDouble("ReverseBoilerGearY", -15);
-	double reverseGearX = prefs->GetDouble("ReverseBoilerGearX", -15);
-	const double reverseGearT = prefs->GetDouble("ReverseBoilerGearT", -1);
+	const double reverseGearY = prefs->GetDouble("ReverseBoilerGearY");
+	double reverseGearX = prefs->GetDouble("ReverseBoilerGearX");
+	const double reverseGearT = prefs->GetDouble("ReverseBoilerGearT");
 
 	if (!isRed) {
 		angle *= -1;

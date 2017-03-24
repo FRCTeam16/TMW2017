@@ -13,18 +13,18 @@
 
 ReturnGearStrategy::ReturnGearStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
-	double angle = prefs->GetDouble("ReturnAutoAngle", 60.0);
-	double gearX = prefs->GetDouble("ReturnGearX", 83);
-	const double gearY = prefs->GetDouble("ReturnGearY", 96);
-	const double gearT = prefs->GetDouble("ReturnGearT", 1.5);
+	double angle = prefs->GetDouble("ReturnAutoAngle");
+	double gearX = prefs->GetDouble("ReturnGearX");
+	const double gearY = prefs->GetDouble("ReturnGearY");
+	const double gearT = prefs->GetDouble("ReturnGearT");
 
-	double gearX2 = prefs->GetDouble("ReturnGearX2", 83);
-	const double gearY2 = prefs->GetDouble("ReturnGearY2", 96);
-	const double gearT2 = prefs->GetDouble("ReturnGearT2", 1.5);
+	double gearX2 = prefs->GetDouble("ReturnGearX2");
+	const double gearY2 = prefs->GetDouble("ReturnGearY2");
+	const double gearT2 = prefs->GetDouble("ReturnGearT2");
 
-	const double reverseGearY = prefs->GetDouble("ReverseReturnGearY", -15);
-	double reverseGearX = prefs->GetDouble("ReverseReturnGearX", -15);
-	const double reverseGearT = prefs->GetDouble("ReverseReturnGearT", -1);
+	const double reverseGearY = prefs->GetDouble("ReverseReturnGearY");
+	double reverseGearX = prefs->GetDouble("ReverseReturnGearX");
+	const double reverseGearT = prefs->GetDouble("ReverseReturnGearT");
 
 	if (!isRed) {
 		angle *= -1;

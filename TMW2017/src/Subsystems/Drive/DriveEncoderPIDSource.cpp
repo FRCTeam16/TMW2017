@@ -23,6 +23,6 @@ void DriveEncoderPIDSource::SetInitialEncoderValue() {
 }
 
 double DriveEncoderPIDSource::PIDGet() {
-	return abs(motor->GetEncPosition() - initialEncoderValue);
+	return fabs(motor->GetEncPosition() - initialEncoderValue);
 }
 

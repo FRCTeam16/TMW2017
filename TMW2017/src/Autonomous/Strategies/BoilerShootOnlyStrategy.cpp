@@ -17,18 +17,18 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
 
 	const double angle = 180.0;
-	const double speed = prefs->GetDouble("ShootOnlySpeed", 0.4);
-	const double yDistance = prefs->GetDouble("ShootOnlyY", 85);
-	const double threshold = prefs->GetDouble("ShootOnlyT", 1.5);
-	double driveBumpX = prefs->GetDouble("ShootOnlyBumpXSpeed", 0.4);
-	const double ignoreJerk = prefs->GetDouble("ShootOnlyIgnoreJerk", 0.04);
-	const double jerk = prefs->GetDouble("ShootOnlyJerk", 1.0);
-	const double ackermannAngle = prefs->GetDouble("AckermannAngle", 165.0);
-	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed", -0.5);
-	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX", 0.2);
-	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY", 3);
-	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump", 2.0);
-	const double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed", 0.3);
+	const double speed = prefs->GetDouble("ShootOnlySpeed");
+	const double yDistance = prefs->GetDouble("ShootOnlyY");
+	const double threshold = prefs->GetDouble("ShootOnlyT");
+	double driveBumpX = prefs->GetDouble("ShootOnlyBumpXSpeed");
+	const double ignoreJerk = prefs->GetDouble("ShootOnlyIgnoreJerk");
+	const double jerk = prefs->GetDouble("ShootOnlyJerk");
+	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
+	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed");
+	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX");
+	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY");
+	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump");
+	const double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
 
 	if (!isRed) {
 		driveBumpX *= -1;

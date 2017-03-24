@@ -13,9 +13,9 @@
 
 CenterGearStrategy::CenterGearStrategy() {
 	Preferences *prefs = Preferences::GetInstance();
-	const double gearYInches = prefs->GetDouble("CenterGearY", 68);
-	const double speed = prefs->GetDouble("CenterGearYSpeed", 0.2);
-	const double threshold = prefs->GetDouble("CenterGearTInches", 4);
+	const double gearYInches = prefs->GetDouble("CenterGearY");
+	const double speed = prefs->GetDouble("CenterGearYSpeed");
+	const double threshold = prefs->GetDouble("CenterGearTInches");
 
 	steps.push_back(new SetGyroOffset(0.0));
 	steps.push_back(new PIDControlledDrive(0.0, speed, gearYInches, threshold, DriveUnit::Units::kInches));	// was 1170 pulses

@@ -127,7 +127,7 @@ void DriveBase::InitializePIDs() {
 	const double driveControlD = prefs->GetFloat("DriveControlD");
 	const double driveControlF = prefs->GetFloat("DriveControlF");
 	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
-	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontLeftDrive, &inv.FL));
+	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
 	driveControlDistanceSpeed.reset(new CrabSpeed());
 	driveControlSpeedController.reset(
 			new PIDController(driveControlP, driveControlI, driveControlD, driveControlF,

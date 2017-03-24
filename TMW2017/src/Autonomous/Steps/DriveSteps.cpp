@@ -178,10 +178,10 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 	const double currentPIDOutput = Robot::driveBase->GetDriveControlOutput();
 
 	SmartDashboard::PutNumber("PIDController Output", currentPIDOutput);
-	cout << "PIDControlledDrive target setpoint          = " << targetSetpoint << '\n';
-	cout << "PIDControlledDrive Current Encoder Position = " << currentEncoderPosition << "\n";
-	cout << "PIDControlledDrive Current Error            = " << currentError << "\n";
-	cout << "PIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
+	cout << "XYPIDControlledDrive target setpoint          = " << targetSetpoint << '\n';
+	cout << "XYPIDControlledDrive Current Encoder Position = " << currentEncoderPosition << "\n";
+	cout << "XYPIDControlledDrive Current Error            = " << currentError << "\n";
+	cout << "XYPIDControlledDrive PID Output:              " << currentPIDOutput << "\n";
 
 	frc::SmartDashboard::PutNumber("DriveControl P", Robot::driveBase->driveControlSpeedController->GetP());
 
@@ -214,11 +214,17 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		const double xspeed = crabSpeed * sin(angleRadians);
 		const double yspeed = crabSpeed * cos(angleRadians);
 
+		std::cout << "XYPIDController crabSpeed = " << crabSpeed << "\n";
+		std::cout << "XYPIDController angleRads = " << angleRadians << "\n";
+//		std::cout << "XYPIDController xspeed    = " << xspeed << "\n";
+//		std::cout << "XYPIDController yspeed    = " << yspeed << "\n";
+
+
 		crab->Update(
 				Robot::driveBase->GetTwistControlOutput(),
 				yspeed,
 				xspeed,
-				true);
+				useGyro);
 		return false;
 	}
 }

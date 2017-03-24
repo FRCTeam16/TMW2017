@@ -11,7 +11,7 @@ BSButton::BSButton(std::shared_ptr<Joystick> joystick, int button) {
 	joy = joystick;
 	but = button;
 	pressed = false;
-	unpressed = false;
+	unpressed = true;
 }
 
 BSButton::~BSButton() {

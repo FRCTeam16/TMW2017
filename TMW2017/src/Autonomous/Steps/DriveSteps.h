@@ -138,20 +138,20 @@ public:
 	XYPIDControlledDrive(double _angle, double _speed,
 			double _XtargetDistance, double _YtargetDistance,
 			double _threshold, DriveUnit::Units _units, bool _reverse = false,
-			double _timeoutCommand = 6.0) :
+			double _timeoutCommand = 6.0, bool _useGyro = true) :
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
 		units(_units), reverse(_reverse), timeoutCommand(_timeoutCommand),
-		collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
+		useGyro(_useGyro), collisionDetector(new CollisionDetector(RobotMap::gyro, 1.0)) {}
 
 	XYPIDControlledDrive(double _angle, double _speed,
 			double _XtargetDistance, double _YtargetDistance,
 			double _threshold, DriveUnit::Units _units, double _collisionThreshold,
-			bool _reverse = false, double _timeoutCommand = 6.0) :
+			bool _reverse = false, double _timeoutCommand = 6.0,  bool _useGyro = true) :
 		angle(_angle), speed(_speed), XtargetDistance(_XtargetDistance),
 		YtargetDistance(_YtargetDistance), distanceThreshold(_threshold),
 		units(_units), reverse(_reverse), timeoutCommand(_timeoutCommand),
-		collisionDetector(new CollisionDetector(RobotMap::gyro, _collisionThreshold)) {}
+		useGyro(_useGyro), collisionDetector(new CollisionDetector(RobotMap::gyro, _collisionThreshold)) {}
 
 
 	bool Run(std::shared_ptr<World> world) override;
@@ -165,6 +165,7 @@ private:
 	const DriveUnit::Units units;
 	const bool reverse;
 	const double timeoutCommand;
+	const bool useGyro;
 	const std::unique_ptr<CollisionDetector> collisionDetector;
 	int thresholdCounter = 0;
 	const int thresholdCounterTarget = 5;
