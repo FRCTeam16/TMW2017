@@ -312,9 +312,12 @@ void Robot::TeleopPeriodic() {
 	if (oi->GPRB->Pressed()) {
 		ballPickupSystem->SetBallPickupEnabled(true);
 	} else {
-		ballPickupSystem->SetBallPickupEnabled(false);
+		//ballPickupSystem->SetBallPickupEnabled(false);
 	}
 
+	if(oi->GPRB->FallingEdge()) {
+		ballPickupSystem->PulseReverseBallPickup();
+	}
 
 	climberSystem->SetClimberSpeed(oi->GetGamepadLT());
 	gearSystem->SetGearBarSpeed(oi->GetGamepadLeftStick());

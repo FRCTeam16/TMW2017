@@ -34,7 +34,6 @@ private:
 	int reverseBallPickupCountdownTimerStartValue = 25;
 	bool reverseBallPickupPulse = false;
 
-	void PulseReverseBallPickup();
 public:
 	BallPickupSystem();
 	void InitDefaultCommand();
@@ -47,6 +46,7 @@ public:
 	void SetBallPickupEnabled(bool enabled);
 	void ToggleBallPickup();
 	void ReverseBallPickup();
+	void PulseReverseBallPickup();
 };
 
 #endif

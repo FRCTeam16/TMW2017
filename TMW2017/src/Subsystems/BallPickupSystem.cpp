@@ -53,6 +53,7 @@ void BallPickupSystem::Run() {
 		ballPickup->Set(ballPickupDirection*-1);
 		if (--reverseBallPickupCountdownTimer == 0) {
 			reverseBallPickupPulse = false;
+			ballPickupEnabled = false;
 		}
 	}
 	else {
