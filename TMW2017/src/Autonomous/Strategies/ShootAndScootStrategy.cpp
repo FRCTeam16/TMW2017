@@ -17,7 +17,7 @@
 ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
 	double angle = 90.0;
-	double turnAngle = -60.0;
+
 	const double fwdSpeed = prefs->GetDouble("ShootScootForwardSpeed");
 	const double fwdDist = prefs->GetDouble("ShootScootForwardY");
 	const double fwdDistThresh = prefs->GetDouble("ShootScootForwardT");
@@ -25,9 +25,11 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	const double hangY = prefs->GetDouble("ShootScootHangY");
 	double hangX = prefs->GetDouble("ShootScootHangX");
 	const double hangT = prefs->GetDouble("ShootScootHangT");
+	double turnAngle = prefs->GetDouble("ShootScootHangAngle");
 
 	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
 	double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
+	const double shootOffsetAngle = prefs->GetDouble("ShootScootShootAngleOffset");
 
 
 	if (!isRed) {
@@ -36,11 +38,12 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 		hangX *= -1;
 	} else {
 		// FIXME: Should ackermann step determine direction to spin?
+		// When red this turns us clockwise
 		ackermanTurnSpeed *= -1;
 	}
 
 	steps.push_back(new SetGyroOffset(angle));
-	if (isRed) { angle += 4.5; }
+	if (isRed) { angle += shootOffsetAngle; }
 	steps.push_back(new ControlShooterMotor(true, 0.95, 0.1, false));
 	steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle));
 	steps.push_back(new ControlShooterMotor(true, 0.95, 2.5, false));
@@ -48,12 +51,14 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	steps.push_back(new ControlShooterMotor(false));
 
 	steps.push_back(new TimedDrive(angle, 0.001, 0.0, 0.25));
-	steps.push_back(new XYPIDControlledDrive(angle, fwdSpeed, 0.0, fwdDist, fwdDistThresh, DriveUnit::Units::kInches, false, 10.0));
+	XYPIDControlledDrive *drive = new XYPIDControlledDrive(angle, fwdSpeed, 0.0, fwdDist, fwdDistThresh, DriveUnit::Units::kInches, false, 10.0);
+	drive->SetUseCurrentAngle();
+	steps.push_back(drive);
 	steps.push_back(new Rotate(turnAngle));
 
-	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0));
+	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0, false));
 	steps.push_back(new EjectGear(0.5));
-	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, -hangX, -hangY, hangT, DriveUnit::Units::kInches, true, 4.0));
+	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, true, 4.0, false));
 
 }
 

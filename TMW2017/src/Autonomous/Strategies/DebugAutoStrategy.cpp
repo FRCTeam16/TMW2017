@@ -16,6 +16,24 @@
 
 DebugAutoStrategy::DebugAutoStrategy() {
 	Preferences *prefs = Preferences::GetInstance();
+	double angle = prefs->GetDouble("DebugAutoParam1");
+
+
+	const double hangSpeed = prefs->GetDouble("ShootScootHangSpeed");
+	const double hangY = prefs->GetDouble("ShootScootHangY");
+	double hangX = prefs->GetDouble("ShootScootHangX");
+	const double hangT = prefs->GetDouble("ShootScootHangT");
+	double turnAngle = prefs->GetDouble("ShootScootHangAngle");
+
+	steps.push_back(new SetGyroOffset(angle));
+	steps.push_back(new Rotate(turnAngle));
+	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0, false));
+//	steps.push_back(new EjectGear(0.5));
+//	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, -hangY, hangT, DriveUnit::Units::kInches, true, 4.0));
+}
+
+void DebugAutoStrategy::DebugShootScoot() {
+	Preferences *prefs = Preferences::GetInstance();
 	double angle = 90.0;
 	double turnAngle = -60.0;
 	const double fwdSpeed = prefs->GetDouble("ShootScootForwardSpeed");
@@ -48,8 +66,5 @@ DebugAutoStrategy::DebugAutoStrategy() {
 	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0));
 //	steps.push_back(new EjectGear(0.5));
 //	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, -hangY, hangT, DriveUnit::Units::kInches, true, 4.0));
-}
-
-DebugAutoStrategy::~DebugAutoStrategy() {
 }
 

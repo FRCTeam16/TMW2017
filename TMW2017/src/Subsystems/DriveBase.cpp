@@ -17,6 +17,7 @@
 #include "Drive/CrabSpeed.h"
 #include "Drive/DriveEncoderPIDSource.h"
 #include "AHRS.h"
+#include "../Util/BSPIDController.h"
 
 //#define DEBUG 1
 
@@ -127,13 +128,25 @@ void DriveBase::InitializePIDs() {
 	const double driveControlD = prefs->GetFloat("DriveControlD");
 	const double driveControlF = prefs->GetFloat("DriveControlF");
 	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
-	driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
-	driveControlDistanceSpeed.reset(new CrabSpeed());
-	driveControlSpeedController.reset(
-			new PIDController(driveControlP, driveControlI, driveControlD, driveControlF,
-					driveControlEncoderSource.get(),
-					driveControlDistanceSpeed.get()));
-	driveControlSpeedController->Enable();
+	if (driveControlEncoderSource == nullptr) {
+		driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
+	}
+	if (driveControlDistanceSpeed == nullptr) {
+		driveControlDistanceSpeed.reset(new CrabSpeed());
+	}
+
+	if (driveControlSpeedController == nullptr) {
+		driveControlSpeedController.reset(
+				new BSPIDController(driveControlP, driveControlI, driveControlD, driveControlF,
+						driveControlEncoderSource.get(),
+						driveControlDistanceSpeed.get(),
+						0.05,
+						driveControlIZone));
+		driveControlSpeedController->Enable();
+	} else {
+		driveControlSpeedController->SetPID(driveControlP, driveControlI, driveControlD, driveControlF);
+		driveControlSpeedController->SetIzone(driveControlIZone);
+	}
 }
 
 void DriveBase::InitDefaultCommand() {

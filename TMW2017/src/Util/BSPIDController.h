@@ -93,6 +93,8 @@ class BSPIDController : public LiveWindowSendable,
 
   void InitTable(std::shared_ptr<ITable> subtable) override;
 
+  void SetIzone(double izone);
+
  protected:
   PIDSource* m_pidInput;
   PIDOutput* m_pidOutput;

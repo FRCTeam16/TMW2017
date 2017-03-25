@@ -17,11 +17,13 @@ CenterGearStrategy::CenterGearStrategy() {
 	const double speed = prefs->GetDouble("CenterGearYSpeed");
 	const double threshold = prefs->GetDouble("CenterGearTInches");
 
-	steps.push_back(new SetGyroOffset(0.0));
-	steps.push_back(new PIDControlledDrive(0.0, speed, gearYInches, threshold, DriveUnit::Units::kInches));	// was 1170 pulses
-	steps.push_back(new EjectGear());
-	steps.push_back(new Delay(0.5));
-	steps.push_back(new PIDControlledDrive(0.0, speed, 400, 30, DriveUnit::Units::kPulses, true));
+	const double angle = 0.0;
+
+	steps.push_back(new SetGyroOffset(angle));
+	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, gearYInches, threshold, DriveUnit::Units::kInches));
+	steps.push_back(new EjectGear(0.5));
+	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, 30, threshold, DriveUnit::Units::kInches, true));
+
 }
 
 CenterGearStrategy::~CenterGearStrategy() {

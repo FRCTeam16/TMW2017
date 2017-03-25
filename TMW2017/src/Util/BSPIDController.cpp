@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 #include "HAL/HAL.h"
 #include "Notifier.h"
@@ -55,6 +56,8 @@ BSPIDController::BSPIDController(double Kp, double Ki, double Kd, PIDSource* sou
 BSPIDController::BSPIDController(double Kp, double Ki, double Kd, double Kf,
                              PIDSource* source, PIDOutput* output,
                              double period, double izone) {
+	std::cout << "***** BSPIDController::BSPIDController Started\n";
+
   m_controlLoop = std::make_unique<Notifier>(&BSPIDController::Calculate, this);
 
   m_P = Kp;
@@ -73,9 +76,13 @@ BSPIDController::BSPIDController(double Kp, double Ki, double Kd, double Kf,
   static int instances = 0;
   instances++;
   HAL_Report(HALUsageReporting::kResourceType_PIDController, instances);
+	std::cout << "***** BSPIDController::BSPIDController Finished\n";
+
 }
 
 BSPIDController::~BSPIDController() {
+	std::cout << "***** BSPIDController::~BSPIDController Started\n";
+
   // forcefully stopping the notifier so the callback can successfully run.
   m_controlLoop->Stop();
   if (m_table != nullptr) m_table->RemoveTableListener(this);
@@ -101,6 +108,7 @@ void BSPIDController::Calculate() {
   if (pidOutput == nullptr) return;
 
   if (enabled) {
+
     std::lock_guard<priority_recursive_mutex> sync(m_mutex);
     double input = pidInput->PIDGet();
     double result;
@@ -133,6 +141,9 @@ void BSPIDController::Calculate() {
         } else {
           m_totalError = m_maximumOutput / m_I;
         }
+      }
+      else {
+    	  m_totalError = 0;
       }
 
       m_result = m_P * m_error + m_I * m_totalError +
@@ -635,3 +646,7 @@ void BSPIDController::UpdateTable() {}
 void BSPIDController::StartLiveWindowMode() { Disable(); }
 
 void BSPIDController::StopLiveWindowMode() {}
+
+void BSPIDController::SetIzone(double izone) {
+	m_izone = izone;
+}

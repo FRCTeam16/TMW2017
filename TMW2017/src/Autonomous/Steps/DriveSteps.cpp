@@ -166,7 +166,9 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		const double hypotenuse = sqrt(XtargetDistance*XtargetDistance + YtargetDistance*YtargetDistance);
 		targetSetpoint = DriveUnit::ToPulses(hypotenuse, units);
 		startTime = world->GetClock();
-		Robot::driveBase->SetTargetAngle(angle);
+		const double targetAngle = (!useCurrentAngle) ? angle : RobotMap::gyro->GetYaw();
+		Robot::driveBase->SetTargetAngle(targetAngle);
+
 		Robot::driveBase->SetTargetDriveDistance(targetSetpoint, speed);
 		Robot::driveBase->UseClosedLoopDrive();
 		startingEncoderCount = Robot::driveBase->GetDriveControlEncoderPosition();
@@ -228,5 +230,6 @@ bool XYPIDControlledDrive::Run(std::shared_ptr<World> world) {
 		return false;
 	}
 }
+
 
 

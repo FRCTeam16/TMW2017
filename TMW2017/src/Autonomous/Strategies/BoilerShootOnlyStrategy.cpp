@@ -43,6 +43,8 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new Delay(delayBeforeShoot));
 	if (isRed) {
 		steps.push_back(new AckermannDrive(ackermanTurnSpeed, ackermannAngle));
+	} else {
+		steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle + 4.5));
 	}
 	steps.push_back(new Shoot(13));
 

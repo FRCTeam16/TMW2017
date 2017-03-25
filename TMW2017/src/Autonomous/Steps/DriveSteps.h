@@ -155,8 +155,10 @@ public:
 
 
 	bool Run(std::shared_ptr<World> world) override;
+	void SetUseCurrentAngle() { useCurrentAngle = true; }
 private:
 	double startTime = -1;
+	bool useCurrentAngle = false;
 	const double angle;
 	const double speed;
 	const double XtargetDistance;

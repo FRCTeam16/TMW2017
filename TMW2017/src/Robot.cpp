@@ -154,6 +154,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyAckermannSpeed", 0.3);
 
 
+	SetDoublePref("ShootScootShootAngleOffset", 4.5);
 	SetDoublePref("ShootScootForwardSpeed", 0.4);
 	SetDoublePref("ShootScootForwardY", 66);
 	SetDoublePref("ShootScootForwardT", 1.5);
@@ -161,6 +162,9 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootScootHangY", 4.0);
 	SetDoublePref("ShootScootHangX", -2.3);
 	SetDoublePref("ShootScootHangT", 0.5);
+	SetDoublePref("ShootScootHangAngle", -60.0);
+
+	SetDoublePref("DebugAutoParam1", 0.00);
 
 
 	if (!prefs->ContainsKey("EnabledLED")) {
@@ -187,7 +191,7 @@ void Robot::SetDoublePref(llvm::StringRef key, double value) {
  * You can use it to reset subsystems before shutting down.
  */
 void Robot::DisabledInit(){
-
+	driveBase->ZeroDriveEncoders();
 }
 
 void Robot::DisabledPeriodic() {

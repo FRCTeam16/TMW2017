@@ -13,7 +13,10 @@
 class DebugAutoStrategy : public StepStrategy {
 public:
 	DebugAutoStrategy();
-	virtual ~DebugAutoStrategy();
+	virtual ~DebugAutoStrategy() {}
+
+private:
+	void DebugShootScoot();
 };
 
 #endif /* SRC_AUTONOMOUS_DEBUGAUTOSTRATEGY_H_ */
