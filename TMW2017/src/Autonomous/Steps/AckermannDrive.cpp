@@ -16,13 +16,14 @@ bool AckermannDrive::Run(std::shared_ptr<World> world) {
 		manualDriveControl = true;
 		startAngle = currentAngle;
 	}
+	std::cout << "Ackermann: start = " << currentAngle << " target = " << targetAngle <<
+			"  diff = " << fabs(currentAngle - targetAngle) << "\n";
 
 	const float A = 1.0;
 	const float radians = M_PI;
 	Robot::driveBase->Steer(radians, speed, A);
 	return (fabs(currentAngle - targetAngle) <= threshold);
 }
-
 
 
 bool AckermannDriveYawDiff::Run(std::shared_ptr<World> world) {

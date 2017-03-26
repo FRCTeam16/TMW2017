@@ -163,6 +163,10 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootScootHangX", -2.3);
 	SetDoublePref("ShootScootHangT", 0.5);
 	SetDoublePref("ShootScootHangAngle", -60.0);
+	if (!prefs->ContainsKey("ShootScootDoHang")) {
+		prefs->PutBoolean("ShootScootDoHang", true);
+	}
+
 
 	SetDoublePref("DebugAutoParam1", 0.00);
 
@@ -185,6 +189,7 @@ void Robot::SetDoublePref(llvm::StringRef key, double value) {
 		prefs->PutDouble(key, value);
 	}
 }
+
 
 /**
  * This function is called when the disabled button is hit.
@@ -259,8 +264,10 @@ void Robot::TeleopPeriodic() {
 	}
 
 	if (oi->DR4->Pressed()) {
-		const double ackermannAngle = Preferences::GetInstance()->GetDouble("TeleopAckermannAngle");
-		const double angle = (isRed) ? ackermannAngle : -90.0 + ackermannAngle;
+		Preferences *prefs = Preferences::GetInstance();
+		const double ackermannAngle = prefs->GetDouble("TeleopAckermannAngle");
+		const double walloffsetShootAngle = prefs->GetDouble("ShootScootShootAngleOffset");
+		const double angle = (isRed) ? ackermannAngle : (-180.0 + walloffsetShootAngle);
 		driveBase->SetTargetAngle(angle);
 		useDriveBaseAngle = true;
 	}

@@ -16,7 +16,7 @@
 BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
 
-	const double angle = 180.0;
+	double angle = 180.0;
 	const double speed = prefs->GetDouble("ShootOnlySpeed");
 	const double yDistance = prefs->GetDouble("ShootOnlyY");
 	const double threshold = prefs->GetDouble("ShootOnlyT");
@@ -29,8 +29,11 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY");
 	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump");
 	const double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
+	const double shootOffsetAngle = prefs->GetDouble("ShootScootShootAngleOffset");
+
 
 	if (!isRed) {
+		angle *= -1;
 		driveBumpX *= -1;
 		afterBumpSpeedX *= -1;
 	}
@@ -44,12 +47,8 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	if (isRed) {
 		steps.push_back(new AckermannDrive(ackermanTurnSpeed, ackermannAngle));
 	} else {
-		steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle + 4.5));
+		steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle + shootOffsetAngle));	// -180 - 2.5 = -177.5
 	}
 	steps.push_back(new Shoot(13));
-
-}
-
-BoilerShootOnlyStrategy::~BoilerShootOnlyStrategy() {
 }
 

@@ -26,6 +26,7 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	double hangX = prefs->GetDouble("ShootScootHangX");
 	const double hangT = prefs->GetDouble("ShootScootHangT");
 	double turnAngle = prefs->GetDouble("ShootScootHangAngle");
+	const bool doHang = prefs->GetBoolean("ShootScootDoHang");
 
 	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
 	double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
@@ -33,7 +34,7 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 
 
 	if (!isRed) {
-		angle = ackermannAngle - 270.0;
+		angle = -90.0;
 		turnAngle *= -1;
 		hangX *= -1;
 	} else {
@@ -43,7 +44,12 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	}
 
 	steps.push_back(new SetGyroOffset(angle));
-	if (isRed) { angle += shootOffsetAngle; }
+	if (isRed) {
+		angle += shootOffsetAngle;
+	} else {
+		angle = angle - (180.0 - ackermannAngle);		//  -90 - (180.0 - 167) = -103
+	}
+
 	steps.push_back(new ControlShooterMotor(true, 0.95, 0.1, false));
 	steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle));
 	steps.push_back(new ControlShooterMotor(true, 0.95, 2.5, false));
@@ -52,13 +58,15 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 
 	steps.push_back(new TimedDrive(angle, 0.001, 0.0, 0.25));
 	XYPIDControlledDrive *drive = new XYPIDControlledDrive(angle, fwdSpeed, 0.0, fwdDist, fwdDistThresh, DriveUnit::Units::kInches, false, 10.0);
-	drive->SetUseCurrentAngle();
+	drive->SetUseCurrentAngle();	// use our shooting offset angle to drive at
 	steps.push_back(drive);
-	steps.push_back(new Rotate(turnAngle));
+	steps.push_back(new Rotate(turnAngle));		// R -60 / B 60
 
 	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, false, 6.0, false));
-	steps.push_back(new EjectGear(0.5));
-	steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, true, 4.0, false));
+	if (doHang) {
+		steps.push_back(new EjectGear(0.5));
+		steps.push_back(new XYPIDControlledDrive(turnAngle, hangSpeed, hangX, hangY, hangT, DriveUnit::Units::kInches, true, 4.0, false));
+	}
 
 }
 

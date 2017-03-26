@@ -8,7 +8,7 @@
 #include "BSGyro.h"
 #include "AHRS.h"
 
-BSGyro::BSGyro(I2C::Port i2c_port_id) :	ahrs(new AHRS(i2c_port_id)) {
+BSGyro::BSGyro(frc::I2C::Port i2c_port_id) : ahrs(new AHRS(i2c_port_id)) {
 	std::cout << "Constructed BSGyro\n";
 }
 
@@ -25,7 +25,15 @@ void BSGyro::SetOffset(float _offset) {
 }
 
 float BSGyro::GetYaw() {
-	return GetOffset() + ahrs->GetYaw();
+	const double rawYaw = GetOffset() + ahrs->GetYaw();
+//	if (rawYaw > 180.0) {
+//		return rawYaw - 360.0;
+//	} else if (rawYaw < -180.0) {
+//		return rawYaw + 360.0;
+//	} else {
+//		return rawYaw;
+//	}
+	return rawYaw;
 }
 
 double BSGyro::PIDGet() {

@@ -78,8 +78,8 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 
 	// Initialize Drive Control Twist
     driveControlTwist.reset(
-    		new PIDController(0.01, 0.0, 0.05,
-    				RobotMap::gyro.get(), crabSpeedTwist.get(), 0.02 ));
+    		new BSPIDController(0.01, 0.0, 0.05,
+    				RobotMap::gyro.get(), crabSpeedTwist.get(), 0.02, 5.0 ));
     driveControlTwist->SetContinuous(true);
     driveControlTwist->SetAbsoluteTolerance(2.0);
     driveControlTwist->Enable();

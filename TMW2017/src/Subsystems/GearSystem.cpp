@@ -45,6 +45,8 @@ GearSystem::GearSystem() : Subsystem("GearSystem") {
 
     gearBumperLeft.reset(new DigitalInput(0));
     gearBumperRight.reset(new DigitalInput(1));
+
+    gearUpStatusIndicator = RobotMap::gearUpStatusIndicator;
 }
 
 void GearSystem::InitDefaultCommand() {
@@ -168,6 +170,8 @@ void GearSystem::Run() {
 	gearPickupProcess->Run();
 	gearEjectProcess->Run();
 	gearResetProcess->Run();
+
+	gearUpStatusIndicator->Set(hasGear);
 }
 
 bool GearSystem::AnyProcessesRunning() {

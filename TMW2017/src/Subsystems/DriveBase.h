@@ -73,7 +73,7 @@ private:
 	double driveLimit = 1.0;
 
 	Wheelbase wheelbase;
-	std::unique_ptr<PIDController> driveControlTwist;
+	std::unique_ptr<BSPIDController> driveControlTwist;
 	std::unique_ptr<CrabSpeed> crabSpeedTwist;
 	std::unique_ptr<DriveEncoderPIDSource> driveControlEncoderSource;
 	std::unique_ptr<CrabSpeed> driveControlDistanceSpeed;

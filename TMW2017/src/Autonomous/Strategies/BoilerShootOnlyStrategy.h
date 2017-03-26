@@ -14,7 +14,7 @@
 class BoilerShootOnlyStrategy : public StepStrategy {
 public:
 	BoilerShootOnlyStrategy(bool isRed);
-	virtual ~BoilerShootOnlyStrategy();
+	virtual ~BoilerShootOnlyStrategy() {}
 };
 
 #endif /* SRC_AUTONOMOUS_STRATEGIES_BOILERSHOOTONLYSTRATEGY_H_ */
