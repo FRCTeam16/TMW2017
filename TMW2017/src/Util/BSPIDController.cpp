@@ -131,7 +131,15 @@ void BSPIDController::Calculate() {
 
       m_result = m_D * m_error + m_P * m_totalError + CalculateFeedForward();
     } else {
-      if (m_I != 0 && (m_izone == 0 || (m_izone > fabs(m_error)))) {
+      if (m_I != 0 && (m_izone <= 0 || (m_izone > fabs(m_error)))) {
+/*
+    	std::cout << "BSPIDController -> doing I :: "
+    			<< "m_I = " << m_I
+				<< "  izone = " << m_izone
+				<< " (== 0? " << (m_izone == 0) << ")"
+				<< "  err = " << m_error << "\n";
+*/
+
         double potentialIGain = (m_totalError + m_error) * m_I;
         if (potentialIGain < m_maximumOutput) {
           if (potentialIGain > m_minimumOutput)

@@ -105,6 +105,7 @@ void Robot::RobotInit() {
 	if (!prefs->ContainsKey("DriveControlIZone")) {
 		prefs->PutFloat("DriveControlIZone", 0.0);
 	}
+	SetDoublePref("DriveControlTwistIZone", 5.0);
 
 	SetDoublePref("TeleopAckermannAngle", 172.0);
 
@@ -261,6 +262,15 @@ void Robot::TeleopPeriodic() {
 
 	if (oi->DR2->RisingEdge()) {
 		gearSystem->EjectGear();
+	}
+
+	if (oi->DR3->Pressed()) {
+		Preferences *prefs = Preferences::GetInstance();
+		const double ackermannAngle = prefs->GetDouble("TeleopAckermannAngle");
+		const double walloffsetShootAngle = prefs->GetDouble("ShootScootShootAngleOffset");
+		const double angle = (isRed) ? 90.0 + walloffsetShootAngle : -ackermannAngle;
+		driveBase->SetTargetAngle(angle);
+		useDriveBaseAngle = true;
 	}
 
 	if (oi->DR4->Pressed()) {

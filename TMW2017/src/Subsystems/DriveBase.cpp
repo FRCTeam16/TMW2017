@@ -77,14 +77,7 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 	});
 
 	// Initialize Drive Control Twist
-    driveControlTwist.reset(
-    		new BSPIDController(0.01, 0.0, 0.05,
-    				RobotMap::gyro.get(), crabSpeedTwist.get(), 0.02, 5.0 ));
-    driveControlTwist->SetContinuous(true);
-    driveControlTwist->SetAbsoluteTolerance(2.0);
-    driveControlTwist->Enable();
-    driveControlTwist->SetOutputRange(-0.5, 0.5);
-    driveControlTwist->SetInputRange(-180, 180);
+
 
     // Initialize Steering
     const std::vector<std::shared_ptr<CANTalon>> steering {
@@ -101,6 +94,29 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
 void DriveBase::InitializePIDs() {
 	 // Initialize Drive Talons + PID feedback
 	Preferences *prefs = Preferences::GetInstance();
+	const double izone = prefs->GetDouble("DriveControlTwistIZone");
+
+	if (driveControlTwist == nullptr) {
+		driveControlTwist.reset(
+					new BSPIDController(
+							prefs->GetFloat("TwistP", 0.02),
+							prefs->GetFloat("TwistI", 0.0),
+							prefs->GetFloat("TwistD", 0.12),
+							0.0, RobotMap::gyro.get(), crabSpeedTwist.get(), 0.02, izone ));
+	} else {
+		driveControlTwist->SetPID(
+				prefs->GetFloat("TwistP", 0.02),
+				prefs->GetFloat("TwistI", 0.0),
+				prefs->GetFloat("TwistD", 0.12));
+		driveControlTwist->SetIzone(prefs->GetDouble("DriveControlTwistIZone"));
+
+	}
+	driveControlTwist->SetContinuous(true);
+	driveControlTwist->SetAbsoluteTolerance(2.0);
+	driveControlTwist->Enable();
+	driveControlTwist->SetOutputRange(-0.5, 0.5);
+	driveControlTwist->SetInputRange(-180, 180);
+
 	const double driveP = prefs->GetFloat("DriveP");
 	const double driveI = prefs->GetFloat("DriveI");
 	const double driveD = prefs->GetFloat("DriveD");
@@ -221,12 +237,6 @@ void DriveBase::InitTeleop() {
 	InitializePIDs();
 	this->EnableSteerPIDControllers(true);
 	this->UseOpenLoopDrive();
-	Preferences *prefs = Preferences::GetInstance();
-	driveControlTwist->SetPID(
-			prefs->GetFloat("TwistP", 0.02),
-			prefs->GetFloat("TwistI", 0.0),
-			prefs->GetFloat("TwistD", 0.12));
-	driveControlTwist->SetOutputRange(-0.5, 0.5);
 }
 
 void DriveBase::InitAuto() {

@@ -171,7 +171,7 @@ void GearSystem::Run() {
 	gearEjectProcess->Run();
 	gearResetProcess->Run();
 
-	gearUpStatusIndicator->Set(hasGear);
+	gearUpStatusIndicator->Set(!hasGear);
 }
 
 bool GearSystem::AnyProcessesRunning() {

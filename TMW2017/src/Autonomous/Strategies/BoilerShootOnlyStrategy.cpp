@@ -33,7 +33,6 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 
 
 	if (!isRed) {
-		angle *= -1;
 		driveBumpX *= -1;
 		afterBumpSpeedX *= -1;
 	}
@@ -47,7 +46,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	if (isRed) {
 		steps.push_back(new AckermannDrive(ackermanTurnSpeed, ackermannAngle));
 	} else {
-		steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle + shootOffsetAngle));	// -180 - 2.5 = -177.5
+		steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5
 	}
 	steps.push_back(new Shoot(13));
 }

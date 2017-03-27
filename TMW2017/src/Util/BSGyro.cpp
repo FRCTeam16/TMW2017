@@ -26,14 +26,14 @@ void BSGyro::SetOffset(float _offset) {
 
 float BSGyro::GetYaw() {
 	const double rawYaw = GetOffset() + ahrs->GetYaw();
-//	if (rawYaw > 180.0) {
-//		return rawYaw - 360.0;
-//	} else if (rawYaw < -180.0) {
-//		return rawYaw + 360.0;
-//	} else {
-//		return rawYaw;
-//	}
-	return rawYaw;
+	if (rawYaw > 180.0) {
+		return rawYaw - 360.0;
+	} else if (rawYaw < -180.0) {
+		return rawYaw + 360.0;
+	} else {
+		return rawYaw;
+	}
+//	return rawYaw;
 }
 
 double BSGyro::PIDGet() {
