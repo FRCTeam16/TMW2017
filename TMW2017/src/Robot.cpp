@@ -199,7 +199,7 @@ void Robot::SetDoublePref(llvm::StringRef key, double value) {
  */
 void Robot::DisabledInit(){
 	driveBase->ZeroDriveEncoders();
-	driveBase->driveControlEncoderSource->SetShowDebug(true);
+	driveBase->driveControlEncoderSource->SetShowDebug(false);
 }
 
 void Robot::DisabledPeriodic() {
@@ -217,7 +217,7 @@ void Robot::AutonomousInit() {
 	autoManager->Init(world);
 	driveBase->InitAuto();
 	InitManagers();
-	driveBase->driveControlEncoderSource->SetShowDebug(true);
+	driveBase->driveControlEncoderSource->SetShowDebug(false);
 }
 
 void Robot::AutonomousPeriodic() {
