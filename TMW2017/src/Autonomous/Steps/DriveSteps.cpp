@@ -22,7 +22,7 @@ bool TimedDrive::Run(std::shared_ptr<World> world) {
 	const double currentTime = world->GetClock();
 	if (startTime < 0) {
 		startTime = currentTime;
-		Robot::driveBase->InitTeleop();
+		Robot::driveBase->UseOpenLoopDrive();
 		Robot::driveBase->SetTargetAngle(angle);
 	}
 	if ((currentTime - startTime) > timeToDrive) {

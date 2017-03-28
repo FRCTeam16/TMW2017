@@ -23,6 +23,7 @@ public:
 	double PIDGet();
 	AHRS* GetAHRS();
 	void SetOffset(float offset);
+	void DebugPrint();
 };
 
 #endif /* SRC_UTIL_BSGYRO_H_ */

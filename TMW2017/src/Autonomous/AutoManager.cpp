@@ -20,13 +20,11 @@
 AutoManager::AutoManager() :
 		strategies(new frc::SendableChooser<void*>())
 {
-	strategies->AddDefault("0 - Debug Auto Strategy", (void *) AutoStrategy::kDebug);
-	strategies->AddObject("1 - Center", (void *) AutoStrategy::kCenter);
-	strategies->AddObject("2 - Boiler", (void *) AutoStrategy::kBoiler);
-	strategies->AddObject("3 - Return", (void *) AutoStrategy::kReturn);
-	strategies->AddObject("4 - Shoot Only", (void *) AutoStrategy::kShootOnly);
-	strategies->AddObject("5 - Shoot and Scoot", (void *) AutoStrategy::kShootScoot);
-	frc::SmartDashboard::PutData("Autonomous Strategy4", strategies.get());
+	strategies->AddDefault("1 - Shoot Only", (void *) AutoStrategy::kShootOnly);
+	strategies->AddObject("2 - Center", (void *) AutoStrategy::kCenter);
+	strategies->AddObject("3 - Shoot and Scoot", (void *) AutoStrategy::kShootScoot);
+	strategies->AddObject("999 - Debug Auto Strategy", (void *) AutoStrategy::kDebug);
+	frc::SmartDashboard::PutData("Autonomous Strategy", strategies.get());
 
 	const AutoStrategy selectedKey = static_cast<AutoStrategy>((int) strategies->GetSelected());
 	frc::SmartDashboard::PutNumber("Selected Auto", selectedKey);

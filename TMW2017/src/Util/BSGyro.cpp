@@ -7,6 +7,7 @@
 
 #include "BSGyro.h"
 #include "AHRS.h"
+#include "Robot.h"
 
 BSGyro::BSGyro(frc::I2C::Port i2c_port_id) : ahrs(new AHRS(i2c_port_id)) {
 	std::cout << "Constructed BSGyro\n";
@@ -34,6 +35,12 @@ float BSGyro::GetYaw() {
 		return rawYaw;
 	}
 //	return rawYaw;
+}
+
+void BSGyro::DebugPrint() {
+	 std::cout << "BSGyro::DebugPrint offset = " << offset
+			   << " ahrsYaw = " << ahrs->GetYaw()
+			   << " total = " << offset + ahrs->GetYaw();
 }
 
 double BSGyro::PIDGet() {

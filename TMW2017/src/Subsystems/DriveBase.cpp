@@ -146,7 +146,12 @@ void DriveBase::InitializePIDs() {
 	const double driveControlIZone = prefs->GetFloat("DriveControlIZone");
 	if (driveControlEncoderSource == nullptr) {
 //		driveControlEncoderSource.reset(new DriveEncoderPIDSource(frontRightDrive, &inv.FR));
-		driveControlEncoderSource.reset(new DriveEncoderPIDSource(rearRightDrive, &inv.RR));
+		DriveInfo<std::shared_ptr<CANTalon>> motors;
+		motors.FL = frontLeftDrive;
+		motors.FR = frontRightDrive;
+		motors.RL = rearLeftDrive;
+		motors.RR = rearRightDrive;
+		driveControlEncoderSource.reset(new AveragingDriveEncoderPIDSource(motors));
 	}
 	if (driveControlDistanceSpeed == nullptr) {
 		driveControlDistanceSpeed.reset(new CrabSpeed());

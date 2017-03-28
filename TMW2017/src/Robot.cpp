@@ -176,6 +176,7 @@ void Robot::RobotInit() {
 		prefs->PutBoolean("EnabledLED", false);
 	}
 
+
 	// Initialize LED Communications background thread
 	// If problems here, may need to be located in an InitManager() type call in Auto or Teleop
 //	if (prefs->GetBoolean("EnabledLED", false)) {
@@ -198,6 +199,7 @@ void Robot::SetDoublePref(llvm::StringRef key, double value) {
  */
 void Robot::DisabledInit(){
 	driveBase->ZeroDriveEncoders();
+	driveBase->driveControlEncoderSource->SetShowDebug(true);
 }
 
 void Robot::DisabledPeriodic() {
@@ -215,6 +217,7 @@ void Robot::AutonomousInit() {
 	autoManager->Init(world);
 	driveBase->InitAuto();
 	InitManagers();
+	driveBase->driveControlEncoderSource->SetShowDebug(true);
 }
 
 void Robot::AutonomousPeriodic() {
@@ -222,6 +225,8 @@ void Robot::AutonomousPeriodic() {
 	Scheduler::GetInstance()->Run();
 	autoManager->Periodic(world);
 	RunManagers();
+
+	RobotMap::gyro->DebugPrint();
 }
 
 void Robot::TeleopInit() {
@@ -332,8 +337,10 @@ void Robot::TeleopPeriodic() {
 		gearSystem->PickUpGear();
 	}
 
-	if (oi->GPLB->RisingEdge()) {
-		climberSystem->ToggleProd();
+	if (oi->GPLB->Pressed()) {
+		RobotMap::indicatorLight->Set(false);
+	} else {
+		RobotMap::indicatorLight->Set(true);
 	}
 
 	if (oi->GPRB->Pressed()) {

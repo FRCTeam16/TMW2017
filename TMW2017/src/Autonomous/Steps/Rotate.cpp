@@ -18,7 +18,7 @@ bool Rotate::Run(std::shared_ptr<World> world) {
 
 	const float yaw = RobotMap::gyro->GetYaw();
 	const double yawError = Robot::driveBase->GetTwistControlError();
-	std::cout << "Rotate(yaw = " << yaw << ", error = " << yawError << ")\n";
+	std::cout << "Rotate(setpoint = " << angle << " current yaw = " << yaw << " error = " << yawError << ")\n";
 
 	if ((currentTime - startTime) > TIMEOUT) {
 		std::cerr << "Timed out turning\n";

@@ -26,12 +26,70 @@ void AveragingDriveEncoderPIDSource::SetInitialEncoderValue() {
 }
 
 double AveragingDriveEncoderPIDSource::PIDGet() {
+	// Calculate current error
 	DriveInfo<double> error;
+	DriveInfo<bool> motorEnabled {true};
+
 	error.FL = fabs(motor.FL->GetEncPosition() - initialEncoderValue.FL);
 	error.FR = fabs(motor.FR->GetEncPosition() - initialEncoderValue.FR);
 	error.RL = fabs(motor.RL->GetEncPosition() - initialEncoderValue.RL);
 	error.RR = fabs(motor.RR->GetEncPosition() - initialEncoderValue.RR);
 
+	if (showDebug) {
+		std::cout << "AvgDrivePID error.FL " << error.FL << "\n";
+		std::cout << "AvgDrivePID error.FR " << error.FR << "\n";
+		std::cout << "AvgDrivePID error.RL " << error.RL << "\n";
+		std::cout << "AvgDrivePID error.RR " << error.RR << "\n";
+	}
+
+	// Calculate initial working average
+	const double initialAverage = CalculateAverage(error, motorEnabled);
+	if (showDebug) { std::cout << "AvgDrivePID initialAverage = " << initialAverage << "\n"; }
+
+
+	// Vote for encoder inclusion
+	const double threshold = 0.25;
+	int enabledCount = 4;
+	if (((error.FL / initialAverage) < (1 - threshold)) || ((error.FL/initialAverage) > (threshold + 1))) {
+		motorEnabled.FL = false;
+		enabledCount--;
+	}
+	if (((error.FR / initialAverage) < (1- threshold)) || ((error.FR/initialAverage) > (threshold + 1))) {
+		motorEnabled.FR = false;
+		enabledCount--;
+	}
+	if (((error.RL / initialAverage) < (1- threshold)) || ((error.RL/initialAverage) > (threshold + 1))) {
+		motorEnabled.RL = false;
+		enabledCount--;
+	}
+	if (((error.RR / initialAverage) < (1- threshold)) || ((error.RR/initialAverage) > (threshold + 1))) {
+		motorEnabled.RR = false;
+		enabledCount--;
+	}
+
+	if (showDebug) {
+		std::cout << "AvgDrivePID motorEnabled.FL " << motorEnabled.FL << "\n";
+		std::cout << "AvgDrivePID motorEnabled.FR " << motorEnabled.FR << "\n";
+		std::cout << "AvgDrivePID motorEnabled.RL " << motorEnabled.RL << "\n";
+		std::cout << "AvgDrivePID motorEnabled.RR " << motorEnabled.RR << "\n";
+	}
+	// If we removed some encoders for being too out of sync, recalculate average
+	double returnedError = initialAverage;
+	if (initialAverage > 300 && (enabledCount > 1 && enabledCount < 4)) {
+		returnedError =  CalculateAverage(error, motorEnabled);
+	}
+	if (showDebug) { std::cout << "AvgDrivePID returnedError = " << returnedError << "\n"; }
+
+	SmartDashboard::PutBoolean("PID.FL", motorEnabled.FL);
+	SmartDashboard::PutBoolean("PID.FR", motorEnabled.FR);
+	SmartDashboard::PutBoolean("PID.RL", motorEnabled.RL);
+	SmartDashboard::PutBoolean("PID.RR", motorEnabled.RR);
+
+	return returnedError;
+}
+
+double AveragingDriveEncoderPIDSource::CalculateAverage(const DriveInfo<double> &error, const DriveInfo<bool> &motorEnabled) {
+	// Calculate average error
 	double sum = 0.0;
 	int count = 0;
 	if (motorEnabled.FL) { sum += error.FL; count++; }
@@ -39,13 +97,11 @@ double AveragingDriveEncoderPIDSource::PIDGet() {
 	if (motorEnabled.RL) { sum += error.RL; count++; }
 	if (motorEnabled.RR) { sum += error.RR; count++; }
 	const double average = sum / count;
-
-	// TODO: Take motors out if their error is too far from
-	const double threshold = 0.5;
-//	if (((error.FL / average) < threshold) || ((error.FL/average) > threhsold + 1)) {
-//		motorEnabled.FL = false;
-//	}
 	return average;
+}
+
+void AveragingDriveEncoderPIDSource::SetShowDebug(bool _showDebug) {
+	showDebug = _showDebug;
 }
 
 

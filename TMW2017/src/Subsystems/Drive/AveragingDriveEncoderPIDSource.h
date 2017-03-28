@@ -9,7 +9,9 @@
 #define SRC_SUBSYSTEMS_DRIVE_AVERAGINGDRIVEENCODERPIDSOURCE_H_
 
 #include "WPILib.h"
-#include <Subsystems/DriveBase.h>
+#include <CANTalon.h>
+#include "Util/DriveInfo.h"
+
 class CANTalon;
 
 class AveragingDriveEncoderPIDSource : public PIDSource {
@@ -18,10 +20,12 @@ public:
 	virtual ~AveragingDriveEncoderPIDSource();
 	virtual double PIDGet();
 	void SetInitialEncoderValue();
+	void SetShowDebug(bool _showDebug);
 private:
 	DriveInfo<std::shared_ptr<CANTalon>> motor;
 	DriveInfo<double> initialEncoderValue;
-	DriveInfo<bool> motorEnabled {true};
+	double CalculateAverage(const DriveInfo<double> &error, const DriveInfo<bool> &motorEnabled);
+	bool showDebug = false;
 };
 
 #endif /* SRC_SUBSYSTEMS_DRIVE_AVERAGINGDRIVEENCODERPIDSOURCE_H_ */

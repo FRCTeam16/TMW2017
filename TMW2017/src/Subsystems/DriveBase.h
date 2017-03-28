@@ -15,18 +15,9 @@
 #include "WPILib.h"
 #include "Drive/CrabSpeed.h"
 #include "Drive/DriveEncoderPIDSource.h"
+#include "Drive/AveragingDriveEncoderPIDSource.h"
 #include "Util/BSPIDController.h"
-
-template <typename T>
-struct DriveInfo {
-	T FL = 0;
-	T FR = 0;
-	T RL = 0;
-	T RR = 0;
-
-	DriveInfo() {}
-	DriveInfo(T value) : FL(value), FR(value), RL(value), RR(value) {}
-};
+#include "Util/DriveInfo.h"
 
 struct Wheelbase {
 	double W = 0;
@@ -75,7 +66,6 @@ private:
 	Wheelbase wheelbase;
 	std::unique_ptr<BSPIDController> driveControlTwist;
 	std::unique_ptr<CrabSpeed> crabSpeedTwist;
-	std::unique_ptr<DriveEncoderPIDSource> driveControlEncoderSource;
 	std::unique_ptr<CrabSpeed> driveControlDistanceSpeed;
 
 	const int MaxTurns = 1000;
@@ -129,6 +119,7 @@ public:
 	/* Leak Talon Information */
 	std::shared_ptr<CANTalon> GetFrontLeftDrive();
 	std::shared_ptr<CANTalon> GetRearRightDrive();
+	std::unique_ptr<AveragingDriveEncoderPIDSource> driveControlEncoderSource;
 
 	// Ackerman Steering
 	void Steer(float radian, float speed, float a);
