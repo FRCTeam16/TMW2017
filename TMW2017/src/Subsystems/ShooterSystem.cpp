@@ -87,12 +87,18 @@ void ShooterSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void ShooterSystem::Run() {
+	Preferences *prefs = Preferences::GetInstance();
 	double hopperSpeedToSet = 0.0;
 	double shooterSetPoint = 0.0;
 	double elevatorSpeedToSet = 0.0;
 
+	const double firingHopperSpeed = prefs->GetDouble("Hopper Shoot Speed");
+	const double reverseHopperSpeed = -1 * firingHopperSpeed;
+
+
+
 	if (shooterMotorsEnabled) {
-		Preferences *prefs = Preferences::GetInstance();
+
 		const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
 	    const double P = prefs->GetDouble("ShootP", 0);
 	    const double I = prefs->GetDouble("ShootI", 0);
@@ -168,16 +174,11 @@ void ShooterSystem::SMDB() {
 	reverseHopperCountDownTimerStartValue = frc::SmartDashboard::GetNumber("Hopper Reverse Start", 15);
 	frc::SmartDashboard::PutNumber("Hopper Reverse Start", reverseHopperCountDownTimerStartValue);
 
-	firingHopperSpeed = frc::SmartDashboard::GetNumber("Hopper Shoot Speed", 0.5);
-	frc::SmartDashboard::PutNumber("Hopper Shoot Speed", firingHopperSpeed);
-
 	elevatorSpeed = frc::SmartDashboard::GetNumber("Elevator Speed", -1.0);
 	frc::SmartDashboard::PutNumber("Elevator Speed", elevatorSpeed);
 
 	elevatorRampUpStartValue = frc::SmartDashboard::GetNumber("Elevator Rampup Start", 5);
 	frc::SmartDashboard::PutNumber("Elevator Rampup Start", elevatorRampUpStartValue);
-
-	reverseHopperSpeed = -1 * firingHopperSpeed;
 }
 
 

@@ -109,6 +109,8 @@ void Robot::RobotInit() {
 
 	SetDoublePref("TeleopAckermannAngle", 172.0);
 
+	SetDoublePref("Hopper Shoot Speed", 0.5);
+
 	// Autonomous
 	SetDoublePref(DriveUnit::PULSES_PER_INCH, 18.2);
 	SetDoublePref("BoilerAutoAngle", -52.0);
