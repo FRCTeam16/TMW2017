@@ -12,6 +12,7 @@
 #include <Autonomous/Steps/Shoot.h>
 #include <Autonomous/Steps/AckermannDrive.h>
 #include <Autonomous/Steps/Delay.h>
+#include <Autonomous/Steps/GearSteps.h>
 
 BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	Preferences *prefs = Preferences::GetInstance();
@@ -42,11 +43,12 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
 	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 1.5, ignoreJerk, jerk));
 	steps.push_back(new TimedDrive(180.0, afterBumpSpeed, afterBumpSpeedX, 2.0));
+	steps.push_back(new DropGearAssembly(0, true));
 	steps.push_back(new Delay(delayBeforeShoot));
 	if (isRed) {
 		steps.push_back(new AckermannDrive(ackermanTurnSpeed, ackermannAngle));
 	} else {
-		steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5
+		//steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5
 	}
 	steps.push_back(new Shoot(13));
 }

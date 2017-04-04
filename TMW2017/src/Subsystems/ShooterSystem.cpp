@@ -99,6 +99,8 @@ void ShooterSystem::Run() {
 
 	if (shooterMotorsEnabled) {
 
+		RobotMap::shootingLight->Set(false);
+
 		const double shooterSpeedRpm = prefs->GetDouble("ShootRPM", 3000);
 	    const double P = prefs->GetDouble("ShootP", 0);
 	    const double I = prefs->GetDouble("ShootI", 0);
@@ -133,6 +135,7 @@ void ShooterSystem::Run() {
 		}
 	} else {
 		hopperSpeedToSet = hopperSpeed;
+		RobotMap::shootingLight->Set(true);
 	}
 
 	shooter1->SetSetpoint(shooterSetPoint);

@@ -208,6 +208,9 @@ void Robot::DisabledPeriodic() {
 	Scheduler::GetInstance()->Run();
 	RunManagerSMDBs();
 	frc::SmartDashboard::PutNumber("Gyro Angle", RobotMap::gyro->GetAHRS()->GetAngle());
+	RobotMap::indicatorLight->Set(true);
+	RobotMap::shootingLight->Set(true);
+	RobotMap::gearUpStatusIndicator->Set(true);
 }
 
 void Robot::AutonomousInit() {
@@ -271,13 +274,17 @@ void Robot::TeleopPeriodic() {
 		gearSystem->EjectGear();
 	}
 
+	bool lockWheels = false;
+
 	if (oi->DR3->Pressed()) {
-		Preferences *prefs = Preferences::GetInstance();
+		/*Preferences *prefs = Preferences::GetInstance();
 		const double ackermannAngle = prefs->GetDouble("TeleopAckermannAngle");
 		const double walloffsetShootAngle = prefs->GetDouble("ShootScootShootAngleOffset");
 		const double angle = (isRed) ? 90.0 + walloffsetShootAngle : -ackermannAngle;
 		driveBase->SetTargetAngle(angle);
 		useDriveBaseAngle = true;
+		*/
+		lockWheels = true;
 	}
 
 	if (oi->DR4->Pressed()) {
@@ -361,7 +368,6 @@ void Robot::TeleopPeriodic() {
 
 
 	const double threshold = (firing) ? 0.2 : 0.1;
-	bool lockWheels = false;
 	if (firing) {
 		if (fabs(oi->GetJoystickTwist(threshold)) > 0 ||
 			fabs(oi->GetJoystickX(threshold)) > 0 ||

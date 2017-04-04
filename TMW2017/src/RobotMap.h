@@ -66,6 +66,7 @@ public:
 	static std::shared_ptr<BSGyro> gyro;
 	static std::shared_ptr<DigitalOutput> gearUpStatusIndicator;
 	static std::shared_ptr<DigitalOutput> indicatorLight;
+	static std::shared_ptr<DigitalOutput> shootingLight;
 	static void init();
 };
 #endif

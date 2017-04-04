@@ -30,6 +30,8 @@ double AveragingDriveEncoderPIDSource::PIDGet() {
 	DriveInfo<double> error;
 	DriveInfo<bool> motorEnabled {true};
 
+
+
 	error.FL = fabs(motor.FL->GetEncPosition() - initialEncoderValue.FL);
 	error.FR = fabs(motor.FR->GetEncPosition() - initialEncoderValue.FR);
 	error.RL = fabs(motor.RL->GetEncPosition() - initialEncoderValue.RL);
@@ -48,21 +50,21 @@ double AveragingDriveEncoderPIDSource::PIDGet() {
 
 
 	// Vote for encoder inclusion
-	const double threshold = 0.25;
+	const double threshold = 0.5;
 	int enabledCount = 4;
-	if (((error.FL / initialAverage) < (1 - threshold)) || ((error.FL/initialAverage) > (threshold + 1))) {
+	if (((error.FL / initialAverage) < (1 - threshold)) || ((error.FL/initialAverage) > (threshold + 1)) || (error.FL < 10 && initialAverage > 100)) {
 		motorEnabled.FL = false;
 		enabledCount--;
 	}
-	if (((error.FR / initialAverage) < (1- threshold)) || ((error.FR/initialAverage) > (threshold + 1))) {
+	if (((error.FR / initialAverage) < (1- threshold)) || ((error.FR/initialAverage) > (threshold + 1)) || (error.FR < 10 && initialAverage > 100)) {
 		motorEnabled.FR = false;
 		enabledCount--;
 	}
-	if (((error.RL / initialAverage) < (1- threshold)) || ((error.RL/initialAverage) > (threshold + 1))) {
+	if (((error.RL / initialAverage) < (1- threshold)) || ((error.RL/initialAverage) > (threshold + 1)) || (error.RL < 10 && initialAverage > 100)) {
 		motorEnabled.RL = false;
 		enabledCount--;
 	}
-	if (((error.RR / initialAverage) < (1- threshold)) || ((error.RR/initialAverage) > (threshold + 1))) {
+	if (((error.RR / initialAverage) < (1- threshold)) || ((error.RR/initialAverage) > (threshold + 1)) || (error.RR < 10 && initialAverage > 100)) {
 		motorEnabled.RR = false;
 		enabledCount--;
 	}
