@@ -42,6 +42,7 @@ private:
 	std::shared_ptr<World> world;
 	double angle = 0;
 	void SetDoublePref(llvm::StringRef key, double value = 0.0);
+	void SetBooleanPref(llvm::StringRef key, bool value = false);
 	bool useTeleopSpeedControl = false;
 	std::unique_ptr<CollisionDetector> collisionDetector;
 	std::thread ledThread;

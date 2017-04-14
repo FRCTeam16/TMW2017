@@ -156,6 +156,10 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyDelayAfterBump", 0.5);
 	SetDoublePref("ShootOnlyAckermannSpeed", 0.3);
 
+	SetBooleanPref("ShootOnlyBlueSpin", true);
+	SetDoublePref("ShootOnlyBlueSpinSpeed", 0.2);
+	SetDoublePref("ShootOnlyBlueSpinX", 10);
+	SetDoublePref("ShootOnlyBlueSpinReturnTime", 2.0);
 
 	SetDoublePref("ShootScootShootAngleOffset", 4.5);
 	SetDoublePref("ShootScootForwardSpeed", 0.4);
@@ -166,17 +170,12 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootScootHangX", -2.3);
 	SetDoublePref("ShootScootHangT", 0.5);
 	SetDoublePref("ShootScootHangAngle", -60.0);
-	if (!prefs->ContainsKey("ShootScootDoHang")) {
-		prefs->PutBoolean("ShootScootDoHang", true);
-	}
+	SetBooleanPref("ShootScootDoHang", true);
 
 
 	SetDoublePref("DebugAutoParam1", 0.00);
 
-
-	if (!prefs->ContainsKey("EnabledLED")) {
-		prefs->PutBoolean("EnabledLED", false);
-	}
+	SetBooleanPref("EnabledLED", false);
 
 
 	// Initialize LED Communications background thread
@@ -188,6 +187,13 @@ void Robot::RobotInit() {
 }
 
 void Robot::SetDoublePref(llvm::StringRef key, double value) {
+	Preferences *prefs = Preferences::GetInstance();
+	if (!prefs->ContainsKey(key)) {
+		prefs->PutDouble(key, value);
+	}
+}
+
+void Robot::SetBooleanPref(llvm::StringRef key, bool value) {
 	Preferences *prefs = Preferences::GetInstance();
 	if (!prefs->ContainsKey(key)) {
 		prefs->PutDouble(key, value);

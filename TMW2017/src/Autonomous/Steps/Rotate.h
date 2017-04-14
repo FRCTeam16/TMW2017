@@ -15,7 +15,7 @@ class Rotate : public Step {
 private:
 	double startTime = -1;
 	const double angle = -1;
-	const double TIMEOUT = 10.0;
+	const double TIMEOUT = 5.0;
 	const double THRESHOLD = 5.0;
 public:
 	Rotate(double _angle) : angle(_angle) {}
