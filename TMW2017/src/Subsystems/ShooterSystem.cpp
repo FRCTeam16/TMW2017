@@ -71,6 +71,12 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
     shooter2->Set(shooter1->GetDeviceID());
+
+    hopperThresholdWatcher.reset(
+    		new MovingAverageThreshold(
+    				prefs->GetDouble("HopperAverageThreshold"),
+					prefs->GetInt("HopperAverageWindow")));
+
 }
 
 void ShooterSystem::InitDefaultCommand() {
@@ -88,13 +94,20 @@ void ShooterSystem::InitDefaultCommand() {
 
 void ShooterSystem::Run() {
 	Preferences *prefs = Preferences::GetInstance();
+//	const bool useHopperThreshold = prefs->GetBoolean("HopperAverageEnabled");
+	const bool useHopperThreshold = true;
+	//std::cout << "HOPPER THRESHOLD ENABLED: " << useHopperThreshold << "\n";
 	double hopperSpeedToSet = 0.0;
 	double shooterSetPoint = 0.0;
 	double elevatorSpeedToSet = 0.0;
 
+	hopperThresholdWatcher->Configure(
+			prefs->GetDouble("HopperAverageThreshold"),
+			prefs->GetInt("HopperAverageWindow"));
+
+
 	const double firingHopperSpeed = prefs->GetDouble("Hopper Shoot Speed");
 	const double reverseHopperSpeed = -1 * firingHopperSpeed;
-
 
 
 	if (shooterMotorsEnabled) {
@@ -121,9 +134,24 @@ void ShooterSystem::Run() {
 					inElevatorRampUp = false;
 				}
 			} else {
+				// Normal operation, set hopper to load
 				hopperSpeedToSet = firingHopperSpeed;
+				// Watch for threshold flagging jams
+				if (useHopperThreshold && !reverseHopper) {
+					hopperThresholdWatcher->AddValue(hopper->GetOutputCurrent());
+					if (hopperThresholdWatcher->Check()) {
+						std::cout << "!!! Hopper moving average tripped, auto-reversing\n";
+						PulseHopperReverse();
+						hopperThresholdWatcher->Reset();
+					}
+				}
 			}
 			elevatorSpeedToSet = elevatorSpeed;
+		} else {
+			// motors on, bot firing or loading balls
+			if (useHopperThreshold) {
+				hopperThresholdWatcher->Reset();
+			}
 		}
 
 		if (reverseHopper) {
@@ -134,6 +162,7 @@ void ShooterSystem::Run() {
 			}
 		}
 	} else {
+		// Shooting motors not running
 		hopperSpeedToSet = hopperSpeed;
 		RobotMap::shootingLight->Set(true);
 	}
@@ -182,6 +211,8 @@ void ShooterSystem::SMDB() {
 
 	elevatorRampUpStartValue = frc::SmartDashboard::GetNumber("Elevator Rampup Start", 5);
 	frc::SmartDashboard::PutNumber("Elevator Rampup Start", elevatorRampUpStartValue);
+
+	frc::SmartDashboard::PutNumber("Hopper Moving Average", hopperThresholdWatcher->GetLastAverage());
 }
 
 

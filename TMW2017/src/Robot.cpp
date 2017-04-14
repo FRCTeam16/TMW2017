@@ -174,8 +174,13 @@ void Robot::RobotInit() {
 
 
 	SetDoublePref("DebugAutoParam1", 0.00);
-
 	SetBooleanPref("EnabledLED", false);
+
+	SetBooleanPref("HopperAverageEnable", true);
+	SetDoublePref("HopperAverageThreshold", 20.0);
+	if (!prefs->GetInt("HopperAverageWindow")) {
+		prefs->PutInt("HopperAverageWindow", 15);
+	}
 
 
 	// Initialize LED Communications background thread
@@ -196,7 +201,7 @@ void Robot::SetDoublePref(llvm::StringRef key, double value) {
 void Robot::SetBooleanPref(llvm::StringRef key, bool value) {
 	Preferences *prefs = Preferences::GetInstance();
 	if (!prefs->ContainsKey(key)) {
-		prefs->PutDouble(key, value);
+		prefs->PutBoolean(key, value);
 	}
 }
 
