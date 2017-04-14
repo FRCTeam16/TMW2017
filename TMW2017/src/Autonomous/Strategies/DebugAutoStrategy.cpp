@@ -15,6 +15,14 @@
 #include <Autonomous/Steps/AckermannDrive.h>
 
 DebugAutoStrategy::DebugAutoStrategy() {
+	JoshDebug();
+}
+
+void DebugAutoStrategy::JoshDebug() {
+	std::cout << "Running JoshDebug\n";
+}
+
+void DebugAutoStrategy::DebugShootScootHang() {
 	Preferences *prefs = Preferences::GetInstance();
 	double angle = prefs->GetDouble("DebugAutoParam1");
 

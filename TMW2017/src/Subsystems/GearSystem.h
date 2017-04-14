@@ -95,6 +95,7 @@ public:
 	void SetLiftEnabled(bool enabled);
 	void ToggleRotate();
 	void SetRotateEnabled(bool enabled);
+	bool IsRotateEnabled();
 	void ToggleExtend();
 	void SetExtendEnabled(bool enabled);
 	void ToggleSqueeze();

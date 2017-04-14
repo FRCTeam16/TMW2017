@@ -195,12 +195,21 @@ void ShooterSystem::InitManager(Manager::RunMode runMode) {
 
 void ShooterSystem::SetFireEnabled(bool enabled) {
 	if (fireEnabled && !enabled) {
+		// Turning off shooter
 		PulseHopperReverse();
 		inElevatorRampUp = false;
+		if (automaticRotateState == false) {
+			Robot::gearSystem->DropPickupForShooting(false);
+		}
 	}
 	if (!fireEnabled && enabled) {
+		// Turning on shooter
 		inElevatorRampUp = true;
 		elevatorRampUp = elevatorRampUpStartValue;
+		automaticRotateState = Robot::gearSystem->IsRotateEnabled();
+		if (automaticRotateState == false) {
+			Robot::gearSystem->DropPickupForShooting(true);
+		}
 	}
 	fireEnabled = enabled;
 }

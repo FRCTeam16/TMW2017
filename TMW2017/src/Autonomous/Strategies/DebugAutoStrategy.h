@@ -17,6 +17,8 @@ public:
 
 private:
 	void DebugShootScoot();
+	void JoshDebug();
+	void DebugShootScootHang();
 };
 
 #endif /* SRC_AUTONOMOUS_DEBUGAUTOSTRATEGY_H_ */

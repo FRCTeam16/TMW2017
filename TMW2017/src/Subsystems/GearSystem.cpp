@@ -213,6 +213,9 @@ void GearSystem::SetRotateEnabled(bool enabled) {
 	rotateEnabled = enabled;
 	rotate->Set(rotateEnabled);
 }
+bool GearSystem::IsRotateEnabled() {
+	return rotateEnabled;
+}
 
 void GearSystem::ToggleExtend() {
 	extendEnabled = !extendEnabled;

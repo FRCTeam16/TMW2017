@@ -34,6 +34,7 @@ private:
 	double shooterRPM = 3000;
 	bool shooterMotorsEnabled = false;
 	bool fireEnabled = false;
+	bool automaticRotateState = false;
 
 	bool  inElevatorRampUp = false;
 	double elevatorRampUp = 0;
