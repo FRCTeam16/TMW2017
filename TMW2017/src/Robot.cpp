@@ -176,7 +176,7 @@ void Robot::RobotInit() {
 	SetDoublePref("DebugAutoParam1", 0.00);
 	SetBooleanPref("EnabledLED", false);
 
-	SetBooleanPref("HopperAverageEnable", true);
+	SetBooleanPref("HopperAverageEnabled", true);
 	SetDoublePref("HopperAverageThreshold", 20.0);
 	if (!prefs->GetInt("HopperAverageWindow")) {
 		prefs->PutInt("HopperAverageWindow", 15);

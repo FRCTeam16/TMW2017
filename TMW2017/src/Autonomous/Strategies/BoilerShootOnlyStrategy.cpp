@@ -19,9 +19,9 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const bool isBlue = !isRed;
 	Preferences *prefs = Preferences::GetInstance();
 
-	const bool blueSpinOnly = prefs->GetBoolean("ShootOnlyBlueSpin");
+	const bool blueSpinOnly = isBlue && prefs->GetBoolean("ShootOnlyBlueSpin");
 	double angle = 180.0 ;
-	if (isBlue && blueSpinOnly) {
+	if (blueSpinOnly) {
 		angle = 0.0;
 	}
 	const double speed = prefs->GetDouble("ShootOnlySpeed");
@@ -52,7 +52,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
 	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 1.5, ignoreJerk, jerk));
 	steps.push_back(new TimedDrive(angle, afterBumpSpeed, afterBumpSpeedX, 2.0));
-	if (isBlue && blueSpinOnly) {
+	if (blueSpinOnly) {
 		const double newAngle = 180.0;
 		steps.push_back(new XYPIDControlledDrive(angle, blueSpinSpeed, blueSpinX, 0.0, -1, DriveUnit::Units::kInches ));
 		steps.push_back(new Rotate(newAngle));

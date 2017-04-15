@@ -94,9 +94,8 @@ void ShooterSystem::InitDefaultCommand() {
 
 void ShooterSystem::Run() {
 	Preferences *prefs = Preferences::GetInstance();
-//	const bool useHopperThreshold = prefs->GetBoolean("HopperAverageEnabled");
-	const bool useHopperThreshold = true;
-	//std::cout << "HOPPER THRESHOLD ENABLED: " << useHopperThreshold << "\n";
+	const bool useHopperThreshold = prefs->GetBoolean("HopperAverageEnabled");
+
 	double hopperSpeedToSet = 0.0;
 	double shooterSetPoint = 0.0;
 	double elevatorSpeedToSet = 0.0;
