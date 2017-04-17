@@ -33,9 +33,12 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
 	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed");
 	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX");
+	const double driveIntoWallTime = prefs->GetDouble("ShootOnlyDriveIntoWallTime");
 	const double blueSpinSpeed = prefs->GetDouble("ShootOnlyBlueSpinSpeed");
 	const double blueSpinX = prefs->GetDouble("ShootOnlyBlueSpinX");
+	const double blueSpinPushT = prefs->GetDouble("ShootOnlyBlueSpinPushT");
 	const double blueSpinReturnTime = prefs->GetDouble("ShootOnlyBlueSpinReturnTime");
+	const double blueSpinAngle = prefs->GetDouble("ShootOnlyBlueSpinAngle");
 	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY");
 	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump");
 	const double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
@@ -51,12 +54,11 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new ControlShooterMotor(true));
 	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
 	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 1.5, ignoreJerk, jerk));
-	steps.push_back(new TimedDrive(angle, afterBumpSpeed, afterBumpSpeedX, 2.0));
+	steps.push_back(new TimedDrive(angle, afterBumpSpeed, afterBumpSpeedX, driveIntoWallTime));
 	if (blueSpinOnly) {
-		const double newAngle = 180.0;
-		steps.push_back(new XYPIDControlledDrive(angle, blueSpinSpeed, blueSpinX, 0.0, -1, DriveUnit::Units::kInches ));
-		steps.push_back(new Rotate(newAngle));
-		steps.push_back(new TimedDrive(newAngle, 0.0, -blueSpinSpeed, blueSpinReturnTime));
+		steps.push_back(new XYPIDControlledDrive(angle, blueSpinSpeed, blueSpinX, 0.0, blueSpinPushT, DriveUnit::Units::kInches ));
+		steps.push_back(new Rotate(blueSpinAngle));
+//		steps.push_back(new TimedDrive(blueSpinAngle, 0.0, -blueSpinSpeed, blueSpinReturnTime));
 	}
 	steps.push_back(new DropGearAssembly(0, true));
 	steps.push_back(new Delay(delayBeforeShoot));

@@ -152,14 +152,17 @@ void Robot::RobotInit() {
 
 	SetDoublePref("ShootOnlyAfterBumpSpeed", -0.5);
 	SetDoublePref("ShootOnlyAfterBumpSpeedX", 0.1);
-	SetDoublePref("ShootOnlyAfterBumpY", 3);
+	SetDoublePref("ShootOnlyAfterBumpY", 0);
 	SetDoublePref("ShootOnlyDelayAfterBump", 0.5);
+	SetDoublePref("ShootOnlyDriveIntoWallTime", 2.0);
 	SetDoublePref("ShootOnlyAckermannSpeed", 0.3);
 
 	SetBooleanPref("ShootOnlyBlueSpin", true);
 	SetDoublePref("ShootOnlyBlueSpinSpeed", 0.2);
 	SetDoublePref("ShootOnlyBlueSpinX", 10);
+	SetDoublePref("ShootOnlyBlueSpinPushT", -1);
 	SetDoublePref("ShootOnlyBlueSpinReturnTime", 2.0);
+	SetDoublePref("ShootOnlyBlueSpinAngle", -160);
 
 	SetDoublePref("ShootScootShootAngleOffset", 4.5);
 	SetDoublePref("ShootScootForwardSpeed", 0.4);
@@ -305,6 +308,10 @@ void Robot::TeleopPeriodic() {
 		const double angle = (isRed) ? ackermannAngle : (-180.0 + walloffsetShootAngle);
 		driveBase->SetTargetAngle(angle);
 		useDriveBaseAngle = true;
+	}
+
+	if (oi->DR5->RisingEdge()) {
+		shooterSystem->SetShooterEnabled(true);
 	}
 
 

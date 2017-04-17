@@ -108,7 +108,6 @@ void ShooterSystem::Run() {
 	const double firingHopperSpeed = prefs->GetDouble("Hopper Shoot Speed");
 	const double reverseHopperSpeed = -1 * firingHopperSpeed;
 
-
 	if (shooterMotorsEnabled) {
 
 		RobotMap::shootingLight->Set(false);
