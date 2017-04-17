@@ -33,7 +33,9 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double ackermannAngle = prefs->GetDouble("AckermannAngle");
 	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed");
 	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX");
-	const double driveIntoWallTime = prefs->GetDouble("ShootOnlyDriveIntoWallTime");
+
+	const double driveIntoWallTime = (!blueSpinOnly) ? prefs->GetDouble("ShootOnlyDriveIntoWallTime") : prefs->GetDouble("ShootOnlyBlueDriveIntoWallTime");
+
 	const double blueSpinSpeed = prefs->GetDouble("ShootOnlyBlueSpinSpeed");
 	const double blueSpinX = prefs->GetDouble("ShootOnlyBlueSpinX");
 	const double blueSpinPushT = prefs->GetDouble("ShootOnlyBlueSpinPushT");

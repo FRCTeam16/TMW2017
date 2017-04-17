@@ -251,7 +251,7 @@ void ShooterSystem::SetShooterEnabled(bool enabled, bool doLoad) {
 	if (enabled) {
 		TriggerShooterRamp();
 		if (doLoad) {
-			PulseBallLoad();
+			// Avoid ball load to prevent jams/ lost balls : PulseBallLoad();
 		}
 	}
 	shooterMotorsEnabled = enabled;

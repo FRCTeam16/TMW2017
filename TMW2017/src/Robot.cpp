@@ -109,7 +109,7 @@ void Robot::RobotInit() {
 
 	SetDoublePref("TeleopAckermannAngle", 172.0);
 
-	SetDoublePref("Hopper Shoot Speed", 0.5);
+	SetDoublePref("Hopper Shoot Speed", 0.75);
 
 	// Autonomous
 	SetDoublePref(DriveUnit::PULSES_PER_INCH, 18.2);
@@ -123,7 +123,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ReverseBoilerGearY", -15);
 	SetDoublePref("ReverseBoilerGearX", -15);
 	SetDoublePref("ReverseBoilerGearT", -1);
-	SetDoublePref("AckermannAngle", 167.0);
+	SetDoublePref("AckermannAngle", 175.0);
 
 	SetDoublePref("ReturnAutoAngle", 60.0);
 	SetDoublePref("ReturnGearX", 83);
@@ -144,7 +144,7 @@ void Robot::RobotInit() {
 	SetDoublePref("CenterGearTInches", 4);
 
 	SetDoublePref("ShootOnlySpeed", 0.4);
-	SetDoublePref("ShootOnlyY", 85);
+	SetDoublePref("ShootOnlyY", 71);
 	SetDoublePref("ShootOnlyT", 1.5);
 	SetDoublePref("ShootOnlyBumpXSpeed", 0.4);
 	SetDoublePref("ShootOnlyIgnoreJerk", 0.04);
@@ -161,6 +161,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyBlueSpinSpeed", 0.2);
 	SetDoublePref("ShootOnlyBlueSpinX", 10);
 	SetDoublePref("ShootOnlyBlueSpinPushT", -1);
+	SetDoublePref("ShootOnlyBlueDriveIntoWallTime", 1);
 	SetDoublePref("ShootOnlyBlueSpinReturnTime", 2.0);
 	SetDoublePref("ShootOnlyBlueSpinAngle", -160);
 	SetDoublePref("ShootOnlyBlueSpinShootAngleT", 4.0);
