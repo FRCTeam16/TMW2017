@@ -27,6 +27,8 @@ private:
 	std::shared_ptr<frc::SendableChooser<void*>> strategies;
 	std::unique_ptr<Strategy> CreateStrategy(const AutoStrategy &key);
 	std::unique_ptr<Strategy> currentStrategy;
+	double startTime = -1;
+	bool finalPhaseFired = false;
 
 };
 

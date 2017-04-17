@@ -14,6 +14,7 @@
 #include <Autonomous/Strategies/ReturnGearStrategy.h>
 #include <Autonomous/Strategies/BoilerShootOnlyStrategy.h>
 #include <Autonomous/Strategies/ShootAndScootStrategy.h>
+#include <Robot.h>
 
 
 
@@ -79,12 +80,30 @@ void AutoManager::Init(std::shared_ptr<World> world) {
 		std::cerr << "NO AUTONOMOUS STRATEGY FOUND\n";
 	}
 	RobotMap::gyro->GetAHRS()->ZeroYaw();
+
+	startTime = -1;
+	finalPhaseFired = false;
+
 	std::cout << "AutoManager::Init COMPLETE\n";
 }
 
 void AutoManager::Periodic(std::shared_ptr<World> world) {
 	std::cout << "AutoMan Periodic\n";
+	const double currentTime = world->GetClock();
 	if (currentStrategy) {
+		if (startTime < 0) {
+			startTime = currentTime;
+			Robot::ballPickupSystem->SetBallPickupEnabled(true);
+		}
+
+		if (((currentTime - startTime) > 1)) {
+			Robot::ballPickupSystem->SetBallPickupEnabled(false);
+		}
+
+		if (((currentTime - startTime) > 13) && !finalPhaseFired) {
+			finalPhaseFired = true;
+			Robot::ballPickupSystem->PulseReverseBallPickup();
+		}
 		currentStrategy->Run(world);
 	}
 }
