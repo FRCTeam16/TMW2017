@@ -88,7 +88,7 @@ void AutoManager::Init(std::shared_ptr<World> world) {
 }
 
 void AutoManager::Periodic(std::shared_ptr<World> world) {
-	std::cout << "AutoMan Periodic\n";
+//	std::cout << "AutoMan Periodic\n";
 	const double currentTime = world->GetClock();
 	if (currentStrategy) {
 		if (startTime < 0) {

@@ -40,7 +40,7 @@ float BSGyro::GetYaw() {
 void BSGyro::DebugPrint() {
 	 std::cout << "BSGyro::DebugPrint offset = " << offset
 			   << " ahrsYaw = " << ahrs->GetYaw()
-			   << " total = " << offset + ahrs->GetYaw();
+			   << " total = " << offset + ahrs->GetYaw() << "\n";
 }
 
 double BSGyro::PIDGet() {

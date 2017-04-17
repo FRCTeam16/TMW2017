@@ -39,6 +39,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double blueSpinPushT = prefs->GetDouble("ShootOnlyBlueSpinPushT");
 	const double blueSpinReturnTime = prefs->GetDouble("ShootOnlyBlueSpinReturnTime");
 	const double blueSpinAngle = prefs->GetDouble("ShootOnlyBlueSpinAngle");
+	const double blueSpinShootAngleThreshold = prefs->GetDouble("ShootOnlyBlueSpinShootAngleT");
 	const double afterBumpY = prefs->GetDouble("ShootOnlyAfterBumpY");
 	const double delayBeforeShoot = prefs->GetDouble("ShootOnlyDelayAfterBump");
 	const double ackermanTurnSpeed = prefs->GetDouble("ShootOnlyAckermannSpeed");
@@ -67,6 +68,10 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	} else {
 		//steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5
 	}
-	steps.push_back(new Shoot(13));
+	if (blueSpinOnly) {
+		steps.push_back(new Shoot(13, blueSpinAngle, blueSpinShootAngleThreshold));
+	} else {
+		steps.push_back(new Shoot(13));
+	}
 }
 

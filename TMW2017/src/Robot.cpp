@@ -163,6 +163,7 @@ void Robot::RobotInit() {
 	SetDoublePref("ShootOnlyBlueSpinPushT", -1);
 	SetDoublePref("ShootOnlyBlueSpinReturnTime", 2.0);
 	SetDoublePref("ShootOnlyBlueSpinAngle", -160);
+	SetDoublePref("ShootOnlyBlueSpinShootAngleT", 4.0);
 
 	SetDoublePref("ShootScootShootAngleOffset", 4.5);
 	SetDoublePref("ShootScootForwardSpeed", 0.4);
