@@ -94,10 +94,12 @@ void AutoManager::Periodic(std::shared_ptr<World> world) {
 		if (startTime < 0) {
 			startTime = currentTime;
 			Robot::ballPickupSystem->SetBallPickupEnabled(true);
+			Robot::climberSystem->SetClimberSpeed(1.0);
 		}
 
 		if (((currentTime - startTime) > 1)) {
 			Robot::ballPickupSystem->SetBallPickupEnabled(false);
+			Robot::climberSystem->SetClimberSpeed(0.0);
 		}
 
 		if (((currentTime - startTime) > 13) && !finalPhaseFired) {

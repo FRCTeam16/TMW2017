@@ -53,7 +53,6 @@ void ClimberSystem::Run() {
 		prod->Set(DoubleSolenoid::kReverse);
 	}
 
-
 	Robot::gearSystem->SetCompressorEnabled(!(fabs(climberSpeed) > 0.0));
 }
 
@@ -71,6 +70,7 @@ void ClimberSystem::ToggleProd() {
 void ClimberSystem::SetClimberSpeed(double speed) {
 	climberSpeed = speed;
 }
+
 
 void ClimberSystem::SMDB() {
 	frc::SmartDashboard::PutNumber("Climber Amps", climber->GetOutputCurrent());

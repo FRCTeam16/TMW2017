@@ -34,7 +34,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	const double afterBumpSpeed = prefs->GetDouble("ShootOnlyAfterBumpSpeed");
 	double afterBumpSpeedX = prefs->GetDouble("ShootOnlyAfterBumpSpeedX");
 
-	const double driveIntoWallTime = (!blueSpinOnly) ? prefs->GetDouble("ShootOnlyDriveIntoWallTime") : prefs->GetDouble("ShootOnlyBlueDriveIntoWallTime");
+	const double driveIntoWallTime = (isRed) ? prefs->GetDouble("ShootOnlyDriveIntoWallTime") : prefs->GetDouble("ShootOnlyBlueDriveIntoWallTime");
 
 	const double blueSpinSpeed = prefs->GetDouble("ShootOnlyBlueSpinSpeed");
 	const double blueSpinX = prefs->GetDouble("ShootOnlyBlueSpinX");
@@ -66,7 +66,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new DropGearAssembly(0, true));
 	steps.push_back(new Delay(delayBeforeShoot));
 	if (isRed) {
-		steps.push_back(new AckermannDrive(ackermanTurnSpeed, ackermannAngle));
+		steps.push_back(new RedShootOnlyAckermannDrive(ackermanTurnSpeed, ackermannAngle, 0.0));
 	} else {
 		//steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5
 	}

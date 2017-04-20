@@ -26,6 +26,21 @@ private:
 };
 
 
+class RedShootOnlyAckermannDrive : public Step {
+public:
+	RedShootOnlyAckermannDrive(double _speed, double _targetAngle, double _threshold = 1.0) :
+		speed(_speed), targetAngle(_targetAngle), threshold(_threshold) {}
+	virtual ~RedShootOnlyAckermannDrive() {}
+	bool Run(std::shared_ptr<World> world) override;
+private:
+	const double speed;
+	const double targetAngle;
+	const double threshold;
+	double startTime = -1;
+	double startAngle;
+};
+
+
 class AckermannDriveYawDiff : public Step {
 public:
 	AckermannDriveYawDiff(double _speed, double _targetYawDiff) : speed(_speed), targetYawDiff(_targetYawDiff) {}
