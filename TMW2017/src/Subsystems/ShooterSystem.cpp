@@ -71,6 +71,7 @@ ShooterSystem::ShooterSystem() : Subsystem("ShooterSystem") {
 
     shooter2->SetControlMode(CANSpeedController::kFollower);
     shooter2->Set(shooter1->GetDeviceID());
+    shooter2->ConfigPeakOutputVoltage(0.0, -12.0);
 
     hopperThresholdWatcher.reset(
     		new MovingAverageThreshold(

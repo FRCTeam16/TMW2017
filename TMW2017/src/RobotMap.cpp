@@ -150,7 +150,7 @@ void RobotMap::init() {
     shooterSystemHopper.reset(new CANTalon(15));
     lw->AddActuator("ShooterSystem", "Hopper", shooterSystemHopper);
     
-    shooterSystemShooter1.reset(new CANTalon(11,1));
+    shooterSystemShooter1.reset(new CANTalon(11));
     lw->AddActuator("ShooterSystem", "Shooter1", shooterSystemShooter1);
     
     shooterSystemShooter2.reset(new CANTalon(12));
