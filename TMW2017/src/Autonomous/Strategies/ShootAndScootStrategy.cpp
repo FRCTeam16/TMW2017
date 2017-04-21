@@ -47,12 +47,14 @@ ShootAndScootStrategy::ShootAndScootStrategy(bool isRed) {
 	if (isRed) {
 		angle += shootOffsetAngle;
 	} else {
-		angle = angle - (180.0 - ackermannAngle);		//  -90 - (180.0 - 167) = -103
+		angle = angle - (180.0 - ackermannAngle);		//  -90 - (180.0 - 175) = -95
 	}
 
 	steps.push_back(new ControlShooterMotor(true, 0.95, 0.1, false));
 	//steps.push_back(new DropGearAssembly(0, true));
-	steps.push_back(new AckermannDrive(ackermanTurnSpeed, angle));
+	if (!isRed) {
+		steps.push_back(new BlueShootScootAckermannDrive(ackermanTurnSpeed, angle, 0.0));
+	}
 	steps.push_back(new ControlShooterMotor(true, 0.95, 2.5, false));
 	steps.push_back(new Shoot(2.0));
 	steps.push_back(new ControlShooterMotor(false));
