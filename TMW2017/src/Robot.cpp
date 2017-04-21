@@ -456,8 +456,14 @@ void Robot::RunManagers() {
 	autoManager->SMDB();
 	frc::SmartDashboard::PutNumber("DriveControl Error",driveBase->GetRearRightDrive()->GetClosedLoopError());
 	frc::SmartDashboard::PutBoolean("Teleop Speed Control", useTeleopSpeedControl);
+
+	frc::SmartDashboard::PutBoolean("NavX Connected", RobotMap::gyro->GetAHRS()->IsConnected());
+	frc::SmartDashboard::PutBoolean("NavX Calibrating", RobotMap::gyro->GetAHRS()->IsCalibrating());
 }
 
+/**
+ * Run during disabled
+ */
 void Robot::RunManagerSMDBs() {
 	std::for_each(managers.begin(), managers.end(),
 			[](std::shared_ptr<Manager> &manager) {
@@ -466,6 +472,9 @@ void Robot::RunManagerSMDBs() {
 	autoManager->SMDB();
 	frc::SmartDashboard::PutNumber("DriveControl Error",driveBase->GetRearRightDrive()->GetClosedLoopError());
 	frc::SmartDashboard::PutBoolean("Teleop Speed Control", useTeleopSpeedControl);
+
+	frc::SmartDashboard::PutBoolean("NavX Connected", RobotMap::gyro->GetAHRS()->IsConnected());
+	frc::SmartDashboard::PutBoolean("NavX Calibrating", RobotMap::gyro->GetAHRS()->IsCalibrating());
 
 }
 
