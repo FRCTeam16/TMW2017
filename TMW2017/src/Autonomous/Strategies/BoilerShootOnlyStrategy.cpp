@@ -66,6 +66,7 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new DropGearAssembly(0, true));
 	steps.push_back(new Delay(delayBeforeShoot));
 	if (isRed) {
+		steps.push_back(new StartShooting());
 		steps.push_back(new RedShootOnlyAckermannDrive(ackermanTurnSpeed, ackermannAngle, 0.0));
 	} else {
 		//steps.push_back(new AckermannDrive(-ackermanTurnSpeed, angle - shootOffsetAngle));	// 180 - 2.5 = -177.5

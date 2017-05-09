@@ -38,3 +38,9 @@ bool Shoot::Run(std::shared_ptr<World> world) {
 		return true;
 	}
 }
+
+bool StartShooting::Run(std::shared_ptr<World> world) {
+	std::cout << "StartShooting()\n";
+	Robot::shooterSystem->SetFireEnabled(true);
+	return true;
+}

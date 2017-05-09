@@ -26,4 +26,11 @@ public:
 	bool Run(std::shared_ptr<World> world);
 };
 
+class StartShooting : public Step {
+public:
+	StartShooting() {}
+	~StartShooting() {}
+	bool Run(std::shared_ptr<World> world);
+};
+
 #endif /* SRC_AUTONOMOUS_STEPS_SHOOT_H_ */
