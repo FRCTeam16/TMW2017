@@ -56,8 +56,8 @@ BoilerShootOnlyStrategy::BoilerShootOnlyStrategy(bool isRed) {
 	steps.push_back(new SetGyroOffset(angle));
 	steps.push_back(new ControlShooterMotor(true));
 	steps.push_back(new XYPIDControlledDrive(angle, speed, 0.0, yDistance, threshold, DriveUnit::Units::kInches ));
-	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 1.5, ignoreJerk, jerk));
-	steps.push_back(new TimedDrive(angle, afterBumpSpeed, afterBumpSpeedX, driveIntoWallTime));
+//	steps.push_back(new DriveToBump(angle, 0, driveBumpX, 1.5, ignoreJerk, jerk));
+//	steps.push_back(new TimedDrive(angle, afterBumpSpeed, afterBumpSpeedX, driveIntoWallTime));
 	if (blueSpinOnly) {
 		steps.push_back(new XYPIDControlledDrive(angle, blueSpinSpeed, blueSpinX, 0.0, blueSpinPushT, DriveUnit::Units::kInches ));
 		steps.push_back(new Rotate(blueSpinAngle));
